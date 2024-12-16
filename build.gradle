@@ -35,6 +35,6 @@ dependencyManagement {
     }
 }
 
-task wrapper(type: Wrapper) {
+wrapper {
     gradleVersion = '8.4'
 }
