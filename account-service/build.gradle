@@ -8,36 +8,36 @@ plugins {
 group = 'com.piggymetrics'
 version = '1.0-SNAPSHOT'
 
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
 
-    //spring
+    // Spring 기본
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    // security
+    // Spring Cloud
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-oauth2'
-
-    // eureka
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-hystrix'
-    implementation 'org.springframework.cloud:spring-cloud-netflix-hystrix-stream'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-    // db
+    // 데이터베이스
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:1.50.3'
 
-    // json
+    // JSON 처리
     testImplementation 'com.jayway.jsonpath:json-path:2.2.0'
+
+    // Resilience4j (Hystrix 대체)
+    implementation 'io.github.resilience4j:resilience4j-spring-boot3:2.0.2'
 }
 
 // 테스트 수행 시 JaCoCo 리포트 생성
