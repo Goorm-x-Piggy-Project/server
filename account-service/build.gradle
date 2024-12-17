@@ -5,7 +5,7 @@ plugins {
     id 'jacoco'
 }
 
-group = 'com.piggymetrics'
+group = 'server'
 version = '1.0-SNAPSHOT'
 
 
