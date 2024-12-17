@@ -12,6 +12,10 @@ allprojects {
     }
 }
 
+ext {
+    set('springCloudVersion', '2023.0.4')
+}
+
 subprojects {
     apply plugin: 'java'
 
@@ -23,14 +27,11 @@ subprojects {
     dependencies {
         implementation 'org.springframework.boot:spring-boot-starter'
     }
-}
 
-ext {
-    set('springCloudVersion', '2022.0.5')
-}
-
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
     }
 }
+
