@@ -7,3 +7,8 @@ spring:
       fail-fast: true
       password: ${CONFIG_SERVICE_PASSWORD}
       username: user
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://your-auth-server.com #추후 인증 서버 uri 추가 필요
