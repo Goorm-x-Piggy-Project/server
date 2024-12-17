@@ -14,3 +14,19 @@ target/
 **/*.project
 **/*.classpath
 **/*.settings
+
+# Gradle 빌드 폴더
+/build/
+.gradle/
+
+# Gradle 캐시 및 실행 기록
+.gradle/**
+
+# 프로젝트의 실행 결과
+*.lock
+*.bin
+*.probe
+
+# 로그 및 임시 파일
+*.log
+*.tmp
