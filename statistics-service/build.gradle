@@ -32,7 +32,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     //Spring security
-    implementation("org.springframework.security.oauth:spring-security-oauth2:2.3.8.RELEASE")
+    implementation 'org.springframework.security.oauth:spring-security-oauth2:2.3.8.RELEASE'
+    implementation 'org.springframework.security:spring-security-jwt:1.1.1.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
     // Spring Cloud dependencies
@@ -53,6 +55,10 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:1.50.3'
     testImplementation 'com.jayway.jsonpath:json-path:2.2.0'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 jacoco {
