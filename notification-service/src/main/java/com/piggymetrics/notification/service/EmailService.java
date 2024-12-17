@@ -3,7 +3,7 @@ package com.piggymetrics.notification.service;
 import com.piggymetrics.notification.domain.NotificationType;
 import com.piggymetrics.notification.domain.Recipient;
 
-import javax.mail.MessagingException;
+import jakarta.mail.MessagingException; // javax → jakarta로 변경
 import java.io.IOException;
 
 public interface EmailService {
