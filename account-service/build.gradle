@@ -13,21 +13,30 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.cloud:spring-cloud-starter-oauth2'
+
+    //spring
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // security
+    implementation 'org.springframework.cloud:spring-cloud-starter-oauth2'
+
+    // eureka
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
-    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-hystrix'
     implementation 'org.springframework.cloud:spring-cloud-netflix-hystrix-stream'
+    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // db
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:1.50.3'
+
+    // json
     testImplementation 'com.jayway.jsonpath:json-path:2.2.0'
 }
 
