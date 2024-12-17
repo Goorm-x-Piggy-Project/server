@@ -1,11 +1,11 @@
 package com.piggymetrics.notification.domain;
 
-import org.hibernate.validator.constraints.Email;
+import jakarta.validation.Valid; // javax → jakarta로 변경
+import jakarta.validation.constraints.Email; // 최신 버전의 Email 어노테이션
+import jakarta.validation.constraints.NotNull; // javax → jakarta로 변경
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 @Document(collection = "recipients")
@@ -15,7 +15,7 @@ public class Recipient {
 	private String accountName;
 
 	@NotNull
-	@Email
+	@Email //jakarta.validation 사용
 	private String email;
 
 	@Valid
