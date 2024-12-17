@@ -4,7 +4,7 @@ plugins {
 }
 
 allprojects {
-    group = 'com.piggymetrics'
+    group = 'server'
     version = '1.0-SNAPSHOT'
 
     repositories {
@@ -26,15 +26,11 @@ subprojects {
 }
 
 ext {
-    set('springCloudVersion', '2022.0.4')
+    set('springCloudVersion', '2022.0.5')
 }
 
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
-}
-
-wrapper {
-    gradleVersion = '8.4'
 }
