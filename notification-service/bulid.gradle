@@ -11,7 +11,7 @@ plugins {
     id 'java'
 }
 
-group = 'com.piggymetrics'
+group = 'server'
 version = '1.0.0-SNAPSHOT'
 
 java {
