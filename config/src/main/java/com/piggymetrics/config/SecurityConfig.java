@@ -19,7 +19,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().authenticated()
                 )
-                .formLogin(withDefaults()); // 기본 로그인 폼 사용
+                .formLogin(withDefaults());
         return http.build();
     }
 }
