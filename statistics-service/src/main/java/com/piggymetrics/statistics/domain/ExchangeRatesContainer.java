@@ -2,49 +2,31 @@ package com.piggymetrics.statistics.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Map;
+import lombok.Data;
 
-@JsonIgnoreProperties(ignoreUnknown = true, value = {"date"})
+import java.util.List;
+
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ExchangeRatesContainer {
 
-	private LocalDate date = LocalDate.now();
+	private List<ExchangeRate> rates; // 통화별 환율 정보 리스트
 
-	private Currency base;
+	@Data
+	public static class ExchangeRate {
 
-	private Map<String, BigDecimal> rates;
+		@JsonProperty("cur_unit")
+		private String currencyUnit; // 통화 단위 (e.g., USD, EUR)
 
-	public LocalDate getDate() {
-		return date;
-	}
+		@JsonProperty("deal_bas_r")
+		@JsonDeserialize(using = BigDecimalDeserializer.class)
+		private BigDecimal dealBaseRate; // 매매기준율 (환율 값)
 
-	public void setDate(LocalDate date) {
-		this.date = date;
-	}
-
-	public Currency getBase() {
-		return base;
-	}
-
-	public void setBase(Currency base) {
-		this.base = base;
-	}
-
-	public Map<String, BigDecimal> getRates() {
-		return rates;
-	}
-
-	public void setRates(Map<String, BigDecimal> rates) {
-		this.rates = rates;
-	}
-
-	@Override
-	public String toString() {
-		return "RateList{" +
-				"date=" + date +
-				", base=" + base +
-				", rates=" + rates +
-				'}';
+		@JsonProperty("cur_nm")
+		private String currencyName; // 통화명 (e.g., 미국 달러, 유로)
 	}
 }
+
