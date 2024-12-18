@@ -1,5 +1,9 @@
 package com.piggymetrics.auth.domain;
 
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
@@ -8,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.List;
 
 @Document(collection = "users")
+@Getter
+@NoArgsConstructor
 public class User implements UserDetails {
 
 	@Id
@@ -16,26 +22,21 @@ public class User implements UserDetails {
 	private String password;
 
 	@Override
-	public String getPassword() {
-		return password;
-	}
-
-	@Override
-	public String getUsername() {
-		return username;
-	}
-
-	@Override
 	public List<GrantedAuthority> getAuthorities() {
 		return null;
 	}
 
-	public void setUsername(String username) {
+	@Builder(access = AccessLevel.PRIVATE)
+	private User(String username, String password) {
 		this.username = username;
+		this.password = password;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public static User of(String username, String password) {
+		return User.builder()
+				.username(username)
+				.password(password)
+				.build();
 	}
 
 	@Override

@@ -1,15 +1,13 @@
 package com.piggymetrics.auth.service;
 
 import com.piggymetrics.auth.domain.User;
+import com.piggymetrics.auth.domain.dto.request.UserCreateRequestDto;
+import com.piggymetrics.auth.domain.dto.response.UserCreateResponseDto;
 import com.piggymetrics.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import java.util.Optional;
 
@@ -18,18 +16,19 @@ import java.util.Optional;
 @Slf4j
 public class UserService {
 	private final BCryptPasswordEncoder passwordEncoder;
-	private final UserRepository repository;
+	private final UserRepository userRepository;
 
-	public void create(User user) {
+	public UserCreateResponseDto create(UserCreateRequestDto requestDto) {
 
-		Optional<User> existing = repository.findById(user.getUsername());
+		Optional<User> existing = userRepository.findById(requestDto.getUsername());
 		existing.ifPresent(it-> {throw new IllegalArgumentException("user already exists: " + it.getUsername());});
 
-		String hash = passwordEncoder.encode(user.getPassword());
-		user.setPassword(hash);
+		String hash = passwordEncoder.encode(requestDto.getPassword());
+		User user = User.of(requestDto.getUsername(), hash);
 
-		repository.save(user);
-
+		userRepository.save(user);
 		log.info("new user has been created: {}", user.getUsername());
+
+		return UserCreateResponseDto.from(user);
 	}
 }
