@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface ExchangeRatesClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/latest")
-    ExchangeRatesContainer getRates(@RequestParam("base") Currency base);
+    ExchangeRatesContainer getRates(
+            @RequestParam("authkey") String authKey,
+            @RequestParam("searchdate") String searchDate,
+            @RequestParam("data") String dataType
+    );
 
 }

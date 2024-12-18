@@ -10,10 +10,10 @@ import java.util.Collections;
 public class ExchangeRatesClientFallback implements ExchangeRatesClient {
 
     @Override
-    public ExchangeRatesContainer getRates(Currency base) {
+    public ExchangeRatesContainer getRates(String authKey, String searchDate, String dataType) {
+        // Fallback 구현: 빈 ExchangeRatesContainer 반환
         ExchangeRatesContainer container = new ExchangeRatesContainer();
-        container.setBase(Currency.getBase());
-        container.setRates(Collections.emptyMap());
+        container.setRates(Collections.emptyList()); // 빈 리스트로 설정
         return container;
     }
 }
