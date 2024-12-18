@@ -48,6 +48,8 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.2'
 
+    implementation 'javax.servlet:javax.servlet-api:4.0.1'
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
@@ -56,7 +58,7 @@ dependencies {
 
     // Test dependencies
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:1.50.3'
+    testImplementation 'de.bwaldvogel:mongo-java-server:1.40.0'
     testImplementation 'com.jayway.jsonpath:json-path:2.2.0'
 }
 

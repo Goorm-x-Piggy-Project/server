@@ -3,6 +3,7 @@ package com.piggymetrics.statistics.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.math.BigDecimal;
 import lombok.Data;
 
@@ -21,6 +22,7 @@ public class ExchangeRatesContainer {
 		private String currencyUnit; // 통화 단위 (e.g., USD, EUR)
 
 		@JsonProperty("deal_bas_r")
+		@JsonDeserialize(using = BigDecimalDeserializer.class)
 		private BigDecimal dealBaseRate; // 매매기준율 (환율 값)
 
 		@JsonProperty("cur_nm")
