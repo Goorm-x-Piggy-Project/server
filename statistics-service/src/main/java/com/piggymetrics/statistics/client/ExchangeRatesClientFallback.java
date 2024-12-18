@@ -2,6 +2,8 @@ package com.piggymetrics.statistics.client;
 
 import com.piggymetrics.statistics.domain.Currency;
 import com.piggymetrics.statistics.domain.ExchangeRatesContainer;
+import com.piggymetrics.statistics.domain.ExchangeRatesContainer.ExchangeRate;
+import java.util.List;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -10,10 +12,8 @@ import java.util.Collections;
 public class ExchangeRatesClientFallback implements ExchangeRatesClient {
 
     @Override
-    public ExchangeRatesContainer getRates(String authKey, String searchDate, String dataType) {
-        // Fallback 구현: 빈 ExchangeRatesContainer 반환
-        ExchangeRatesContainer container = new ExchangeRatesContainer();
-        container.setRates(Collections.emptyList()); // 빈 리스트로 설정
-        return container;
+    public List<ExchangeRate> getRates(String authKey, String searchDate, String dataType) {
+        // Fallback 구현: 빈 리스트 반환
+        return Collections.emptyList();
     }
 }

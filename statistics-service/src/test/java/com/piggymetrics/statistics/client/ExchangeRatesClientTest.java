@@ -1,72 +1,77 @@
 package com.piggymetrics.statistics.client;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 
 import com.piggymetrics.statistics.domain.Currency;
-import com.piggymetrics.statistics.domain.ExchangeRatesContainer;
 
+import com.piggymetrics.statistics.domain.ExchangeRatesContainer.ExchangeRate;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.context.annotation.Import;
 
-import java.time.LocalDate;
+@Import(MongoServerConfig.class)
+@SpringBootTest(properties = {"spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration"})
 
-
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
 public class ExchangeRatesClientTest {
 
 	@Autowired
 	private ExchangeRatesClient client;
 
 	@Test
-	void shouldRetrieveExchangeRates() {
-		// Given: 필요한 입력값
-		String baseCurrency = "KRW";
+	public void testGetRates() {
+		// given
+		String authKey = "nY5T9XKTkiWkFBxsbrm4ZzUQZzPv1R7Z"; // 실제 API 키
 		String today = LocalDate.now().toString().replace("-", ""); // yyyyMMdd 형식
-		String dataType = "AP01";
+		String dataType = "AP01"; // 데이터 타입
 
-		// When: 환율 데이터를 요청
-		ExchangeRatesContainer container = client.getRates(baseCurrency, today, dataType);
+		// when
+		List<ExchangeRate> response = client.getRates(authKey, today, dataType);
 
-		// Then: 반환된 데이터 검증
-		assertThat(container).isNotNull();
-		assertThat(container.getRates())
-				.isNotNull();
+		// then
+		ExchangeRate firstRate = response.get(0);
+		assertThat(firstRate.getCurrencyUnit()).isEqualTo("AED");
+		assertThat(firstRate.getDealBaseRate()).isGreaterThan(BigDecimal.ZERO);
+	}
+
+	@Test
+	void shouldRetrieveExchangeRates() {
+		// given
+		String authKey = "nY5T9XKTkiWkFBxsbrm4ZzUQZzPv1R7Z"; // 실제 API 키
+		String today = LocalDate.now().toString().replace("-", ""); // yyyyMMdd 형식
+		String dataType = "AP01"; // 데이터 타입
+
+		// when
+		List<ExchangeRate> rates= client.getRates(authKey, today, dataType);
 
 		// USD, EUR, JPY(100) 존재 여부 검증
-		assertThat(container.getRates().stream().anyMatch(rate -> "USD".equals(rate.getCurrencyUnit())))
-				.isTrue();
-		assertThat(container.getRates().stream().anyMatch(rate -> "EUR".equals(rate.getCurrencyUnit())))
-				.isTrue();
-		assertThat(container.getRates().stream().anyMatch(rate -> "JPY(100)".equals(rate.getCurrencyUnit())))
-				.isTrue();
+		assertThat(rates).isNotNull();
+
+		assertThat(rates.stream().anyMatch(rate -> "USD".equals(rate.getCurrencyUnit()))).isTrue();
+		assertThat(rates.stream().anyMatch(rate -> "EUR".equals(rate.getCurrencyUnit()))).isTrue();
+		assertThat(rates.stream().anyMatch(rate -> "JPY(100)".equals(rate.getCurrencyUnit()))).isTrue();
 	}
 
 	@Test
 	void shouldRetrieveExchangeRatesForSpecifiedCurrency() {
-		// Given: 필요한 입력값 설정
-		String baseCurrency = "KRW";
+		// given
+		String authKey = "nY5T9XKTkiWkFBxsbrm4ZzUQZzPv1R7Z"; // 실제 API 키
 		String today = LocalDate.now().toString().replace("-", ""); // yyyyMMdd 형식
-		String dataType = "AP01";
+		String dataType = "AP01"; // 데이터 타입
 
-		Currency requestedCurrency = Currency.EUR;
+		// when
+		List<ExchangeRate> rates= client.getRates(authKey, today, dataType);
 
-		// When: 특정 통화의 환율 데이터를 요청
-		ExchangeRatesContainer container = client.getRates(baseCurrency, today, dataType);
+		// then: 리스트에서 요청된 통화(EUR)가 존재하는지 확인
+		assertThat(rates).isNotNull();
 
-		// Then: 반환된 데이터 검증
-		assertThat(container).isNotNull();
-		assertThat(container.getRates())
-				.isNotNull();
-
-		// 리스트에서 요청된 통화(EUR)가 존재하는지 확인
-		assertThat(container.getRates().stream()
-				.anyMatch(rate -> requestedCurrency.name().equals(rate.getCurrencyUnit())))
+		String requestedCurrency = Currency.EUR.toString();
+		assertThat(rates.stream()
+				.anyMatch(rate -> requestedCurrency.equals(rate.getCurrencyUnit())))
 				.isTrue();
 	}
 }

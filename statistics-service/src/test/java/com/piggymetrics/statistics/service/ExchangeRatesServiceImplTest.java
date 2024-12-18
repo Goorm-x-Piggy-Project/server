@@ -49,10 +49,8 @@ public class ExchangeRatesServiceImplTest {
 		String mockAuthKey = "mockAuthKey"; // 테스트용 authKey
 		String today = LocalDate.now().toString().replace("-", "");
 
-		ExchangeRatesContainer container = new ExchangeRatesContainer();
-		container.setRates(createRates());
-
-		when(client.getRates(eq(mockAuthKey), eq(today), eq("AP01"))).thenReturn(container);
+		List<ExchangeRate> mockRates = createRates();
+		when(client.getRates(eq(mockAuthKey), eq(today), eq("AP01"))).thenReturn(mockRates);
 
 		//when
 		Map<Currency, BigDecimal> result = ratesService.getCurrentRates();
@@ -69,10 +67,11 @@ public class ExchangeRatesServiceImplTest {
 	@Test
 	void shouldNotRequestRatesWhenTodaysContainerAlreadyExists() {
 		// Given: Mock 데이터 설정
-		ExchangeRatesContainer container = new ExchangeRatesContainer();
-		container.setRates(createRates()); // Mock 데이터 생성
+		String mockAuthKey = "mockAuthKey"; // 테스트용 authKey
+		String today = LocalDate.now().toString().replace("-", "");
 
-		when(client.getRates(anyString(), anyString(), anyString())).thenReturn(container);
+		List<ExchangeRate> mockRates = createRates();
+		when(client.getRates(eq(mockAuthKey), eq(today), eq("AP01"))).thenReturn(mockRates);
 
 		// When: 초기 데이터 요청 및 재요청
 		ratesService.getCurrentRates(); // 첫 번째 호출
@@ -85,10 +84,12 @@ public class ExchangeRatesServiceImplTest {
 	@Test
 	void shouldConvertCurrency() {
 		// Given: Mock 데이터 설정
-		ExchangeRatesContainer container = new ExchangeRatesContainer();
-		container.setRates(createRates()); // Mock 데이터 생성
+		String mockAuthKey = "mockAuthKey"; // 테스트용 authKey
+		String today = LocalDate.now().toString().replace("-", "");
 
-		when(client.getRates(anyString(), anyString(), anyString())).thenReturn(container);
+		List<ExchangeRate> mockRates = createRates();
+		when(client.getRates(eq(mockAuthKey), eq(today), eq("AP01"))).thenReturn(mockRates);
+
 
 		final BigDecimal amount = new BigDecimal(1);
 		final BigDecimal expectedConversionResult = new BigDecimal("1436.6");

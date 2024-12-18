@@ -24,7 +24,8 @@ public class ExchangeRatesServiceImpl implements ExchangeRatesService {
 
 	private static final Logger log = LoggerFactory.getLogger(ExchangeRatesServiceImpl.class);
 
-	private ExchangeRatesContainer container;
+	private List<ExchangeRate> exchangeRates; // 최신 환율 리스트 저장
+
 
 	private final ExchangeRatesClient client;
 
@@ -38,18 +39,16 @@ public class ExchangeRatesServiceImpl implements ExchangeRatesService {
 	@Override
 	public Map<Currency, BigDecimal> getCurrentRates() {
 
-		if (container == null || container.getRates() == null || container.getRates().isEmpty()) {
+		if (exchangeRates == null || exchangeRates.isEmpty()) {
 			String today = LocalDate.now().toString().replace("-", ""); // yyyyMMdd 형식
-			container = client.getRates(authKey, today, "AP01");
-			log.info("Exchange rates updated: {}", container);
+			exchangeRates = client.getRates(authKey, today, "AP01");
+			log.info("Exchange rates updated: {}", exchangeRates);
 		}
 
-		List<ExchangeRate> rates = container.getRates();
-		// 각 통화의 매매기준율(deal_bas_r)을 가져와 Map으로 반환
-		return rates.stream()
+		return exchangeRates.stream()
 				.collect(Collectors.toMap(
 						rate -> Currency.valueOf(rate.getCurrencyUnit().replace("(100)", "")), // 통화 단위 변환
-						ExchangeRatesContainer.ExchangeRate::getDealBaseRate
+						ExchangeRate::getDealBaseRate
 				));
 	}
 
