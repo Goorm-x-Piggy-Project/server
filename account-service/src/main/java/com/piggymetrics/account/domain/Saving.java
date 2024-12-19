@@ -1,18 +1,28 @@
 package com.piggymetrics.account.domain;
 
-import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class Saving {
 
+	@Id
+	private ObjectId id;
+
 	@NotNull
-	private BigDecimal amount;
+	private Long amount;
 
 	@NotNull
 	private Currency currency;
 
 	@NotNull
-	private BigDecimal interest;
+	private Long interest;
 
 	@NotNull
 	private Boolean deposit;
@@ -20,43 +30,12 @@ public class Saving {
 	@NotNull
 	private Boolean capitalization;
 
-	public BigDecimal getAmount() {
-		return amount;
-	}
-
-	public void setAmount(BigDecimal amount) {
+	@Builder
+	public Saving(Long amount, Currency currency, Long interest, Boolean deposit, Boolean capitalization) {
 		this.amount = amount;
-	}
-
-	public Currency getCurrency() {
-		return currency;
-	}
-
-	public void setCurrency(Currency currency) {
 		this.currency = currency;
-	}
-
-	public BigDecimal getInterest() {
-		return interest;
-	}
-
-	public void setInterest(BigDecimal interest) {
 		this.interest = interest;
-	}
-
-	public Boolean getDeposit() {
-		return deposit;
-	}
-
-	public void setDeposit(Boolean deposit) {
 		this.deposit = deposit;
-	}
-
-	public Boolean getCapitalization() {
-		return capitalization;
-	}
-
-	public void setCapitalization(Boolean capitalization) {
 		this.capitalization = capitalization;
 	}
 }
