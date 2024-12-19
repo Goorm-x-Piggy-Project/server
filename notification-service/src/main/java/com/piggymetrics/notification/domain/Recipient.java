@@ -1,55 +1,43 @@
+//수신자 정보.
+
+/*
+작성자 : 이지은
+최종 수정 일시 : 2024-12-19, 목, 21:45
+수정 내용 : 롬복 적용
+*/
+
 package com.piggymetrics.notification.domain;
 
-import org.hibernate.validator.constraints.Email;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.Map;
 
+/**
+ * Recipient 클래스는 알림 수신자 정보를 관리.
+ * MongoDB recipients 컬렉션에 매핑.
+ * 주요 필드:
+ * - accountName: 계정 이름
+ * - email: 이메일 주소
+ * - scheduledNotifications: 알림 유형과 설정의 매핑
+ */
+@Data
+@Builder
 @Document(collection = "recipients")
 public class Recipient {
 
 	@Id
-	private String accountName;
+	private String accountName; // 계정 이름 (MongoDB 식별자)
 
 	@NotNull
 	@Email
-	private String email;
+	private String email; // 이메일 주소
 
 	@Valid
-	private Map<NotificationType, NotificationSettings> scheduledNotifications;
-
-	public String getAccountName() {
-		return accountName;
-	}
-
-	public void setAccountName(String accountName) {
-		this.accountName = accountName;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public Map<NotificationType, NotificationSettings> getScheduledNotifications() {
-		return scheduledNotifications;
-	}
-
-	public void setScheduledNotifications(Map<NotificationType, NotificationSettings> scheduledNotifications) {
-		this.scheduledNotifications = scheduledNotifications;
-	}
-
-	@Override
-	public String toString() {
-		return "Recipient{" +
-				"accountName='" + accountName + '\'' +
-				", email='" + email + '\'' +
-				'}';
-	}
+	private Map<NotificationType, NotificationSettings> scheduledNotifications; // 알림 유형과 설정의 매핑
 }
