@@ -44,10 +44,10 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class StatisticsServiceImplTest {
 
 	@InjectMocks
-	private StatisticsServiceImpl statisticsService;
+	private StatisticsService statisticsService;
 
 	@Mock
-	private ExchangeRatesServiceImpl ratesService;
+	private ExchangeRatesService ratesService;
 
 	@Mock
 	private DataPointRepository repository;
