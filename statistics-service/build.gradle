@@ -47,6 +47,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j' // Hystrix 대신 Resilience4j
 
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.2'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
     implementation 'javax.servlet:javax.servlet-api:4.0.1'
 

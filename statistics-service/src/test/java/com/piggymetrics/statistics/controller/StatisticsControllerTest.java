@@ -1,6 +1,7 @@
 package com.piggymetrics.statistics.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.ImmutableList;
 import com.piggymetrics.statistics.domain.Account;
 import com.piggymetrics.statistics.domain.Currency;
@@ -9,6 +10,7 @@ import com.piggymetrics.statistics.domain.Saving;
 import com.piggymetrics.statistics.domain.TimePeriod;
 import com.piggymetrics.statistics.domain.timeseries.DataPoint;
 import com.piggymetrics.statistics.domain.timeseries.DataPointId;
+import com.piggymetrics.statistics.dto.UserReqDto;
 import com.piggymetrics.statistics.service.StatisticsService;
 import com.sun.security.auth.UserPrincipal;
 import org.aspectj.lang.annotation.Before;
@@ -55,6 +57,8 @@ public class StatisticsControllerTest {
 	public void setup() {
 		initMocks(this);
 		this.mockMvc = MockMvcBuilders.standaloneSetup(statisticsController).build();
+
+		mapper.registerModule(new JavaTimeModule());
 	}
 
 	@Test
@@ -107,10 +111,11 @@ public class StatisticsControllerTest {
 		salary.setCurrency(Currency.USD);
 		salary.setPeriod(TimePeriod.MONTH);
 
-		final Account account = new Account();
-		account.setSaving(saving);
-		account.setExpenses(ImmutableList.of(grocery));
-		account.setIncomes(ImmutableList.of(salary));
+		Account account = Account.builder()
+				.req(new UserReqDto("user", "password"))
+				.saving(saving)
+				.build();
+		account.updateAccountStatistics(ImmutableList.of(salary), ImmutableList.of(grocery), saving);
 
 		String json = mapper.writeValueAsString(account);
 

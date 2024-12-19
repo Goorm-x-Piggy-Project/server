@@ -12,6 +12,7 @@ import com.piggymetrics.statistics.domain.TimePeriod;
 import com.piggymetrics.statistics.domain.timeseries.DataPoint;
 import com.piggymetrics.statistics.domain.timeseries.ItemMetric;
 import com.piggymetrics.statistics.domain.timeseries.StatisticMetric;
+import com.piggymetrics.statistics.dto.UserReqDto;
 import com.piggymetrics.statistics.repository.DataPointRepository;
 
 import org.aspectj.lang.annotation.Before;
@@ -112,10 +113,11 @@ public class StatisticsServiceImplTest {
 		saving.setDeposit(true);
 		saving.setCapitalization(false);
 
-		Account account = new Account();
-		account.setIncomes(ImmutableList.of(salary));
-		account.setExpenses(ImmutableList.of(grocery, vacation));
-		account.setSaving(saving);
+		Account account = Account.builder()
+				.req(new UserReqDto("user", "password"))
+				.saving(saving)
+				.build();
+		account.updateAccountStatistics(ImmutableList.of(salary), ImmutableList.of(grocery, vacation), saving);
 
 		final Map<Currency, BigDecimal> rates = ImmutableMap.of(
 				Currency.EUR, new BigDecimal("1.50735"),
