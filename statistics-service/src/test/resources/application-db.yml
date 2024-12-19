@@ -1,0 +1,29 @@
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 20000
+
+spring:
+  cloud:
+    config:
+      enabled: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://your-issuer-uri
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      authentication-database: piggymetrics
+      database: piggymetrics
+      username: user
+      password: password
+
+rates:
+  url: https://www.koreaexim.go.kr/site/program/financial/exchangeJSON
+  authkey: nY5T9XKTkiWkFBxsbrm4ZzUQZzPv1R7Z

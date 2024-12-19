@@ -26,7 +26,7 @@ public class ExchangeRatesClientTest {
 	public void testGetRates() {
 		// given
 		String authKey = "nY5T9XKTkiWkFBxsbrm4ZzUQZzPv1R7Z"; // 실제 API 키
-		String today = LocalDate.now().toString().replace("-", ""); // yyyyMMdd 형식
+		String today = LocalDate.now().minusDays(1).toString().replace("-", ""); // yyyyMMdd 형식
 		String dataType = "AP01"; // 데이터 타입
 
 		// when
@@ -42,7 +42,7 @@ public class ExchangeRatesClientTest {
 	void shouldRetrieveExchangeRates() {
 		// given
 		String authKey = "nY5T9XKTkiWkFBxsbrm4ZzUQZzPv1R7Z"; // 실제 API 키
-		String today = LocalDate.now().toString().replace("-", ""); // yyyyMMdd 형식
+		String today = LocalDate.now().minusDays(1).toString().replace("-", ""); // yyyyMMdd 형식
 		String dataType = "AP01"; // 데이터 타입
 
 		// when
@@ -60,7 +60,7 @@ public class ExchangeRatesClientTest {
 	void shouldRetrieveExchangeRatesForSpecifiedCurrency() {
 		// given
 		String authKey = "nY5T9XKTkiWkFBxsbrm4ZzUQZzPv1R7Z"; // 실제 API 키
-		String today = LocalDate.now().toString().replace("-", ""); // yyyyMMdd 형식
+		String today = LocalDate.now().minusDays(1).toString().replace("-", ""); // yyyyMMdd 형식
 		String dataType = "AP01"; // 데이터 타입
 
 		// when

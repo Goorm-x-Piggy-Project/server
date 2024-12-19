@@ -29,7 +29,7 @@ import static org.mockito.Mockito.*;
 public class ExchangeRatesServiceImplTest {
 
 	@InjectMocks
-	private ExchangeRatesServiceImpl ratesService;
+	private ExchangeRatesService ratesService;
 
 	@Mock
 	private ExchangeRatesClient client;
@@ -37,7 +37,7 @@ public class ExchangeRatesServiceImplTest {
 	@BeforeEach
 	public void setup() {
 		// Mock 객체로 서비스 인스턴스 초기화
-		ratesService = new ExchangeRatesServiceImpl(client);
+		ratesService = new ExchangeRatesService(client);
 
 		// ReflectionTestUtils를 사용해 필드 주입
 		ReflectionTestUtils.setField(ratesService, "authKey", "mockAuthKey");
