@@ -1,7 +1,7 @@
 plugins {
     id 'org.springframework.boot'
     id 'io.spring.dependency-management'
-    id 'jacoco'
+    //id 'jacoco'
     id 'java'
 }
 
@@ -29,16 +29,15 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    //Spring security
+    implementation 'org.springframework.security.oauth:spring-security-oauth2:2.3.8.RELEASE'
+    implementation 'org.springframework.security:spring-security-jwt:1.1.1.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 
     // Spring Cloud dependencies
-//    implementation 'org.springframework.cloud:spring-cloud-starter-config'
-//    implementation 'org.springframework.cloud:spring-cloud-starter-oauth2'
-//    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-//    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-//    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
-//    implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
-//    implementation 'org.springframework.cloud:spring-cloud-netflix-hystrix-stream'
-
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client' // OAuth2 클라이언트 의존성 변경
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
@@ -47,25 +46,36 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
     implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j' // Hystrix 대신 Resilience4j
 
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.2'
+
+    implementation 'javax.servlet:javax.servlet-api:4.0.1'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
     // Guava library
     implementation 'com.google.guava:guava:19.0'
 
     // Test dependencies
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:1.50.3'
+    testImplementation 'de.bwaldvogel:mongo-java-server:1.40.0'
     testImplementation 'com.jayway.jsonpath:json-path:2.2.0'
 }
 
-jacoco {
-    toolVersion = "0.7.6.201602180812"
+test {
+    useJUnitPlatform()
 }
 
-tasks.jacocoTestReport {
-    reports {
-        xml.required = true
-        html.required = true
-    }
-}
+//jacoco {
+//    toolVersion = "0.7.6.201602180812"
+//}
+//
+//tasks.jacocoTestReport {
+//    reports {
+//        xml.required = true
+//        html.required = true
+//    }
+//}
 
 bootJar {
     archiveFileName = 'statistics-service.jar'
