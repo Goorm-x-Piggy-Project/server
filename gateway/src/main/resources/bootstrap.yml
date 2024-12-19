@@ -2,8 +2,13 @@ spring:
   application:
     name: gateway
   cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true               # Eureka 서비스 디스커버리로 자동 라우팅 활성화
+          lower-case-service-id: true # 서비스 이름을 소문자로 처리
     config:
       uri: http://config:8888
       fail-fast: true
-      password: ${CONFIG_SERVICE_PASSWORD}
       username: user
+      password: ${CONFIG_SERVICE_PASSWORD}
