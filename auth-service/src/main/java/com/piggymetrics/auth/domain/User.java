@@ -11,9 +11,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
-@Document(collection = "users")
+@Document(collection = "users") // 실제 mongoDB 컬렉션 이름
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User implements UserDetails {
 
 	@Id
@@ -26,7 +26,7 @@ public class User implements UserDetails {
 		return null;
 	}
 
-	@Builder(access = AccessLevel.PRIVATE)
+	@Builder
 	private User(String username, String password) {
 		this.username = username;
 		this.password = password;
