@@ -1,32 +1,24 @@
 package com.piggymetrics.account.domain;
 
-import org.hibernate.validator.constraints.Length;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
-
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
+	@Id
+	private String id;
+
 	@NotNull
-	@Length(min = 3, max = 20)
+	@Size(min = 3, max = 20)
 	private String username;
 
 	@NotNull
-	@Length(min = 6, max = 40)
+	@Size(min = 6, max = 40)
 	private String password;
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
 }
