@@ -1,30 +1,32 @@
 package com.piggymetrics.auth.controller;
 
 import com.piggymetrics.auth.domain.User;
+import com.piggymetrics.auth.domain.dto.request.UserCreateRequestDto;
+import com.piggymetrics.auth.domain.dto.response.UserCreateResponseDto;
 import com.piggymetrics.auth.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("/api/v1/users")
 public class UserController {
 	private final UserService userService;
 
-	@RequestMapping(value = "/current", method = RequestMethod.GET)
+	@GetMapping("/current")
 	public Principal getUser(Principal principal) {
 		return principal;
 	}
 
 	@PreAuthorize("#oauth2.hasScope('server')")
-	@RequestMapping(method = RequestMethod.POST)
-	public void createUser(@Valid @RequestBody User user) {
-		userService.create(user);
+	@PostMapping
+	public ResponseEntity<UserCreateResponseDto> createUser(@Valid @RequestBody UserCreateRequestDto requestDto) {
+		UserCreateResponseDto userCreateResponseDto = userService.create(requestDto);
+		return ResponseEntity.ok(userCreateResponseDto);
 	}
 }
