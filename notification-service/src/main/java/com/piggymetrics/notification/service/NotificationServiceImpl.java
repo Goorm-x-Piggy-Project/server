@@ -2,8 +2,8 @@
 
 /*
 작성자 : 이지은
-최종 수정 일시 : 2024-12-19, 목, 14:52
-수정 내용 : @Autowired 제거, 생성자 주입 사용, 주석 추가
+최종 수정 일시 : 2024-12-20, 금, 12:17
+수정 내용 : @RequiredArgsConstructor
 */
 
 package com.piggymetrics.notification.service;
@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -24,6 +25,7 @@ import java.util.concurrent.CompletableFuture;
  * 백업 및 리마인드 알림 발송 로직을 제공.
  */
 @Service
+@RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
 
 	private static final Logger log = LoggerFactory.getLogger(NotificationServiceImpl.class);
@@ -32,22 +34,9 @@ public class NotificationServiceImpl implements NotificationService {
 	private final RecipientService recipientService;
 	private final EmailService emailService;
 
-	/**
-	 * NotificationServiceImpl 생성자.
-	 *
-	 * @param client AccountServiceClient 인스턴스
-	 * @param recipientService RecipientService 인스턴스
-	 * @param emailService EmailService 인스턴스
-	 */
-	public NotificationServiceImpl(AccountServiceClient client, RecipientService recipientService, EmailService emailService) {
-		this.client = client;
-		this.recipientService = recipientService;
-		this.emailService = emailService;
-	}
 
 	/**
 	 * 백업 알림 발송.
-	 *
 	 * - 주기적으로 데이터 백업을 알림.
 	 */
 	@Override
