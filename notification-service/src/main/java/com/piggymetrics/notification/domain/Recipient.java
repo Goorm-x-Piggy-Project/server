@@ -2,8 +2,8 @@
 
 /*
 작성자 : 이지은
-최종 수정 일시 : 2024-12-20, 금, 11:13
-수정 내용 : @Data -> @Getter 변경
+최종 수정 일시 : 2024-12-20, 금, 13:31
+수정 내용 : toBuilder()추가
 */
 
 package com.piggymetrics.notification.domain;
@@ -27,7 +27,7 @@ import java.util.Map;
  * - scheduledNotifications: 알림 유형과 설정의 매핑
  */
 @Getter
-@Builder
+@Builder(toBuilder = true) // 기존 객체를 복사하면서 특정 필드만 변경 가능
 @Document(collection = "recipients")
 public class Recipient {
 
@@ -40,4 +40,9 @@ public class Recipient {
 
 	@Valid
 	private Map<NotificationType, NotificationSettings> scheduledNotifications; // 알림 유형과 설정의 매핑
+
+	// Builder를 통해 accountName을 변경하는 방식
+	public Recipient updateAccountName(String accountName) {
+		return this.toBuilder().accountName(accountName).build();
+	}
 }
