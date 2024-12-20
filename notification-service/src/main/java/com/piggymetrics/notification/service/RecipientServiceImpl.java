@@ -2,15 +2,17 @@
 
 /*
 작성자 : 이지은
-최종 수정 일시 : 2024-12-19, 목, 14:54
-수정 내용 : 생성자 주입 사용, Assert 입력 검증, 로깅 메시지 수정, 주석 추가
+최종 수정 일시 : 2024-12-20, 금, 13:31
+수정 내용 : 코드 수정
 */
 
 package com.piggymetrics.notification.service;
 
+import com.piggymetrics.notification.domain.NotificationSettings;
 import com.piggymetrics.notification.domain.NotificationType;
 import com.piggymetrics.notification.domain.Recipient;
 import com.piggymetrics.notification.repository.RecipientRepository;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -63,8 +65,9 @@ public class RecipientServiceImpl implements RecipientService {
 		Assert.hasLength(accountName, "계정 이름은 비어 있을 수 없습니다.");
 		Assert.notNull(recipient, "Recipient 객체는 null일 수 없습니다.");
 
-		recipient.setAccountName(accountName);
-		return repository.save(recipient);
+		// accountName을 업데이트한 새 Recipient 객체 생성
+		Recipient updatedRecipient = recipient.updateAccountName(accountName);
+		return repository.save(updatedRecipient);
 	}
 
 	/**
@@ -94,8 +97,18 @@ public class RecipientServiceImpl implements RecipientService {
 		Assert.notNull(type, "알림 유형은 null일 수 없습니다.");
 		Assert.notNull(recipient, "Recipient 객체는 null일 수 없습니다.");
 
-		recipient.getScheduledNotifications().get(type).setLastNotified(new Date());
-		repository.save(recipient);
+		// 기존 알림 설정 업데이트
+		NotificationSettings settings = recipient.getScheduledNotifications().get(type)
+				.updateLastNotified(new Date());
+
+		// updatedRecipient 생성
+		Recipient updatedRecipient = recipient.toBuilder()
+				.scheduledNotifications(
+						Map.of(type, settings) // 기존 알림 설정에서 업데이트된 값만 변경
+				)
+				.build();
+
+		repository.save(updatedRecipient);
 		log.info("{} 알림의 발송 시간이 {}로 업데이트되었습니다.", type, recipient.getAccountName());
 	}
 }
