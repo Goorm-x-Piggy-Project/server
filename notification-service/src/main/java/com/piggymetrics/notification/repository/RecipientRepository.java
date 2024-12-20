@@ -40,7 +40,7 @@ public interface RecipientRepository extends CrudRepository<Recipient, String> {
 	List<Recipient> findReadyForBackup(String date);
 
 	/**
-	 * 리마인드 알림을 받을 준비가 된 수신자를 검색합니다.
+	 * 리마인드 알림을 받을 준비가 된 수신자를 검색.
 	 *
 	 * @return 리마인드 알림 준비가 된 Recipient 리스트
 	 */
