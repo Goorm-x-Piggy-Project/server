@@ -2,10 +2,9 @@
 
 /*
 작성자 : 이지은
-최종 수정 일시 : 2024-12-19, 목, 22:8
-수정 내용 : @RequiredArgsConstructor
+최종 수정 일시 : 2024-12-20, 금, 08:45
+수정 내용 : 생성자 삭제
 */
-
 
 package com.piggymetrics.notification.controller;
 
@@ -31,15 +30,6 @@ import java.security.Principal;
 public class RecipientController {
 
 	private final RecipientService recipientService;
-
-	/**
-	 * RecipientController 생성자.
-	 *
-	 * @param recipientService RecipientService 인스턴스
-	 */
-	public RecipientController(RecipientService recipientService) {
-		this.recipientService = recipientService;
-	}
 
 	/**
 	 * 현재 사용자의 알림 설정 조회.
