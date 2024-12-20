@@ -2,8 +2,8 @@
 
 /*
 작성자 : 이지은
-최종 수정 일시 : 2024-12-19, 목, 21:45
-수정 내용 : 롬복 적용
+최종 수정 일시 : 2024-12-20, 금, 11:13
+수정 내용 : @Data -> @Getter 변경
 */
 
 package com.piggymetrics.notification.domain;
@@ -12,7 +12,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -26,7 +26,7 @@ import java.util.Map;
  * - email: 이메일 주소
  * - scheduledNotifications: 알림 유형과 설정의 매핑
  */
-@Data
+@Getter
 @Builder
 @Document(collection = "recipients")
 public class Recipient {
