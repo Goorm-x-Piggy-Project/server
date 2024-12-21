@@ -19,6 +19,11 @@ public class AccountController {
 
 	private final AccountService accountService;
 
+	@GetMapping
+	public String hello() {
+		return "hello";
+	}
+
 	@PreAuthorize("#oauth2.hasScope('server') or #name.equals('demo')")
 	@GetMapping("/{name}")
 	public ResponseEntity<String> getAccountByName(@PathVariable String name) {
