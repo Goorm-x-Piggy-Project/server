@@ -1,7 +1,6 @@
-FROM java:8-jre
-MAINTAINER Alexander Lukyanchikov <sqshq@sqshq.com>
+FROM openjdk:17-jdk-slim
 
-ADD ./target/registry.jar /app/
+ADD ./build/libs/registry-1.0.0-SNAPSHOT.jar /app/
 CMD ["java", "-Xmx200m", "-jar", "/app/registry.jar"]
 
 EXPOSE 8761

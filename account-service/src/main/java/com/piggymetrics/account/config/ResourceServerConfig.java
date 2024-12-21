@@ -26,64 +26,62 @@ public class ResourceServerConfig {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/v1/**", "/demo").permitAll()
                 .anyRequest().authenticated()
-        )
-                .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt
-                                .decoder(jwtDecoder())
-                        )
-                );
+        );
+//                .oauth2ResourceServer(oauth2 -> oauth2
+//                        .jwt(jwt -> jwt
+//                                .decoder(jwtDecoder())
+//                        )
+//                );
         return http.build();
     }
 
-    @Bean
-    public OAuth2AuthorizedClientManager authorizedClientManager(
-            ClientRegistrationRepository clientRegistrationRepository,
-            OAuth2AuthorizedClientRepository authorizedClientRepository) {
-
-        OAuth2AuthorizedClientProvider authorizedClientProvider =
-                OAuth2AuthorizedClientProviderBuilder.builder()
-                        .clientCredentials()
-                        .build();
-
-        DefaultOAuth2AuthorizedClientManager authorizedClientManager =
-                new DefaultOAuth2AuthorizedClientManager(
-                        clientRegistrationRepository, authorizedClientRepository);
-        authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
-
-        return authorizedClientManager;
-    }
-
-    @Bean
-    public WebClient webClient(ReactiveOAuth2AuthorizedClientManager authorizedClientManager) {
-        ServerOAuth2AuthorizedClientExchangeFilterFunction oauth2FilterFunction =
-                new ServerOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);
-        oauth2FilterFunction.setDefaultOAuth2AuthorizedClient(true);
-
-        return WebClient.builder()
-                .filter(oauth2FilterFunction)
-                .build();
-    }
-
-    @Bean
-    public ReactiveOAuth2AuthorizedClientManager authorizedClientManagers(
-            ReactiveClientRegistrationRepository clientRegistrationRepository,
-            ServerOAuth2AuthorizedClientRepository authorizedClientService) {
-
-        ReactiveOAuth2AuthorizedClientProvider authorizedClientProvider =
-                ReactiveOAuth2AuthorizedClientProviderBuilder.builder()
-                        .clientCredentials() // 클라이언트 자격 증명 플로우
-                        .build();
-
-        // DefaultReactiveOAuth2AuthorizedClientManager 생성
-        DefaultReactiveOAuth2AuthorizedClientManager authorizedClientManager =
-                new DefaultReactiveOAuth2AuthorizedClientManager(
-                        clientRegistrationRepository, authorizedClientService);
-
-        // AuthorizedClientProvider 설정
-        authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
-
-        return authorizedClientManager;
-    }
+//    @Bean
+//    public OAuth2AuthorizedClientManager authorizedClientManager(
+//            ClientRegistrationRepository clientRegistrationRepository,
+//            OAuth2AuthorizedClientRepository authorizedClientRepository) {
+//
+//        OAuth2AuthorizedClientProvider authorizedClientProvider = OAuth2AuthorizedClientProviderBuilder.builder()
+//                .clientCredentials()
+//                .build();
+//
+//        DefaultOAuth2AuthorizedClientManager authorizedClientManager =
+//                new DefaultOAuth2AuthorizedClientManager(clientRegistrationRepository, authorizedClientRepository);
+//        authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
+//
+//        return authorizedClientManager;
+//    }
+//
+//    @Bean
+//    public WebClient webClient(ReactiveOAuth2AuthorizedClientManager authorizedClientManager) {
+//        ServerOAuth2AuthorizedClientExchangeFilterFunction oauth2FilterFunction =
+//                new ServerOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);
+//        oauth2FilterFunction.setDefaultOAuth2AuthorizedClient(true);
+//
+//        return WebClient.builder()
+//                .filter(oauth2FilterFunction)
+//                .build();
+//    }
+//
+//    @Bean
+//    public ReactiveOAuth2AuthorizedClientManager authorizedClientManagers(
+//            ReactiveClientRegistrationRepository clientRegistrationRepository,
+//            ServerOAuth2AuthorizedClientRepository authorizedClientService) {
+//
+//        ReactiveOAuth2AuthorizedClientProvider authorizedClientProvider =
+//                ReactiveOAuth2AuthorizedClientProviderBuilder.builder()
+//                        .clientCredentials() // 클라이언트 자격 증명 플로우
+//                        .build();
+//
+//        // DefaultReactiveOAuth2AuthorizedClientManager 생성
+//        DefaultReactiveOAuth2AuthorizedClientManager authorizedClientManager =
+//                new DefaultReactiveOAuth2AuthorizedClientManager(
+//                        clientRegistrationRepository, authorizedClientService);
+//
+//        // AuthorizedClientProvider 설정
+//        authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
+//
+//        return authorizedClientManager;
+//    }
 
     @Bean
     public JwtDecoder jwtDecoder() {

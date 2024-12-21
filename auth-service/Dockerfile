@@ -1,7 +1,6 @@
-FROM java:8-jre
-MAINTAINER Alexander Lukyanchikov <sqshq@sqshq.com>
+FROM openjdk:17-jdk-slim
 
-ADD ./target/auth-service.jar /app/
+ADD ./build/libs/account-service-1.0-SNAPSHOT.jar /app/
 CMD ["java", "-Xmx200m", "-jar", "/app/auth-service.jar"]
 
 EXPOSE 5000

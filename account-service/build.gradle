@@ -20,8 +20,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-tracing-bridge-brave'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
@@ -41,6 +41,9 @@ dependencies {
 
     // Resilience4j (Hystrix 대체)
     implementation 'io.github.resilience4j:resilience4j-spring-boot3:2.0.2'
+
+    // junit
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 // 테스트 수행 시 JaCoCo 리포트 생성

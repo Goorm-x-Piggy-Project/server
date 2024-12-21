@@ -1,12 +1,12 @@
 package com.piggymetrics.account.domain;
 
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
