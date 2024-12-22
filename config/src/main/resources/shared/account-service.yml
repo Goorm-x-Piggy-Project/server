@@ -15,10 +15,12 @@ spring:
       uri: mongodb://mongo:27017/mongo
       auto-index-creation: true
 
-server:
-  servlet:
-    context-path: /api/v1/account
-  port: 6000
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://registry:8761/eureka
 
 feign:
   hystrix:
@@ -27,3 +29,6 @@ feign:
 logging:
   level:
     org.springframework.data.mongodb: DEBUG
+
+server:
+  port: 6000
