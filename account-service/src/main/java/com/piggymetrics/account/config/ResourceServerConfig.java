@@ -24,8 +24,7 @@ public class ResourceServerConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/v1/**", "/demo").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
         );
 //                .oauth2ResourceServer(oauth2 -> oauth2
 //                        .jwt(jwt -> jwt

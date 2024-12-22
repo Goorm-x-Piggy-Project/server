@@ -4,6 +4,14 @@ networks:
     driver: bridge
 
 services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672" # AMQP 기본 포트
+      - "15672:15672" # 관리 콘솔 포트
+    networks:
+      - msa-network
   mongo:
     image: mongo:latest
     container_name: mongo
@@ -36,14 +44,17 @@ services:
     depends_on:
       - config
       - mongo
+      - registry
     networks:
       - msa-network
 
   registry:
     build:
       context: ./registry
+    container_name: registry
     environment:
       CONFIG_SERVICE_PASSWORD: ${CONFIG_SERVICE_PASSWORD}
+      SPRING_APPLICATION_NAME: registry
     restart: always
     depends_on:
       config:
@@ -54,5 +65,26 @@ services:
       options:
         max-size: "10m"
         max-file: "10"
+    networks:
+      - msa-network
+
+  gateway:
+    build:
+      context: ./gateway
+    container_name: gateway
+    environment:
+      CONFIG_SERVICE_PASSWORD: ${CONFIG_SERVICE_PASSWORD}
+    restart: always
+    depends_on:
+      config:
+        condition: service_healthy
+    ports:
+      - 8000:8000
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+    networks:
+      - msa-network
 
 
