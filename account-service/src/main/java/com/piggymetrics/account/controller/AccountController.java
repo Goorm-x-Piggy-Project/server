@@ -1,6 +1,5 @@
 package com.piggymetrics.account.controller;
 
-import com.piggymetrics.account.domain.Account;
 import com.piggymetrics.account.dto.AccountReqDto;
 import com.piggymetrics.account.dto.UserReqDto;
 import com.piggymetrics.account.service.AccountService;

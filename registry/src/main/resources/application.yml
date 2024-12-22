@@ -8,6 +8,9 @@ spring:
       password: ${CONFIG_SERVICE_PASSWORD}
       username: user
 
+  config:
+    import: optional:configserver:http://config:8888
+
 eureka:
   instance:
     prefer-ip-address: true
