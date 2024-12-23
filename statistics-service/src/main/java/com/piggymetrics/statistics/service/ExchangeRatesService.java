@@ -5,6 +5,7 @@ import com.piggymetrics.statistics.domain.Currency;
 
 import com.piggymetrics.statistics.domain.ExchangeRatesContainer;
 import com.piggymetrics.statistics.domain.ExchangeRatesContainer.ExchangeRate;
+import com.piggymetrics.statistics.exception.CustomException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -31,6 +32,22 @@ public class ExchangeRatesService {
 
 	public ExchangeRatesService(ExchangeRatesClient client) {
 		this.client = client;
+	}
+
+	public Map<String, BigDecimal> getFilteredRates(List<String> currencies) {
+		try {
+			Map<Currency, BigDecimal> allRates = getCurrentRates();
+
+			return allRates.entrySet().stream()
+					.filter(entry -> currencies.contains(entry.getKey().name()))
+					.collect(Collectors.toMap(
+							entry -> entry.getKey().name(),
+							Map.Entry::getValue
+					));
+		} catch (Exception e) {
+			log.error("Error while fetching filtered rates", e);
+			throw new CustomException("Failed to fetch exchange rates: " + e.getMessage());
+		}
 	}
 
 	public Map<Currency, BigDecimal> getCurrentRates() {
