@@ -1,7 +1,6 @@
-FROM java:8-jre
-MAINTAINER Alexander Lukyanchikov <sqshq@sqshq.com>
+FROM openjdk:17-jdk-slim
 
-ADD ./target/account-service.jar /app/
-CMD ["java", "-Xmx200m", "-jar", "/app/account-service.jar"]
+ADD ./build/libs/account-service-1.0-SNAPSHOT.jar /app/
+CMD ["java", "-Xmx200m", "-jar", "/app/account-service-1.0-SNAPSHOT.jar"]
 
 EXPOSE 6000

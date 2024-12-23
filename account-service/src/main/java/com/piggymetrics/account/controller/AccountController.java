@@ -1,6 +1,5 @@
 package com.piggymetrics.account.controller;
 
-import com.piggymetrics.account.domain.Account;
 import com.piggymetrics.account.dto.AccountReqDto;
 import com.piggymetrics.account.dto.UserReqDto;
 import com.piggymetrics.account.service.AccountService;
@@ -18,6 +17,11 @@ import java.security.Principal;
 public class AccountController {
 
 	private final AccountService accountService;
+
+	@GetMapping
+	public String hello() {
+		return "hello";
+	}
 
 	@PreAuthorize("#oauth2.hasScope('server') or #name.equals('demo')")
 	@GetMapping("/{name}")
