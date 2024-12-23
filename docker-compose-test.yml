@@ -4,6 +4,25 @@ networks:
     driver: bridge
 
 services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    ports:
+      - "9090:9090"
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      PROXY_ADDRESS_FORWARDING: true
+      KC_HTTP_PORT: 9090 # 컨테이너 내부 포트를 9090으로 변경
+      KC_HOSTNAME_STRICT_BACKCHANNEL: true
+      KC_HTTP_ENABLED: true
+      KC_HEALTH_ENABLED: true
+      KC_METRICS_ENABLED: true
+      KC_LOG_LEVEL: info
+
+    command: start-dev
+    networks:
+      - msa-network
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
