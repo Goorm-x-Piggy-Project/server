@@ -22,6 +22,23 @@ spring:
             - Path=/api/v1/account/**
           filters:
             - StripPrefix=0
+    security:
+      oauth2:
+        resourceserver:
+          jwt:
+            jwk-set-uri: ${JWK_SET_URI:http://localhost:9090/realms/piggymetrics/protocol/openid-connect/certs}
+        client:
+          provider:
+            keycloak:
+              issuer-uri: http://localhost:9090/realms/piggymetrics
+          registration:
+            spring-with-test-scope:
+              provider: keycloak
+              client-id: gateway
+              client-secret: ${GATEWAY_CLIENT_SECRET}
+              authorization-grant-type: authorization_code
+#              redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+              scope: openid, profile, roles
 
 eureka:
   instance:
