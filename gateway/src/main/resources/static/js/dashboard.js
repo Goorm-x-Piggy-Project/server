@@ -71,7 +71,7 @@ function getConverted(column) {
 	var firstitem, seconditem;
 	for (var key in column) {
 		switch (column[key].currency) {
-			case "KOR": column[key].converted = (column[key].amount * global.kor).toFixed(3);
+			case "KRW": column[key].converted = (column[key].amount * global.krw).toFixed(3);
 				break;
 			case "USD": column[key].converted = (column[key].amount * global.usd).toFixed(3);
 				break;
@@ -88,7 +88,7 @@ function getConverted(column) {
 				break;
 		}
 		switch (user.checkedCurr) {
-			case "KOR": column[key].converted = (column[key].converted / global.kor).toFixed(3);
+			case "KRW": column[key].converted = (column[key].converted / global.krw).toFixed(3);
 				break;
 			case "USD": column[key].converted = (column[key].converted / global.usd).toFixed(3);
 				break;
@@ -117,13 +117,13 @@ function initStatisticPage() {
 
 	changeCurrency = function () {
 		switch (user.checkedCurr) {
-			case "KOR":
-				if (user.lastCurr == "KOR") { break; }
-				else if (user.lastCurr == "USD") { savings.freeMoney = (savings.freeMoney * global.usd / global.kor).toFixed(3); }
+			case "KRW":
+				if (user.lastCurr == "KRW") { break; }
+				else if (user.lastCurr == "USD") { savings.freeMoney = (savings.freeMoney * global.usd / global.krw).toFixed(3); }
 				break;
 			case "USD":
 				if (user.lastCurr == "USD") { break; }
-				else if (user.lastCurr == "KOR") { savings.freeMoney = (savings.freeMoney * global.kor / global.usd).toFixed(3); }
+				else if (user.lastCurr == "KRW") { savings.freeMoney = (savings.freeMoney * global.krw / global.usd).toFixed(3); }
 				break;
 		}
 		user.lastCurr = user.checkedCurr;
@@ -411,9 +411,9 @@ function initStatisticPage() {
 	}
 
 	// Change currency stuff
-	$("#korcurr, #usdcurr").removeClass("currchecked");
+	$("#krwcurr, #usdcurr").removeClass("currchecked");
 	switch (user.checkedCurr) {
-		case "KOR": $(".curr, .savings-circle-currency").html(" KOR ").data("curr", " \u20ac"); $("#korcurr").addClass("currchecked");
+		case "KRW": $(".curr, .savings-circle-currency").html(" KRW ").data("curr", " \u20ac"); $("#krwcurr").addClass("currchecked");
 			break;
 		case "USD": $(".curr, .savings-circle-currency").html(" USD ").data("curr", " $"); $("#usdcurr").addClass("currchecked");
 			break;
@@ -543,8 +543,8 @@ function simpleanimatecircle(before, after, duration) {
 
 // Currency buttons
 $(".currunchecked").click(function() {
-	if (this.id == "korcurr") {
-		user.checkedCurr = "KOR";
+	if (this.id == "krwcurr") {
+		user.checkedCurr = "KRW";
 	}
 	else if (this.id == "usdcurr") {
 		user.checkedCurr = "USD";

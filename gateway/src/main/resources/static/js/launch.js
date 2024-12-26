@@ -2,7 +2,7 @@ var global = {
     mobileClient: false,
     savePermit: true,
     usd: 0,
-    kor: 0
+    krw: 0
 };
 
 /**
@@ -80,9 +80,9 @@ $(window).load(function(){
         global.mobileClient = true;
 	}
 
-    $.getJSON("/statistics/rates", function( data ) {
-        global.kor = 1 / data.rates.KOR;
-        global.usd = 1 / data.rates.USD;
+    $.getJSON("/statistics-service/statistics/rates/default", function( data ) {
+        global.krw = 1 / data.KRW;
+        global.usd = 1 / data.USD;
     });
 
 	var account = getCurrentAccount();
