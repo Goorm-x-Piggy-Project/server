@@ -15,7 +15,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class UserService {
-	private final BCryptPasswordEncoder passwordEncoder;
+	private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 	private final UserRepository userRepository;
 
 	public UserCreateResponseDto create(UserCreateRequestDto requestDto) {

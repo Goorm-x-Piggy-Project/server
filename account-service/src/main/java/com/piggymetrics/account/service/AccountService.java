@@ -36,7 +36,9 @@ public class AccountService {
 	public void create(UserReqDto userReqDto) {
 
 		validateName(userReqDto.getUsername());
-		authClient.createUser(userReqDto);
+		log.info("Feign 요청 시작");
+		authClient.createUser(userReqDto); // account 만들면서 auth service에도 user 생성
+		log.info("Feign 요청 완료");
 
 		Saving saving = new Saving(0L, Currency.getDefault(), 0L, false,false);
 		Account account = new Account(userReqDto, saving);

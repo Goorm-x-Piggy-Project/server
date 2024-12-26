@@ -4,57 +4,6 @@ networks:
     driver: bridge
 
 services:
-  keycloak:
-    image: quay.io/keycloak/keycloak:latest
-    container_name: keycloak
-    ports:
-      - "9090:9090"
-    environment:
-      KC_BOOTSTRAP_ADMIN_USERNAME: admin
-      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
-      PROXY_ADDRESS_FORWARDING: true
-      KC_HTTP_PORT: 9090 # 컨테이너 내부 포트를 9090으로 변경
-      KC_HOSTNAME_STRICT_BACKCHANNEL: true
-      KC_HTTP_ENABLED: true
-      KC_HEALTH_ENABLED: true
-      KC_METRICS_ENABLED: true
-      KC_LOG_LEVEL: info
-      KC_DB: mysql
-      KC_DB_URL: jdbc:mysql://mysql:3306/keycloak
-      KC_DB_USERNAME: keycloak
-      KC_DB_PASSWORD: password
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:9090/health/ready" ]
-      interval: 15s
-      timeout: 2s
-      retries: 15
-
-    depends_on:
-      - mysql
-    command: start-dev
-    networks:
-      - msa-network
-
-  mysql:
-    image: mysql:8.0
-    container_name: mysql-keycloak
-    ports:
-      - "3366:3306"
-    environment:
-      MYSQL_DATABASE: keycloak
-      MYSQL_USER: keycloak
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: root_password
-    volumes:
-      - mysql-data:/var/lib/mysql
-    networks:
-      - msa-network
-    healthcheck:
-      test: "mysqladmin ping -u root -p$${MYSQL_ROOT_PASSWORD}" # Healthcheck 설정
-      interval: 10s
-      timeout: 5s
-      retries: 3
-
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -135,6 +84,23 @@ services:
       options:
         max-size: "10m"
         max-file: "10"
+    networks:
+      - msa-network
+
+  auth-service:
+    build:
+      context: ./auth-service
+    container_name: auth-service
+    ports:
+      - 5000:5000
+    environment:
+      CONFIG_SERVICE_PASSWORD: ${CONFIG_SERVICE_PASSWORD}
+      SPRING_APPLICATION_NAME: auth-service
+#      MONGODB_URI: ${MONGODB_URI}
+    depends_on:
+      - config
+#      - mongo
+      - registry
     networks:
       - msa-network
 

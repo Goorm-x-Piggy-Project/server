@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient(name = "auth-service")
 public interface AuthServiceClient {
 
-	@RequestMapping(method = RequestMethod.POST, value = "/uaa/users", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(method = RequestMethod.POST, value = "/uaa/api/v1/users", consumes = MediaType.APPLICATION_JSON_VALUE)
 	void createUser(UserReqDto userReqDto);
 
 }

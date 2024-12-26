@@ -7,24 +7,20 @@ import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-public class KeycloakRoleConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
-
+public class AuthServerScopeConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
     @Override
     public Collection<GrantedAuthority> convert(Jwt source) {
-        Map<String, Object> realmAccess = (Map<String, Object>) source.getClaims().get("realm_access");
-
-        if(realmAccess == null || realmAccess.isEmpty()) {
+        ArrayList<String> roles = (ArrayList<String>) source.getClaims().get("scope");
+        if (roles == null || roles.isEmpty()) {
             return new ArrayList<>();
         }
-        Collection<GrantedAuthority> returnValue = ((List<String>) realmAccess.get("roles"))
-                .stream().map(roleName -> "ROLE_" + roleName)
+
+        // Spring Security가 권한을 처리할 수 있도록 사용자 역할을 권한으로 변환할 때 ROLE_ 접두사 추가
+        Collection<GrantedAuthority> returnValue = roles.stream().map(roleName -> "ROLE_" + roleName)
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
         return returnValue;
-
     }
 }

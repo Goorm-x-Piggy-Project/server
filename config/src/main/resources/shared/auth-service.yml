@@ -7,6 +7,13 @@ spring:
       database: piggymetrics
       port: 27017
 
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://registry:8761/eureka
+
 server:
   servlet:
     context-path: /uaa

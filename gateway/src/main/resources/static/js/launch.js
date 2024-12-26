@@ -14,7 +14,7 @@ function requestOauthToken(username, password) {
 	var success = false;
 
 	$.ajax({
-		url: 'uaa/oauth/token',
+		url: 'uaa/oauth2/token',
 		datatype: 'json',
 		type: 'post',
 		headers: {'Authorization': 'Basic YnJvd3Nlcjo='},
@@ -56,7 +56,7 @@ function getCurrentAccount() {
 
 	if (token) {
 		$.ajax({
-			url: 'accounts/current',
+			url: 'api/v1/account/current',
 			datatype: 'json',
 			type: 'get',
 			headers: {'Authorization': 'Bearer ' + token},
