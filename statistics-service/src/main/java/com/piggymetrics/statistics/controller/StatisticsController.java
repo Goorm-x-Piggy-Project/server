@@ -17,6 +17,11 @@ public class StatisticsController {
 	@Autowired
 	private StatisticsService statisticsService;
 
+	@GetMapping("/test")
+	public String testStatistics() {
+		return "statistics-controller";
+	}
+
 	@RequestMapping(value = "/current", method = RequestMethod.GET)
 	public List<DataPoint> getCurrentAccountStatistics(Principal principal) {
 		return statisticsService.findByAccountName(principal.getName());

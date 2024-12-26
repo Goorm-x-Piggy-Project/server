@@ -24,10 +24,15 @@ public class ExchangeRatesController {
         this.exchangeRatesService = exchangeRatesService;
     }
 
+    @GetMapping("/test")
+    public String testStatistics() {
+        return "exchangeRates-controller";
+    }
+
     // 주요 환율 반환 (기본)
-    @GetMapping
+    @GetMapping("/default")
     public Map<String, BigDecimal> getDefaultRates() {
-        return exchangeRatesService.getFilteredRates(List.of("USD", "KOR"));
+        return exchangeRatesService.getFilteredRates(List.of("USD", "KRW"));
     }
 
     // 특정 환율 요청
