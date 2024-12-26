@@ -1,4 +1,6 @@
 spring:
+  main:
+    web-application-type: reactive
   application:
     name: gateway
   cloud:
@@ -12,3 +14,6 @@ spring:
       fail-fast: true
       username: user
       password: ${CONFIG_SERVICE_PASSWORD}
+
+  config:
+    import: optional:configserver:http://config:8888
