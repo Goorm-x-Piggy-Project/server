@@ -12,7 +12,7 @@ spring:
           account-service:
             provider: auth-service
             client-id: account-service
-            client-secret: ${ACCOUNT_SERVICE_PASSWORD}
+            client-secret: password # 일단 이걸로 해보자
             authorization-grant-type: client_credentials
             scope: server
             token-uri: http://auth-service:5000/uaa/oauth2/token
@@ -37,6 +37,7 @@ feign:
 logging:
   level:
     org.springframework.data.mongodb: DEBUG
+    org.springframework.security: DEBUG
 
 server:
   port: 6000

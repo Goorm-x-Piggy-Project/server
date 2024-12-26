@@ -5,6 +5,7 @@ import com.piggymetrics.account.dto.UserReqDto;
 import com.piggymetrics.account.service.AccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.security.Principal;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/account")
+@Slf4j
 public class AccountController {
 
 	private final AccountService accountService;
@@ -42,6 +44,7 @@ public class AccountController {
 
 	@PostMapping
 	public ResponseEntity<String> createNewAccount(@Valid @RequestBody UserReqDto userReqDto) {
+		log.info("AccountController createNewAccount 호출");
 		accountService.create(userReqDto);
 		return ResponseEntity.ok("account Created!");
 	}

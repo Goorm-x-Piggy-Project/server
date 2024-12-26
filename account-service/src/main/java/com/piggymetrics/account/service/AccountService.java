@@ -7,12 +7,15 @@ import com.piggymetrics.account.domain.Currency;
 import com.piggymetrics.account.domain.Saving;
 import com.piggymetrics.account.dto.AccountReqDto;
 import com.piggymetrics.account.dto.UserReqDto;
+import com.piggymetrics.account.exception.AccountAlreadyExistsException;
 import com.piggymetrics.account.exception.AccountNotFoundException;
 import com.piggymetrics.account.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,15 +30,14 @@ public class AccountService {
 
 	@Transactional(readOnly = true)
 	public String findByName(String accountName) {
-		Account account =  validateName(accountName);
-
+		Account account =  checkIfAccountNotExists(accountName);
 
 		return account.getName();
 	}
 
 	public void create(UserReqDto userReqDto) {
 
-		validateName(userReqDto.getUsername());
+		checkIfAccountExists(userReqDto.getUsername());
 		log.info("Feign 요청 시작");
 		authClient.createUser(userReqDto); // account 만들면서 auth service에도 user 생성
 		log.info("Feign 요청 완료");
@@ -49,7 +51,7 @@ public class AccountService {
 
 	public void saveChanges(String name, AccountReqDto update) {
 
-		Account account = validateName(name);
+		Account account = checkIfAccountNotExists(name);
 
 		account.updateAccount(update);
 		repository.save(account);
@@ -59,8 +61,14 @@ public class AccountService {
 		statisticsClient.updateStatistics(name, account);
 	}
 
-	private Account validateName(String name) {
-		return repository.findByName(name)
-				.orElseThrow(() -> new AccountNotFoundException("Not found: " + name));
+	private void checkIfAccountExists(String name) {
+		Optional<Account> existing = repository.findByName(name);
+		if(existing.isPresent()) {
+			throw new AccountAlreadyExistsException("account already exists: " + name);
+		}
+	}
+
+	private Account checkIfAccountNotExists(String name) {
+		return repository.findByName(name).orElseThrow(() -> new AccountNotFoundException("Account not found: " + name));
 	}
 }

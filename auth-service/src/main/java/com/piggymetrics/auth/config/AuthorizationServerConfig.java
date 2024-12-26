@@ -6,6 +6,7 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -110,9 +111,11 @@ public class AuthorizationServerConfig {
                         .build())
                 .build();
 
+//        System.out.println("clientSecret 값 = " + env.getProperty("ACCOUNT_SERVICE_PASSWORD"));
         RegisteredClient accountServiceClient = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId("account-service")
-                .clientSecret(env.getProperty("ACCOUNT_SERVICE_PASSWORD"))
+//                .clientSecret("{noop}" + env.getProperty("ACCOUNT_SERVICE_PASSWORD")) // 왜 이걸로 하면 안되지? env 파일을 못 읽어오나?
+                .clientSecret("{noop}password")
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .scopes(scopes -> scopes.add("server"))
