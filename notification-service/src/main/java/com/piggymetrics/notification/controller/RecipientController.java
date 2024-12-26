@@ -2,18 +2,19 @@
 
 /*
 작성자 : 이지은
-최종 수정 일시 : 2024-12-19, 목, 10:30
-수정 내용 : @Autowired 제거, 생성자 주입 사용, @GetMapping, @PutMapping 변경
-의존성 업데이트(javax -> jakarta), 주석 추가
+최종 수정 일시 : 2024-12-20, 금, 08:45
+수정 내용 : 생성자 삭제
 */
-
 
 package com.piggymetrics.notification.controller;
 
 import com.piggymetrics.notification.domain.Recipient;
 import com.piggymetrics.notification.service.RecipientService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import lombok.RequiredArgsConstructor;
 
 import java.security.Principal;
 
@@ -24,19 +25,11 @@ import java.security.Principal;
  * - 알림 설정 저장
  */
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/recipients")
 public class RecipientController {
 
 	private final RecipientService recipientService;
-
-	/**
-	 * RecipientController 생성자.
-	 *
-	 * @param recipientService RecipientService 인스턴스
-	 */
-	public RecipientController(RecipientService recipientService) {
-		this.recipientService = recipientService;
-	}
 
 	/**
 	 * 현재 사용자의 알림 설정 조회.
@@ -45,8 +38,9 @@ public class RecipientController {
 	 * @return 사용자의 알림 설정
 	 */
 	@GetMapping("/current")
-	public Object getCurrentNotificationsSettings(Principal principal) {
-		return recipientService.findByAccountName(principal.getName());
+	public ResponseEntity<Recipient> getCurrentNotificationsSettings(Principal principal) {
+		Recipient recipient = recipientService.findByAccountName(principal.getName());
+		return ResponseEntity.ok(recipient);
 	}
 
 	/**
@@ -57,8 +51,9 @@ public class RecipientController {
 	 * @return 저장된 알림 설정
 	 */
 	@PutMapping("/current")
-	public Object saveCurrentNotificationsSettings(Principal principal, @Valid @RequestBody Recipient recipient) {
-		return recipientService.save(principal.getName(), recipient);
+	public ResponseEntity<String> saveCurrentNotificationsSettings(Principal principal, @Valid @RequestBody Recipient recipient) {
+		Recipient savedRecipient = recipientService.save(principal.getName(), recipient);
+		return ResponseEntity.status(HttpStatus.CREATED).body("알림 설정이 저장되었습니다.");
 	}
 }
 

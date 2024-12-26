@@ -1,11 +1,5 @@
 //알림의 유형을 나타냄. (BACKUP, REMIND..)
 
-/*
-작성자 : 이지은
-최종 수정 일시 : 2024-12-19, 목, 10:43
-수정 내용 : 주석 처리
-*/
-
 package com.piggymetrics.notification.domain;
 
 /**
