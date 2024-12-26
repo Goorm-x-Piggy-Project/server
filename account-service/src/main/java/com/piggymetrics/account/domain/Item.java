@@ -1,18 +1,26 @@
 package com.piggymetrics.account.domain;
 
-import org.hibernate.validator.constraints.Length;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
 
-import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
-
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Item {
 
+	@Id
+	private ObjectId id;
+
 	@NotNull
-	@Length(min = 1, max = 20)
+	@Size(min = 1, max = 20)
 	private String title;
 
 	@NotNull
-	private BigDecimal amount;
+	private Long amount;
 
 	@NotNull
 	private Currency currency;
@@ -23,43 +31,5 @@ public class Item {
 	@NotNull
 	private String icon;
 
-	public String getTitle() {
-		return title;
-	}
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public BigDecimal getAmount() {
-		return amount;
-	}
-
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
-	}
-
-	public Currency getCurrency() {
-		return currency;
-	}
-
-	public void setCurrency(Currency currency) {
-		this.currency = currency;
-	}
-
-	public TimePeriod getPeriod() {
-		return period;
-	}
-
-	public void setPeriod(TimePeriod period) {
-		this.period = period;
-	}
-
-	public String getIcon() {
-		return icon;
-	}
-
-	public void setIcon(String icon) {
-		this.icon = icon;
-	}
 }

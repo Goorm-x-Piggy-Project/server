@@ -1,0 +1,90 @@
+version: '3.8'
+networks:
+  msa-network:
+    driver: bridge
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672" # AMQP 기본 포트
+      - "15672:15672" # 관리 콘솔 포트
+    networks:
+      - msa-network
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - msa-network
+
+  config:
+    build:
+      context: ./config
+    container_name: config-service
+    ports:
+      - "8888:8888"
+    environment:
+      CONFIG_SERVICE_PASSWORD: ${CONFIG_SERVICE_PASSWORD}
+    networks:
+      - msa-network
+
+  account-service:
+    build:
+      context: ./account-service
+    container_name: account-service
+    ports:
+      - 6000:6000
+    environment:
+      CONFIG_SERVICE_PASSWORD: ${CONFIG_SERVICE_PASSWORD}
+      SPRING_APPLICATION_NAME: account-service
+      MONGODB_URI: ${MONGODB_URI}
+    depends_on:
+      - config
+      - mongo
+      - registry
+    networks:
+      - msa-network
+
+  registry:
+    build:
+      context: ./registry
+    container_name: registry
+    environment:
+      CONFIG_SERVICE_PASSWORD: ${CONFIG_SERVICE_PASSWORD}
+      SPRING_APPLICATION_NAME: registry
+    restart: always
+    depends_on:
+      config:
+        condition: service_healthy
+    ports:
+      - 8761:8761
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+    networks:
+      - msa-network
+
+  gateway:
+    build:
+      context: ./gateway
+    container_name: gateway
+    environment:
+      CONFIG_SERVICE_PASSWORD: ${CONFIG_SERVICE_PASSWORD}
+    restart: always
+    depends_on:
+      config:
+        condition: service_healthy
+    ports:
+      - 8000:8000
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+    networks:
+      - msa-network
+
+

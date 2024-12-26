@@ -1,39 +1,48 @@
 package com.piggymetrics.account.controller;
 
-import com.piggymetrics.account.domain.Account;
-import com.piggymetrics.account.domain.User;
+import com.piggymetrics.account.dto.AccountReqDto;
+import com.piggymetrics.account.dto.UserReqDto;
 import com.piggymetrics.account.service.AccountService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.security.Principal;
 
+@RequiredArgsConstructor
 @RestController
+@RequestMapping("/api/v1/account")
 public class AccountController {
 
-	@Autowired
-	private AccountService accountService;
+	private final AccountService accountService;
+
+	@GetMapping
+	public String hello() {
+		return "hello";
+	}
 
 	@PreAuthorize("#oauth2.hasScope('server') or #name.equals('demo')")
-	@RequestMapping(path = "/{name}", method = RequestMethod.GET)
-	public Account getAccountByName(@PathVariable String name) {
-		return accountService.findByName(name);
+	@GetMapping("/{name}")
+	public ResponseEntity<String> getAccountByName(@PathVariable String name) {
+
+		return ResponseEntity.ok(accountService.findByName(name));
 	}
 
-	@RequestMapping(path = "/current", method = RequestMethod.GET)
-	public Account getCurrentAccount(Principal principal) {
-		return accountService.findByName(principal.getName());
+	@GetMapping("/current")
+	public ResponseEntity<String> getCurrentAccount(Principal principal) {
+		return ResponseEntity.ok(accountService.findByName(principal.getName()));
 	}
 
-	@RequestMapping(path = "/current", method = RequestMethod.PUT)
-	public void saveCurrentAccount(Principal principal, @Valid @RequestBody Account account) {
-		accountService.saveChanges(principal.getName(), account);
+	@PutMapping("/current")
+	public void saveCurrentAccount(Principal principal, @Valid @RequestBody AccountReqDto accountReqDto) {
+		accountService.saveChanges(principal.getName(), accountReqDto);
 	}
 
-	@RequestMapping(path = "/", method = RequestMethod.POST)
-	public Account createNewAccount(@Valid @RequestBody User user) {
-		return accountService.create(user);
+	@PostMapping
+	public ResponseEntity<String> createNewAccount(@Valid @RequestBody UserReqDto userReqDto) {
+		accountService.create(userReqDto);
+		return ResponseEntity.ok("account Created!");
 	}
 }
