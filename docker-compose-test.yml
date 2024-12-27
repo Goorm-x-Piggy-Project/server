@@ -21,6 +21,12 @@ services:
       - "27017:27017"
     networks:
       - msa-network
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
 
   config:
     build:
