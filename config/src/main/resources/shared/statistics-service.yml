@@ -17,8 +17,6 @@ spring:
       port: 27017
 
 server:
-  servlet:
-    context-path: /statistics
   port: 7000
 
 rates:
