@@ -13,6 +13,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -27,6 +28,7 @@ import java.util.Map;
  * - scheduledNotifications: 알림 유형과 설정의 매핑
  */
 @Getter
+@Setter
 @Builder(toBuilder = true) // 기존 객체를 복사하면서 특정 필드만 변경 가능
 @Document(collection = "recipients")
 public class Recipient {
