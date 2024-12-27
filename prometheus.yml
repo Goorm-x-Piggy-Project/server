@@ -1,0 +1,9 @@
+global:
+  scrape_interval: 15s # 메트릭 수집 주기 (기본: 15초)
+
+scrape_configs:
+  - job_name: 'account-service' # 수집 대상을 구분하는 잡 이름
+    metrics_path: '/services/account/actuator/prometheus' # account-service의 Prometheus 메트릭 엔드포인트
+    static_configs:
+      - targets:
+          - 'docker.for.mac.localhost:8000' # account-service가 실행 중인 주소와 포트

@@ -22,6 +22,12 @@ spring:
             - Path=/api/v1/account/**
           filters:
             - StripPrefix=0
+        - id: actuator-endpoints
+          uri: lb://account-service
+          predicates:
+            - Path=/services/account/actuator/**
+          filters:
+            - StripPrefix=2    
 
 eureka:
   instance:
