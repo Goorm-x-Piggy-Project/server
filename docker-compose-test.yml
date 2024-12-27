@@ -4,6 +4,7 @@ networks:
     driver: bridge
 
 services:
+
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -12,6 +13,7 @@ services:
       - "15672:15672" # 관리 콘솔 포트
     networks:
       - msa-network
+
   mongo:
     image: mongo:latest
     container_name: mongo
@@ -45,6 +47,37 @@ services:
       - config
       - mongo
       - registry
+    networks:
+      - msa-network
+
+  statistics-service:
+    build:
+      context: ./statistics-service
+    container_name: statistics-service
+    ports:
+      - 7000:7000
+    environment:
+      CONFIG_SERVICE_PASSWORD: ${CONFIG_SERVICE_PASSWORD}
+      SPRING_APPLICATION_NAME: statistics-service
+      #MONGODB_URI: ${MONGODB_URI}
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD}
+      STATISTICS_SERVICE_PASSWORD: ${STATISTICS_SERVICE_PASSWORD}
+    depends_on:
+      - config
+      - statistics-mongodb
+      - registry
+    networks:
+      - msa-network
+
+  statistics-mongodb:
+    environment:
+      MONGODB_PASSWORD: $MONGODB_PASSWORD
+    image: sqshq/piggymetrics-mongodb
+    restart: always
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
     networks:
       - msa-network
 
