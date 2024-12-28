@@ -41,13 +41,23 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
     implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
 
-
     // 테스트 의존성
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:1.50.3'
     testImplementation 'com.jayway.jsonpath:json-path:2.2.0'
+    testCompileOnly 'org.projectlombok:lombok'
+
     // junit
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // Querydsl for MongoDB
+//    implementation 'com.querydsl:querydsl-mongodb'
+//    annotationProcessor 'com.querydsl:querydsl-apt'
+
+    // Reactor Addons for WebClient
+    implementation 'io.projectreactor.addons:reactor-extra:3.5.0'
+
+    implementation 'org.springframework.data:spring-data-mongodb-core'
 }
 
 test {
