@@ -4,7 +4,6 @@ import com.piggymetrics.statistics.domain.Account;
 import com.piggymetrics.statistics.domain.timeseries.DataPoint;
 import com.piggymetrics.statistics.service.StatisticsService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +19,8 @@ public class StatisticsController {
 	private StatisticsService statisticsService;
 
 	@GetMapping("/test")
-	public String testController() {
-		return "test";
+	public String testStatisticsController() {
+		return "statistics-controller";
 	}
 
 	@RequestMapping(value = "/current", method = RequestMethod.GET)
