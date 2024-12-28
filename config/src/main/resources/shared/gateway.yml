@@ -22,6 +22,14 @@ spring:
             - Path=/api/v1/account/**
           filters:
             - StripPrefix=0
+            
+        - id: statistics-service
+          uri: lb://statistics-service
+          predicates:
+            - Path=/api/v1/statistics/**
+          filters:
+            - StripPrefix=0
+
         - id: actuator-endpoints
           uri: lb://account-service
           predicates:
