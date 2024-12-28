@@ -1,10 +1,10 @@
-//알림의 유형을 나타냄. (BACKUP, REMIND..)
+// 알림 유형 정의 (BACKUP, REMIND)
 
 package com.piggymetrics.notification.domain;
 
 /**
- * NotificationType 열거형은 다양한 알림 유형을 정의.
- * 각 유형은 이메일의 제목, 본문 텍스트, 첨부 파일 정보 포함.
+ * NotificationType 열거형은 다양한 알림 유형을 정의하며,
+ * 각 유형에 대한 이메일 제목, 본문, 첨부 파일 정보를 제공합니다.
  */
 public enum NotificationType {
 
@@ -67,5 +67,16 @@ public enum NotificationType {
 	public String getAttachment() {
 		return attachment;
 	}
-}
 
+//	/**
+//	 * 특정 알림 유형에 대한 메타데이터를 JSON 형식으로 반환합니다.
+//	 *
+//	 * @return 알림 유형 메타데이터
+//	 */
+//	public String toJson() {
+//		return String.format(
+//				"{\"type\":\"%s\",\"subject\":\"%s\",\"text\":\"%s\",\"attachment\":\"%s\"}",
+//				this.name(), subject, text, attachment != null ? attachment : "null"
+//		);
+//	}
+}

@@ -1,11 +1,6 @@
-/*
-작성자 : 이지은
-최종 수정 일시 : 2024-12-19, 목, 14:54
-수정 내용 : 주석 추가
-*/
-
 package com.piggymetrics.notification.service;
 
+import com.piggymetrics.notification.domain.NotificationSettings;
 import com.piggymetrics.notification.domain.NotificationType;
 import com.piggymetrics.notification.domain.Recipient;
 
@@ -33,13 +28,14 @@ public interface RecipientService {
 	List<Recipient> findReadyToNotify(NotificationType type);
 
 	/**
-	 * 수신자 정보를 생성하거나 업데이트.
+	 * 특정 알림 유형의 설정을 업데이트한 수신자 정보를 저장.
 	 *
 	 * @param accountName 계정 이름
-	 * @param recipient 업데이트할 Recipient 객체
+	 * @param type 알림 유형
+	 * @param settings 업데이트할 NotificationSettings 객체
 	 * @return 업데이트된 Recipient 객체
 	 */
-	Recipient save(String accountName, Recipient recipient);
+	Recipient updateNotificationSettings(String accountName, NotificationType type, NotificationSettings settings);
 
 	/**
 	 * 특정 알림 유형의 마지막 발송 시간을 현재 시간으로 기록.

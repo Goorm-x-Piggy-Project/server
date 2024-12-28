@@ -1,9 +1,4 @@
-/*
-작성자 : 이지은
-최종 수정 일시 : 2024-12-19, 목, 14:43
-수정 내용 : 주석 추가
-*/
-
+//이메일 발송 기능 정의 : 알림 유형과 수신자 정보를 기반으로 이메일을 발송.
 package com.piggymetrics.notification.service;
 
 import com.piggymetrics.notification.domain.NotificationType;
@@ -12,12 +7,6 @@ import com.piggymetrics.notification.domain.Recipient;
 import jakarta.mail.MessagingException;
 import java.io.IOException;
 
-/**
- * EmailService 인터페이스는 이메일 발송 기능을 정의.
- *
- * 주요 역할:
- * - 알림 유형과 수신자 정보를 기반으로 이메일을 발송.
- */
 public interface EmailService {
 
 	/**
