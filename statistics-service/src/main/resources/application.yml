@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: statistics-service
+  config:
+    import: optional:configserver:http://user:${CONFIG_SERVICE_PASSWORD}@config:8888
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://your-auth-server.com #추후 인증 서버 uri 추가 필요
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://registry:8761/eureka/
