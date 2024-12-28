@@ -80,7 +80,7 @@ $(window).load(function(){
         global.mobileClient = true;
 	}
 
-    $.getJSON("api/v1//statistics/rates/default", function( data ) {
+    $.getJSON("api/v1/statistics/rates/default", function( data ) {
         global.krw = 1 / data.KRW;
         global.usd = 1 / data.USD;
     });
