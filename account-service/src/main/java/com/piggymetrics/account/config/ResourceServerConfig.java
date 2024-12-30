@@ -2,9 +2,11 @@ package com.piggymetrics.account.config;
 
 
 import feign.RequestInterceptor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -26,16 +28,15 @@ public class ResourceServerConfig {
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new AuthServerScopeConverter());
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.POST, "/api/v1/account").permitAll() // 회원가입은 허용
                 .requestMatchers("/", "/demo").permitAll() // "/" 및 "/demo" 경로는 인증 불필요
                 .anyRequest().authenticated()             // 나머지는 인증 필요
         );
         http.csrf(AbstractHttpConfigurer::disable); // 필요에 따라 CSRF 비활성화
-        http.oauth2ResourceServer(rsc -> rsc.jwt(jwtConfigurer ->
-                jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter)));
+        http.oauth2ResourceServer(oauth2 -> oauth2
+                .jwt(withDefaults())
+        );
         http.oauth2Client(withDefaults());
 
         return http.build();

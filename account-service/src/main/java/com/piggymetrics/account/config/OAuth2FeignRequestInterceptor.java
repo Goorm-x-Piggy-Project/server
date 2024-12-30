@@ -30,7 +30,7 @@ public class OAuth2FeignRequestInterceptor implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate template) {
-        log.info("feignClient 요청 전 인터셉터 실행");
+        log.info("feignClient 요청 전 인터셉터 호출");
         OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId(clientRegistrationId)
                 .principal("anonymous") // client credentials 방식이므로 인증된 사용자가 아니기 때문에 anonymous로 설정
                 .build();
@@ -46,6 +46,6 @@ public class OAuth2FeignRequestInterceptor implements RequestInterceptor {
         log.info("발급된 access token: {}", accessToken);
         template.header("Authorization", "Bearer " + accessToken);
 
-        log.info("Bearer 토큰 확인: {}", template.header("Authorization"));
+        log.info("Bearer 토큰 확인: {}", template.headers().get("Authorization"));
     }
 }

@@ -7,6 +7,7 @@ import com.piggymetrics.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,11 +16,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class UserService {
-	private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+	private final PasswordEncoder passwordEncoder;
 	private final UserRepository userRepository;
 
 	public UserCreateResponseDto create(UserCreateRequestDto requestDto) {
-
+		log.info("auth-service create 메소드 진입(서비스 계층)");
 		Optional<User> existing = userRepository.findById(requestDto.getUsername());
 		existing.ifPresent(it-> {throw new IllegalArgumentException("user already exists: " + it.getUsername());});
 
