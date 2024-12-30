@@ -26,6 +26,12 @@ services:
     container_name: config-service
     ports:
       - "8888:8888"
+    healthcheck: # 이게 있어야 depends_on service_healthy가 가능하지 않나?
+      test: [ "CMD", "curl", "-f", "http://localhost:8888/actuator/health" ]
+      interval: 10s      # 10초 간격으로 헬스 체크 실행
+      timeout: 5s        # 명령 실행 타임아웃
+      retries: 3         # 3회 실패 시 unhealthy로 간주
+      start_period: 5s  # 초기화 시간 5초 대기
     environment:
       CONFIG_SERVICE_PASSWORD: ${CONFIG_SERVICE_PASSWORD}
     networks:
@@ -39,12 +45,18 @@ services:
       - 6000:6000
     environment:
       CONFIG_SERVICE_PASSWORD: ${CONFIG_SERVICE_PASSWORD}
+      ACCOUNT_SERVICE_PASSWORD: ${ACCOUNT_SERVICE_PASSWORD}
       SPRING_APPLICATION_NAME: account-service
       MONGODB_URI: ${MONGODB_URI}
     depends_on:
-      - config
-      - mongo
-      - registry
+      config:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+      registry:
+        condition: service_started
+      auth-service:
+        condition: service_started # oauth2 client 역할이므로 auth-service가 먼저 실행되어야 함(jwks uri를 가져와야 함)
     networks:
       - msa-network
 
@@ -52,6 +64,12 @@ services:
     build:
       context: ./registry
     container_name: registry
+#    healthcheck: # 아 이거 왜 안되지
+#      test: [ "CMD", "curl", "-f", "http://localhost:8761/actuator/health" ]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 3
+#      start_period: 10s
     environment:
       CONFIG_SERVICE_PASSWORD: ${CONFIG_SERVICE_PASSWORD}
       SPRING_APPLICATION_NAME: registry
@@ -93,16 +111,40 @@ services:
     container_name: auth-service
     ports:
       - 5000:5000
+#    healthcheck: # 왜 안되지
+#      test: [ "CMD", "curl", "-f", "http://localhost:5000/uaa/.well-known/openid-configuration" ]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 3
+#      start_period: 30s  # 초기화 시간 10초 대기
     environment:
       CONFIG_SERVICE_PASSWORD: ${CONFIG_SERVICE_PASSWORD}
+      NOTIFICATION_SERVICE_PASSWORD: ${NOTIFICATION_SERVICE_PASSWORD}
+      STATISTICS_SERVICE_PASSWORD: ${STATISTICS_SERVICE_PASSWORD}
+      ACCOUNT_SERVICE_PASSWORD: ${ACCOUNT_SERVICE_PASSWORD}
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD}
       SPRING_APPLICATION_NAME: auth-service
-#      MONGODB_URI: ${MONGODB_URI}
     depends_on:
-      - config
-#      - mongo
-      - registry
+      config:
+        condition: service_healthy
+      auth-mongodb:
+        condition: service_started
+      registry:
+        condition: service_started
     networks:
       - msa-network
 
-volumes:
-  mysql-data:
+  auth-mongodb:
+    image: mongo:latest
+    container_name: auth-mongodb
+    environment:
+      MONGO_INITDB_DATABASE: authdb
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD}
+#    volumes:
+#      - auth-mongodb:/data/db
+    ports:
+      - 25000:27017
+    networks:
+      - msa-network
+#volumes:
+#  auth-mongodb:

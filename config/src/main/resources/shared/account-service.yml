@@ -9,10 +9,10 @@ spring:
     oauth2:
       client:
         registration:
-          account-service:
+          account-service: # registrationId
             provider: auth-service
             client-id: account-service
-            client-secret: password # 일단 이걸로 해보자
+            client-secret: ${ACCOUNT_SERVICE_PASSWORD}
             authorization-grant-type: client_credentials
             scope: server
             token-uri: http://auth-service:5000/uaa/oauth2/token
@@ -22,6 +22,7 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://auth-service:5000/uaa
+          jwk-set-uri: http://auth-service:5000/uaa/oauth2/jwks
 
 eureka:
   client:
@@ -38,6 +39,7 @@ logging:
   level:
     org.springframework.data.mongodb: DEBUG
     org.springframework.security: DEBUG
+    org.springframework.cloud.openfeign: DEBUG
 
 server:
   port: 6000

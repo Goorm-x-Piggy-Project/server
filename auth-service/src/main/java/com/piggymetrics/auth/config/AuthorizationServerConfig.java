@@ -5,25 +5,28 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import com.piggymetrics.auth.service.security.MongoUserDetailsService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.server.authorization.InMemoryOAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
@@ -32,7 +35,8 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.oauth2.server.authorization.token.*;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
@@ -52,18 +56,45 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class AuthorizationServerConfig {
 
     private final Environment env;
+    private final MongoUserDetailsService userDetailsService;
+
+    // TODO: JdbcOAuth2AuthorizationService 사용
+    @Bean // Access token의 저장 및 관리를 담당
+    public OAuth2AuthorizationService authorizationService() {
+        return new InMemoryOAuth2AuthorizationService();
+    }
+
+    @Bean
+    public OAuth2TokenGenerator<OAuth2Token> tokenGenerator() {
+        JwtEncoder jwtEncoder = new NimbusJwtEncoder(jwkSource());
+        JwtGenerator jwtGenerator = new JwtGenerator(jwtEncoder);
+        OAuth2AccessTokenGenerator accessTokenGenerator = new OAuth2AccessTokenGenerator();
+        OAuth2RefreshTokenGenerator refreshTokenGenerator = new OAuth2RefreshTokenGenerator();
+        return new DelegatingOAuth2TokenGenerator(
+                jwtGenerator, accessTokenGenerator, refreshTokenGenerator);
+    }
 
     @Bean(name = "customAuthorizationServerSecurityFilterChain")
     @Order(1)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-            http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-                    .oidc(withDefaults()); // OpenID Connect 1.0 사용
-        http.exceptionHandling((exceptions) -> exceptions.defaultAuthenticationEntryPointFor( // 인가 실패에 대한 처리를 정의
-                new LoginUrlAuthenticationEntryPoint("/login"),
-                new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
-        ));
-        http.oauth2ResourceServer((resourceServer) -> resourceServer.jwt(withDefaults()));
+        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+                .oidc(withDefaults()) // OpenID Connect 1.0 사용
+                .tokenEndpoint(oAuth2TokenEndpointConfigurer -> {
+                    oAuth2TokenEndpointConfigurer
+                            .accessTokenRequestConverter(new PasswordAuthenticationConverter()) // HttpServletRequest로부터 인증 정보를 추출하여 Authentication 객체로 변환하는 역할
+                            .authenticationProvider(new PasswordAuthenticationProvider(authorizationService(), tokenGenerator(), userDetailsService, passwordEncoder())); // 인증 수행하는 AuthenticationProvider를 등록
+                });
+//                .tokenIntrospectionEndpoint(oAuth2TokenIntrospectionEndpointConfigurer -> {
+//                    oAuth2TokenIntrospectionEndpointConfigurer
+//                            .introspectionRequestConverter(new CustomIntrospectionAuthenticationConverter()) // HttpServletRequest로부터 인증 정보를 추출하여 Authentication 객체로 변환하는 역할
+//                            .authenticationProvider(new CustomIntrospectionAuthenticationProvider(authorizationService(), registeredClientRepository())); // 인증 수행하는 AuthenticationProvider를 등록
+//                });
+
+
+        http.oauth2ResourceServer(oauth2 -> oauth2
+                .jwt(Customizer.withDefaults())
+        );
 
         return http.build();
     }
@@ -72,38 +103,23 @@ public class AuthorizationServerConfig {
     @Order(2)
     public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorize -> authorize
+            .cors(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests(authorize -> authorize
 //                        .requestMatchers("/oauth2/token", "/oauth2/authorize", "/.well-known/openid-configuration").permitAll()
 //                        .anyRequest().authenticated() // 모든 요청 인증 필요
-                                .anyRequest().permitAll()
-                );
+                            .anyRequest().permitAll()
+            );
         return http.build();
     }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails userDetails = User.withDefaultPasswordEncoder()
-                .username("user")
-                .password("password")
-                .roles("ui")
-                .build();
-
-        return new InMemoryUserDetailsManager(userDetails);
-    }
-
-//    @Bean
-//    public BCryptPasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
 
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
         RegisteredClient browserClient = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId("browser")
                 .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
-                .authorizationGrantType(AuthorizationGrantType.PASSWORD)
+                .authorizationGrantType(new AuthorizationGrantType("password")) // 서드파티가 아닌 같은 서비스이므로 password 사용
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .scopes(scopes -> scopes.add("ui")) // 클라이언트가 요청할 수 있는 권한의 범위9
+                .scopes(scopes -> scopes.add("ui")) // 클라이언트가 요청할 수 있는 권한의 범위
                 .tokenSettings(TokenSettings.builder()
                         .accessTokenTimeToLive(Duration.ofMinutes(30))
                         .refreshTokenTimeToLive(Duration.ofHours(1))
@@ -111,11 +127,9 @@ public class AuthorizationServerConfig {
                         .build())
                 .build();
 
-//        System.out.println("clientSecret 값 = " + env.getProperty("ACCOUNT_SERVICE_PASSWORD"));
         RegisteredClient accountServiceClient = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId("account-service")
-//                .clientSecret("{noop}" + env.getProperty("ACCOUNT_SERVICE_PASSWORD")) // 왜 이걸로 하면 안되지? env 파일을 못 읽어오나?
-                .clientSecret("{noop}password")
+                .clientSecret(passwordEncoder().encode(env.getProperty("ACCOUNT_SERVICE_PASSWORD")))
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .scopes(scopes -> scopes.add("server"))
@@ -125,9 +139,10 @@ public class AuthorizationServerConfig {
                         .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED) // JWT 사용
                         .build())
                 .build();
+
         RegisteredClient statisticsServiceClient = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId("statistics-service")
-                .clientSecret(env.getProperty("STATISTICS_SERVICE_PASSWORD"))
+                .clientSecret(passwordEncoder().encode(env.getProperty("STATISTICS_SERVICE_PASSWORD")))
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .scopes(scopes -> scopes.add("server"))
@@ -140,7 +155,7 @@ public class AuthorizationServerConfig {
 
         RegisteredClient notificationServiceClient = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId("notification-service")
-                .clientSecret(env.getProperty("NOTIFICATION_SERVICE_PASSWORD"))
+                .clientSecret(passwordEncoder().encode(env.getProperty("NOTIFICATION_SERVICE_PASSWORD")))
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .scopes(scopes -> scopes.add("server"))
@@ -151,9 +166,13 @@ public class AuthorizationServerConfig {
                         .build())
                 .build();
 
-        // Add other clients similarly
-
+        // TODO: JDBCRegisteredClientRepository 로 변경
         return new InMemoryRegisteredClientRepository(browserClient, accountServiceClient, statisticsServiceClient, notificationServiceClient);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     /**
