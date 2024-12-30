@@ -22,6 +22,7 @@ public class ResourceServerConfig {
      *
      * @return OAuth2 클라이언트 자격 증명 객체
      */
+    //@ConfigurationProperties 사용 시, security.oauth2.client이 application.yml에 있어야 함.(수정하기)
     @Bean
     @ConfigurationProperties(prefix = "security.oauth2.client")
     public ClientCredentialsResourceDetails clientCredentialsResourceDetails() {
@@ -34,7 +35,7 @@ public class ResourceServerConfig {
      *
      * @return WebClient.Builder 인스턴스
      */
-    @Bean(name = "AccesWebClientBuilder")
+    @Bean(name = "AccessWebClientBuilder")
     public WebClient.Builder webClientBuilder(ClientCredentialsResourceDetails clientDetails) {
         return WebClient.builder().filter(oauth2Filter(clientDetails));
     }

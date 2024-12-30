@@ -33,16 +33,16 @@ public class NotificationServiceApplication {
 		SpringApplication.run(NotificationServiceApplication.class, args);
 	}
 
-	/**
-	 * WebClient.Builder 빈 등록.
-	 * - 외부 API 호출 시 비동기 방식과 성능 최적화를 고려.
-	 *
-	 * @return WebClient.Builder 인스턴스
-	 */
-	@Bean
-	public WebClient.Builder webClientBuilder() {
-		return WebClient.builder();
-	}
+//	/**
+//	 * WebClient.Builder 빈 등록.
+//	 * - 외부 API 호출 시 비동기 방식과 성능 최적화를 고려.
+//	 *
+//	 * @return WebClient.Builder 인스턴스
+//	 */
+//	@Bean
+//	public WebClient.Builder webClientBuilder() {
+//		return WebClient.builder();
+//	}
 
 	/**
 	 * MongoDB 커스텀 변환기를 등록합니다.
