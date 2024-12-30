@@ -3,6 +3,9 @@ spring:
     name: account-service
   config:
     import: optional:configserver:http://user:${CONFIG_SERVICE_PASSWORD}@config:8888
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/mongo
 
   mail:
     host: smtp.gmail.com
@@ -17,6 +20,9 @@ spring:
           starttls:
             enable: true
 
+email:
+  from: ${EMAIL_FROM:example@example.com}
+
 backup:
   cron: "0 0 12 * * ?" # 매일 12시에 실행
 
@@ -29,3 +35,8 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://registry:8761/eureka/
+
+logging:
+  level:
+    root: INFO
+    com.example: DEBUG
