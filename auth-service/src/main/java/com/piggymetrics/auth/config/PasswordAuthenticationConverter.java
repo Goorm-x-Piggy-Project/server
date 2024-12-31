@@ -3,11 +3,14 @@ package com.piggymetrics.auth.config;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
+import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
 import org.springframework.security.web.authentication.AuthenticationConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -28,7 +31,14 @@ public class PasswordAuthenticationConverter implements AuthenticationConverter 
         }
         MultiValueMap<String, String> parameters = getParameters(request);
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // 그냥 여기서 authentication 객체를 만들어서 반환하자
+        ArrayList<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add((GrantedAuthority) () -> parameters.getFirst(OAuth2ParameterNames.SCOPE));
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                parameters.getFirst(OAuth2ParameterNames.USERNAME),
+                parameters.getFirst(OAuth2ParameterNames.PASSWORD),
+                authorities);
+
         HashMap<String, Object> additionalParameters = new HashMap<>(); // scope, username, password 등 추가 파라미터
         parameters.forEach((key, value) -> {
             if (!key.equals(OAuth2ParameterNames.GRANT_TYPE) &&

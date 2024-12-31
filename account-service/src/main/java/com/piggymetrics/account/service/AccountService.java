@@ -6,6 +6,7 @@ import com.piggymetrics.account.domain.Account;
 import com.piggymetrics.account.domain.Currency;
 import com.piggymetrics.account.domain.Saving;
 import com.piggymetrics.account.dto.AccountReqDto;
+import com.piggymetrics.account.dto.AccountResDto;
 import com.piggymetrics.account.dto.UserReqDto;
 import com.piggymetrics.account.exception.AccountAlreadyExistsException;
 import com.piggymetrics.account.exception.AccountNotFoundException;
@@ -29,10 +30,10 @@ public class AccountService {
 	private final AccountRepository repository;
 
 	@Transactional(readOnly = true)
-	public String findByName(String accountName) {
+	public AccountResDto findByName(String accountName) {
 		Account account =  checkIfAccountNotExists(accountName);
-
-		return account.getName();
+		AccountResDto accountResDto = AccountResDto.fromEntity(account);
+		return accountResDto;
 	}
 
 	public void create(UserReqDto userReqDto) {

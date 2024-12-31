@@ -1,6 +1,7 @@
 package com.piggymetrics.account.controller;
 
 import com.piggymetrics.account.dto.AccountReqDto;
+import com.piggymetrics.account.dto.AccountResDto;
 import com.piggymetrics.account.dto.UserReqDto;
 import com.piggymetrics.account.service.AccountService;
 import jakarta.validation.Valid;
@@ -25,15 +26,15 @@ public class AccountController {
 		return "hello";
 	}
 
-	@PreAuthorize("#oauth2.hasAuthority('server') or #name.equals('demo')")
+	@PreAuthorize("hasAuthority('SCOPE_server') or #name.equals('demo')")
 	@GetMapping("/{name}")
-	public ResponseEntity<String> getAccountByName(@PathVariable String name) {
+	public ResponseEntity<AccountResDto> getAccountByName(@PathVariable String name) {
 
 		return ResponseEntity.ok(accountService.findByName(name));
 	}
 
 	@GetMapping("/current")
-	public ResponseEntity<String> getCurrentAccount(Principal principal) {
+	public ResponseEntity<AccountResDto> getCurrentAccount(Principal principal) {
 		return ResponseEntity.ok(accountService.findByName(principal.getName()));
 	}
 

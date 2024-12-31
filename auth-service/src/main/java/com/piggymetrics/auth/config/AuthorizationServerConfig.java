@@ -116,7 +116,9 @@ public class AuthorizationServerConfig {
     public RegisteredClientRepository registeredClientRepository() {
         RegisteredClient browserClient = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId("browser")
-                .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
+                .clientSecret(passwordEncoder().encode(env.getProperty("BROWSER_CLIENT_PASSWORD")))
+                // 원래는 public client라 ClientAuthenticationMethod.CLIENT_SECRET_BASIC이 아니라 NONE으로 하고 PKCE 방식으로 해야함
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(new AuthorizationGrantType("password")) // 서드파티가 아닌 같은 서비스이므로 password 사용
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .scopes(scopes -> scopes.add("ui")) // 클라이언트가 요청할 수 있는 권한의 범위

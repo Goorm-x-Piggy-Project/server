@@ -21,7 +21,7 @@ server:
 logging:
   level:
     org.springframework.data.mongodb: DEBUG
-    org.springframework.security: DEBUG
+    org.springframework.security: TRACE
     org.springframework.cloud.openfeign: DEBUG
 
 management:

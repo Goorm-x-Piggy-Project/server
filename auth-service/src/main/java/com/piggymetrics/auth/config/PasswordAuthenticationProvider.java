@@ -5,8 +5,10 @@ import com.piggymetrics.auth.service.security.MongoUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.*;
@@ -41,8 +43,13 @@ public class PasswordAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         log.info("PasswordAuthenticationProvider.authenticate 호출");
         PasswordGrantAuthenticationToken authenticationToken = (PasswordGrantAuthenticationToken) authentication;
-        OAuth2ClientAuthenticationToken clientPrincipal = getAuthenticatedClientElseThrowInvalidClient(authentication);
-        RegisteredClient registeredClient = clientPrincipal.getRegisteredClient();
+        UsernamePasswordAuthenticationToken clientPrincipal = getAuthenticatedClientElseThrowInvalidClient(authentication);
+        OAuth2ClientAuthenticationToken prevAuthentication = (OAuth2ClientAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        RegisteredClient registeredClient = prevAuthentication.getRegisteredClient();
+
+        if (registeredClient == null) {
+            throw new OAuth2AuthenticationException(OAuth2ErrorCodes.INVALID_CLIENT);
+        }
         if(!registeredClient.getAuthorizationGrantTypes().contains(authenticationToken.getGrantType())) { // 등록된 클라이언트가 지원하지 않는 인증 방식인 경우
             throw new OAuth2AuthenticationException(OAuth2ErrorCodes.UNSUPPORTED_GRANT_TYPE);
         }
@@ -140,11 +147,11 @@ public class PasswordAuthenticationProvider implements AuthenticationProvider {
         return PasswordGrantAuthenticationToken.class.isAssignableFrom(authentication);
     }
 
-    private OAuth2ClientAuthenticationToken getAuthenticatedClientElseThrowInvalidClient(Authentication authentication) {
-        OAuth2ClientAuthenticationToken clientPrinciple = null; // client 인증에 사용(ex. "browser" 클라이언트)
-        if (OAuth2ClientAuthenticationToken.class.isAssignableFrom(
+    private UsernamePasswordAuthenticationToken getAuthenticatedClientElseThrowInvalidClient(Authentication authentication) {
+        UsernamePasswordAuthenticationToken clientPrinciple = null; // client 인증에 사용(ex. "browser" 클라이언트)
+        if (UsernamePasswordAuthenticationToken.class.isAssignableFrom(
                 authentication.getPrincipal().getClass())) {
-            clientPrinciple = (OAuth2ClientAuthenticationToken) authentication.getPrincipal();
+            clientPrinciple = (UsernamePasswordAuthenticationToken) authentication.getPrincipal();
             if(clientPrinciple != null && clientPrinciple.isAuthenticated()) {
                 return clientPrinciple;
             }

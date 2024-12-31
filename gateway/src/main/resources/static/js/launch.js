@@ -17,7 +17,7 @@ function requestOauthToken(username, password) {
 		url: 'uaa/oauth2/token',
 		datatype: 'json',
 		type: 'post',
-		// headers: {'Authorization': 'Basic YnJvd3Nlcjo='}, // public client이므로 clientId, clientSecret이 필요없음
+		headers: {'Authorization': 'Basic YnJvd3Nlcjpicm93c2VyLXBhc3N3b3Jk'},
 		async: false,
 		data: {
 			scope: 'ui',
@@ -56,7 +56,7 @@ function getCurrentAccount() {
 
 	if (token) {
 		$.ajax({
-			url: 'accounts/current',
+			url: 'api/v1/account/current',
 			datatype: 'json',
 			type: 'get',
 			headers: {'Authorization': 'Bearer ' + token},
