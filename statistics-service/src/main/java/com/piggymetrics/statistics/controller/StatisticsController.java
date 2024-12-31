@@ -12,10 +12,16 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/v1/statistics")
 public class StatisticsController {
 
 	@Autowired
 	private StatisticsService statisticsService;
+
+	@GetMapping("/test")
+	public String testStatisticsController() {
+		return "statistics-controller";
+	}
 
 	@RequestMapping(value = "/current", method = RequestMethod.GET)
 	public List<DataPoint> getCurrentAccountStatistics(Principal principal) {

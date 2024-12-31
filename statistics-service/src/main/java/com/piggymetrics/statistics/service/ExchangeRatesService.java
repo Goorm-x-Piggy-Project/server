@@ -5,9 +5,11 @@ import com.piggymetrics.statistics.domain.Currency;
 
 import com.piggymetrics.statistics.domain.ExchangeRatesContainer;
 import com.piggymetrics.statistics.domain.ExchangeRatesContainer.ExchangeRate;
+import com.piggymetrics.statistics.exception.CustomException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,17 +35,47 @@ public class ExchangeRatesService {
 		this.client = client;
 	}
 
+	public Map<String, BigDecimal> getFilteredRates(List<String> currencies) {
+		try {
+			Map<Currency, BigDecimal> allRates = getCurrentRates();
+
+			return allRates.entrySet().stream()
+					.filter(entry -> currencies.contains(entry.getKey().name()))
+					.collect(Collectors.toMap(
+							entry -> entry.getKey().name(),
+							Map.Entry::getValue
+					));
+		} catch (Exception e) {
+			log.error("Error while fetching filtered rates", e);
+			throw new CustomException("Failed to fetch exchange rates: " + e.getMessage());
+		}
+	}
+
 	public Map<Currency, BigDecimal> getCurrentRates() {
 
 		if (exchangeRates == null || exchangeRates.isEmpty()) {
-			String today = LocalDate.now().toString().replace("-", ""); // yyyyMMdd 형식
+			String today = LocalDate.now().toString().replace("-", "");
 			exchangeRates = client.getRates(authKey, today, "AP01");
 			log.info("Exchange rates updated: {}", exchangeRates);
 		}
 
+		// Currency enum의 모든 값을 가져옵니다.
+		EnumSet<Currency> availableCurrencies = EnumSet.allOf(Currency.class);
+
 		return exchangeRates.stream()
+				.filter(rate -> {
+					String unit = rate.getCurrencyUnit().replace("(100)", "");
+					try {
+						// Currency enum에 존재하는지 확인합니다.
+						Currency.valueOf(unit);
+						return availableCurrencies.contains(Currency.valueOf(unit)); // Currency enum에 있는 것만 필터링
+					} catch (IllegalArgumentException e) {
+						log.warn("Unsupported currency unit: {}", unit); // 로그를 남기고 필터링
+						return false;
+					}
+				})
 				.collect(Collectors.toMap(
-						rate -> Currency.valueOf(rate.getCurrencyUnit().replace("(100)", "")), // 통화 단위 변환
+						rate -> Currency.valueOf(rate.getCurrencyUnit().replace("(100)", "")),
 						ExchangeRate::getDealBaseRate
 				));
 	}

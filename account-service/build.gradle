@@ -44,6 +44,11 @@ dependencies {
     // Resilience4j (Hystrix 대체)
     implementation 'io.github.resilience4j:resilience4j-spring-boot3:2.0.2'
 
+    // Metrics 정보 공개 및 수집
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-tracing'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
     // junit
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

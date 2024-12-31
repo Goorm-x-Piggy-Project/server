@@ -28,13 +28,28 @@ spring:
               - Path=/uaa/**
           filters:
               - StripPrefix=0
+
+        - id: statistics-service
+          uri: lb://statistics-service
+          predicates:
+            - Path=/api/v1/statistics/**
+          filters:
+            - StripPrefix=0
+
+        - id: actuator-endpoints
+          uri: lb://account-service
+          predicates:
+            - Path=/services/account/actuator/**
+          filters:
+            - StripPrefix=2
+
 eureka:
   instance:
     prefer-ip-address: true
   client:
     register-with-eureka: true
     fetch-registry: true
-    service-url:
+    serviceUrl:
       defaultZone: http://registry:8761/eureka
 management:
   endpoints:
