@@ -1,7 +1,7 @@
 package com.piggymetrics.auth.controller;
 
-import com.piggymetrics.auth.domain.dto.request.UserCreateRequestDto;
-import com.piggymetrics.auth.domain.dto.response.UserCreateResponseDto;
+import com.piggymetrics.auth.domain.dto.request.UserCreateReqDto;
+import com.piggymetrics.auth.domain.dto.response.UserCreateResDto;
 import com.piggymetrics.auth.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +26,9 @@ public class UserController {
 
 	@PreAuthorize("hasAuthority('SCOPE_server')")
 	@PostMapping
-	public ResponseEntity<UserCreateResponseDto> createUser(@Valid @RequestBody UserCreateRequestDto requestDto) {
+	public ResponseEntity<UserCreateResDto> createUser(@Valid @RequestBody UserCreateReqDto requestDto) {
 		log.debug("auth-service createUser 컨트롤러 진입");
-		UserCreateResponseDto userCreateResponseDto = userService.create(requestDto);
-		return ResponseEntity.ok(userCreateResponseDto);
+		UserCreateResDto userCreateResDto = userService.create(requestDto);
+		return ResponseEntity.ok(userCreateResDto);
 	}
 }

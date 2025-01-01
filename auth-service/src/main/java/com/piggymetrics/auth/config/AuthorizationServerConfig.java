@@ -105,9 +105,7 @@ public class AuthorizationServerConfig {
         http.csrf(AbstractHttpConfigurer::disable)
             .cors(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authorize -> authorize
-//                        .requestMatchers("/oauth2/token", "/oauth2/authorize", "/.well-known/openid-configuration").permitAll()
-//                        .anyRequest().authenticated() // 모든 요청 인증 필요
-                            .anyRequest().permitAll()
+                            .anyRequest().permitAll() // 사실 이거 상관없을듯..?
             );
         return http.build();
     }
@@ -214,7 +212,7 @@ public class AuthorizationServerConfig {
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
         return AuthorizationServerSettings.builder()
-                .issuer("http://auth-service:5000/uaa") // Replace with your authorization server URL
+                .issuer("http://auth-service:5000") // Replace with your authorization server URL
                 .build();
     }
 

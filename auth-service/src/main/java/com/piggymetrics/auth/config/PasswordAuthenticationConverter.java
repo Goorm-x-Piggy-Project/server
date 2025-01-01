@@ -22,7 +22,7 @@ import java.util.*;
 public class PasswordAuthenticationConverter implements AuthenticationConverter {
     @Override
     public Authentication convert(HttpServletRequest request) {
-        log.info("PasswordAuthenticationConverter.convert 호출");
+        log.debug("PasswordAuthenticationConverter.convert 호출");
         String grantType = request.getParameter(OAuth2ParameterNames.GRANT_TYPE);
 
         if (!grantType.equals("password")
@@ -32,6 +32,7 @@ public class PasswordAuthenticationConverter implements AuthenticationConverter 
         MultiValueMap<String, String> parameters = getParameters(request);
 
         // 그냥 여기서 authentication 객체를 만들어서 반환하자
+        // TODO: 앞의 filter에서 Authentication 객체 만들어서 사용하도록 수정
         ArrayList<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add((GrantedAuthority) () -> parameters.getFirst(OAuth2ParameterNames.SCOPE));
         Authentication authentication = new UsernamePasswordAuthenticationToken(

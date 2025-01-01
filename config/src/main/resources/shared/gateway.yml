@@ -25,9 +25,9 @@ spring:
         - id: auth-service
           uri: lb://auth-service
           predicates:
-              - Path=/uaa/**
+            - Path=/oauth2/**,/api/v1/users/**
           filters:
-              - StripPrefix=0
+            - StripPrefix=0
 
         - id: statistics-service
           uri: lb://statistics-service

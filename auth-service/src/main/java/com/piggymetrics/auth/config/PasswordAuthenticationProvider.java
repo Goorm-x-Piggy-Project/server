@@ -41,7 +41,7 @@ public class PasswordAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        log.info("PasswordAuthenticationProvider.authenticate 호출");
+        log.debug("PasswordAuthenticationProvider.authenticate 호출");
         PasswordGrantAuthenticationToken authenticationToken = (PasswordGrantAuthenticationToken) authentication;
         UsernamePasswordAuthenticationToken clientPrincipal = getAuthenticatedClientElseThrowInvalidClient(authentication);
         OAuth2ClientAuthenticationToken prevAuthentication = (OAuth2ClientAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
@@ -156,7 +156,7 @@ public class PasswordAuthenticationProvider implements AuthenticationProvider {
                 return clientPrinciple;
             }
         }
-        throw new OAuth2AuthenticationException(OAuth2ErrorCodes.INVALID_CLIENT);
+        throw new OAuth2AuthenticationException("Invalid client, grant_type이 password 혹은 refresh_token인지 확인 필요");
     }
 
 }

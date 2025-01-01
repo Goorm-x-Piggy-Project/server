@@ -14,8 +14,6 @@ eureka:
       defaultZone: http://registry:8761/eureka
 
 server:
-  servlet:
-    context-path: /uaa
   port: 5000
 
 logging:

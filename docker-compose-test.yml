@@ -34,12 +34,6 @@ services:
     container_name: config-service
     ports:
       - "8888:8888"
-    healthcheck: # 이게 있어야 depends_on service_healthy가 가능하지 않나?
-      test: [ "CMD", "curl", "-f", "http://localhost:8888/actuator/health" ]
-      interval: 10s      # 10초 간격으로 헬스 체크 실행
-      timeout: 5s        # 명령 실행 타임아웃
-      retries: 3         # 3회 실패 시 unhealthy로 간주
-      start_period: 5s  # 초기화 시간 5초 대기
     environment:
       CONFIG_SERVICE_PASSWORD: ${CONFIG_SERVICE_PASSWORD}
     networks:
@@ -64,7 +58,9 @@ services:
       registry:
         condition: service_started
       auth-service:
-        condition: service_started # oauth2 client 역할이므로 auth-service가 먼저 실행되어야 함(jwks uri를 가져와야 함)
+        # oauth2 client 역할이므로 auth-service가 먼저 실행되어야 함(jwks uri를 가져와야 함), 그렇지 않으면 예외 발생하고 서버 실행 안됨
+        # service_healthy로 하고 싶은데 auth-service가 health check가 안되서 일단 service_started로 함
+        condition: service_started
     networks:
       - msa-network
 
@@ -89,7 +85,7 @@ services:
 
   statistics-mongodb:
     environment:
-      MONGODB_PASSWORD: $MONGODB_PASSWORD
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD}
     image: sqshq/piggymetrics-mongodb
     restart: always
     logging:
@@ -151,7 +147,7 @@ services:
     ports:
       - 5000:5000
 #    healthcheck: # 왜 안되지
-#      test: [ "CMD", "curl", "-f", "http://localhost:5000/uaa/.well-known/openid-configuration" ]
+#      test: [ "CMD", "curl", "-f", "http://localhost:5000/.well-known/openid-configuration" ]
 #      interval: 10s
 #      timeout: 5s
 #      retries: 3
