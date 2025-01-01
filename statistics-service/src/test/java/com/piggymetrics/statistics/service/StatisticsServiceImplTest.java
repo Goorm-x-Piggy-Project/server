@@ -14,7 +14,6 @@ import com.piggymetrics.statistics.domain.timeseries.ItemMetric;
 import com.piggymetrics.statistics.domain.timeseries.StatisticMetric;
 import com.piggymetrics.statistics.repository.DataPointRepository;
 
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -59,7 +58,7 @@ public class StatisticsServiceImplTest {
 
 	@Test
 	public void shouldFindDataPointListByAccountName() {
-		final List<DataPoint> list = ImmutableList.of(new DataPoint());
+		final List<DataPoint> list = ImmutableList.of(DataPoint.builder().build());
 		when(repository.findByIdAccount("test")).thenReturn(list);
 
 		List<DataPoint> result = statisticsService.findByAccountName("test");
@@ -87,30 +86,34 @@ public class StatisticsServiceImplTest {
 		 * Given
 		 */
 
-		Item salary = new Item();
-		salary.setTitle("Salary");
-		salary.setAmount(new BigDecimal(9100));
-		salary.setCurrency(Currency.USD);
-		salary.setPeriod(TimePeriod.MONTH);
+		Item salary = Item.builder()
+				.title("Salary")
+				.amount(new BigDecimal(9100))
+				.currency(Currency.USD)
+				.period(TimePeriod.MONTH)
+				.build();
 
-		Item grocery = new Item();
-		grocery.setTitle("Grocery");
-		grocery.setAmount(new BigDecimal(500));
-		grocery.setCurrency(Currency.KRW);
-		grocery.setPeriod(TimePeriod.DAY);
+		Item grocery = Item.builder()
+				.title("Grocery")
+				.amount(new BigDecimal(500))
+				.currency(Currency.KRW)
+				.period(TimePeriod.DAY)
+				.build();
 
-		Item vacation = new Item();
-		vacation.setTitle("Vacation");
-		vacation.setAmount(new BigDecimal(3400));
-		vacation.setCurrency(Currency.EUR);
-		vacation.setPeriod(TimePeriod.YEAR);
+		Item vacation = Item.builder()
+				.title("Vacation")
+				.amount(new BigDecimal(3400))
+				.currency(Currency.EUR)
+				.period(TimePeriod.YEAR)
+				.build();
 
-		Saving saving = new Saving();
-		saving.setAmount(new BigDecimal(1000));
-		saving.setCurrency(Currency.EUR);
-		saving.setInterest(new BigDecimal(3.2));
-		saving.setDeposit(true);
-		saving.setCapitalization(false);
+		Saving saving = Saving.builder()
+				.amount(new BigDecimal(1000))
+				.currency(Currency.EUR)
+				.interest(new BigDecimal("3.2"))
+				.deposit(true)
+				.capitalization(false)
+				.build();
 
 		Account account = new Account();
 		account.setIncomes(ImmutableList.of(salary));

@@ -67,12 +67,13 @@ public class StatisticsService {
 
 		Map<StatisticMetric, BigDecimal> statistics = createStatisticMetrics(incomes, expenses, account.getSaving());
 
-		DataPoint dataPoint = new DataPoint();
-		dataPoint.setId(pointId);
-		dataPoint.setIncomes(incomes);
-		dataPoint.setExpenses(expenses);
-		dataPoint.setStatistics(statistics);
-		dataPoint.setRates(ratesService.getCurrentRates());
+		DataPoint dataPoint = DataPoint.builder()
+				.id(pointId)
+				.incomes(incomes)
+				.expenses(expenses)
+				.statistics(statistics)
+				.rates(ratesService.getCurrentRates())
+				.build();
 
 		log.debug("new datapoint has been created: {}", pointId);
 
