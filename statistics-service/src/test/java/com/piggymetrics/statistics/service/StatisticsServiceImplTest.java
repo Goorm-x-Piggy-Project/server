@@ -42,18 +42,17 @@ import static org.mockito.MockitoAnnotations.initMocks;
 @ExtendWith(MockitoExtension.class)
 public class StatisticsServiceImplTest {
 
-	@InjectMocks
-	private StatisticsService statisticsService;
-
 	@Mock
 	private ExchangeRatesService ratesService;
 
 	@Mock
 	private DataPointRepository repository;
 
+	private StatisticsService statisticsService;
+
 	@BeforeEach
 	public void setup() {
-		initMocks(this);
+		statisticsService = new StatisticsService(repository, ratesService);
 	}
 
 	@Test
