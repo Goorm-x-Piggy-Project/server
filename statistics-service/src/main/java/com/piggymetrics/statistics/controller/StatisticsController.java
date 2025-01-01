@@ -18,7 +18,7 @@ public class StatisticsController {
 	@Autowired
 	private StatisticsService statisticsService;
 
-	@GetMapping("/test")
+	@GetMapping("/hello")
 	public String testStatisticsController() {
 		return "statistics-controller";
 	}
