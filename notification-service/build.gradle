@@ -27,7 +27,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     // Spring Security & OAuth2
-//    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 //    implementation 'org.springframework.security:spring-security-oauth2-core'
     // Spring Cloud OAuth2 리액티브 지원
@@ -43,6 +43,7 @@ dependencies {
 
     // 테스트 의존성
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:1.50.3'
     testImplementation 'com.jayway.jsonpath:json-path:2.2.0'
     testCompileOnly 'org.projectlombok:lombok'
@@ -57,7 +58,7 @@ dependencies {
     // Reactor Addons for WebClient
     implementation 'io.projectreactor.addons:reactor-extra:3.5.0'
 
-    implementation 'org.springframework.data:spring-data-mongodb-core'
+//    implementation 'org.springframework.data:spring-data-mongodb-core'
 }
 
 test {
