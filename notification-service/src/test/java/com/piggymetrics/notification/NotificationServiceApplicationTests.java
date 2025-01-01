@@ -1,16 +1,13 @@
 package com.piggymetrics.notification;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
-public class NotificationServiceApplicationTests {
+class NotificationServiceApplicationTests {
 
 	@Test
-	public void contextLoads() {
+	void contextLoads() {
+		// 컨텍스트 로드 검증 (예외 발생 시 테스트 실패)
 	}
-
 }
