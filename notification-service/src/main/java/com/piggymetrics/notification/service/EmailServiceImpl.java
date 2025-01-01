@@ -5,6 +5,7 @@ import com.piggymetrics.notification.domain.NotificationType;
 import com.piggymetrics.notification.domain.Recipient;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ import java.text.MessageFormat;
  * 이메일 전송 로직을 제공합니다.
  */
 @Service
+@Getter
 @RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
 
