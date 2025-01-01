@@ -20,15 +20,15 @@ import java.util.Set;
 public class DataPoint {
 
 	@Id
-	private DataPointId id;
+	private final DataPointId id;
 
-	private Set<ItemMetric> incomes;
+	private final Set<ItemMetric> incomes;
 
-	private Set<ItemMetric> expenses;
+	private final Set<ItemMetric> expenses;
 
-	private Map<StatisticMetric, BigDecimal> statistics;
+	private final Map<StatisticMetric, BigDecimal> statistics;
 
-	private Map<Currency, BigDecimal> rates;
+	private final Map<Currency, BigDecimal> rates;
 
 	@Builder
 	public DataPoint(DataPointId id, Set<ItemMetric> incomes, Set<ItemMetric> expenses,
