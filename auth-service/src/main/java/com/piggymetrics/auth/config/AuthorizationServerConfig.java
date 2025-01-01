@@ -55,8 +55,13 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @RequiredArgsConstructor
 public class AuthorizationServerConfig {
 
-    private final Environment env;
     private final MongoUserDetailsService userDetailsService;
+    private final JWKSource<SecurityContext> jwkSource;
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     // TODO: JdbcOAuth2AuthorizationService 사용
     @Bean // Access token의 저장 및 관리를 담당
@@ -66,7 +71,7 @@ public class AuthorizationServerConfig {
 
     @Bean
     public OAuth2TokenGenerator<OAuth2Token> tokenGenerator() {
-        JwtEncoder jwtEncoder = new NimbusJwtEncoder(jwkSource());
+        JwtEncoder jwtEncoder = new NimbusJwtEncoder(jwkSource);
         JwtGenerator jwtGenerator = new JwtGenerator(jwtEncoder);
         OAuth2AccessTokenGenerator accessTokenGenerator = new OAuth2AccessTokenGenerator();
         OAuth2RefreshTokenGenerator refreshTokenGenerator = new OAuth2RefreshTokenGenerator();
@@ -85,12 +90,6 @@ public class AuthorizationServerConfig {
                             .accessTokenRequestConverter(new PasswordAuthenticationConverter()) // HttpServletRequest로부터 인증 정보를 추출하여 Authentication 객체로 변환하는 역할
                             .authenticationProvider(new PasswordAuthenticationProvider(authorizationService(), tokenGenerator(), userDetailsService, passwordEncoder())); // 인증 수행하는 AuthenticationProvider를 등록
                 });
-//                .tokenIntrospectionEndpoint(oAuth2TokenIntrospectionEndpointConfigurer -> {
-//                    oAuth2TokenIntrospectionEndpointConfigurer
-//                            .introspectionRequestConverter(new CustomIntrospectionAuthenticationConverter()) // HttpServletRequest로부터 인증 정보를 추출하여 Authentication 객체로 변환하는 역할
-//                            .authenticationProvider(new CustomIntrospectionAuthenticationProvider(authorizationService(), registeredClientRepository())); // 인증 수행하는 AuthenticationProvider를 등록
-//                });
-
 
         http.oauth2ResourceServer(oauth2 -> oauth2
                 .jwt(Customizer.withDefaults())
@@ -99,115 +98,7 @@ public class AuthorizationServerConfig {
         return http.build();
     }
 
-    @Bean
-    @Order(2)
-    public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-            .cors(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(authorize -> authorize
-                            .anyRequest().permitAll() // 사실 이거 상관없을듯..?
-            );
-        return http.build();
-    }
 
-    @Bean
-    public RegisteredClientRepository registeredClientRepository() {
-        RegisteredClient browserClient = RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId("browser")
-                .clientSecret(passwordEncoder().encode(env.getProperty("BROWSER_CLIENT_PASSWORD")))
-                // 원래는 public client라 ClientAuthenticationMethod.CLIENT_SECRET_BASIC이 아니라 NONE으로 하고 PKCE 방식으로 해야함
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(new AuthorizationGrantType("password")) // 서드파티가 아닌 같은 서비스이므로 password 사용
-                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .scopes(scopes -> scopes.add("ui")) // 클라이언트가 요청할 수 있는 권한의 범위
-                .tokenSettings(TokenSettings.builder()
-                        .accessTokenTimeToLive(Duration.ofMinutes(30))
-                        .refreshTokenTimeToLive(Duration.ofHours(1))
-                        .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED) // JWT 사용
-                        .build())
-                .build();
-
-        RegisteredClient accountServiceClient = RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId("account-service")
-                .clientSecret(passwordEncoder().encode(env.getProperty("ACCOUNT_SERVICE_PASSWORD")))
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .scopes(scopes -> scopes.add("server"))
-                .tokenSettings(TokenSettings.builder()
-                        .accessTokenTimeToLive(Duration.ofMinutes(30))
-                        .refreshTokenTimeToLive(Duration.ofHours(1))
-                        .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED) // JWT 사용
-                        .build())
-                .build();
-
-        RegisteredClient statisticsServiceClient = RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId("statistics-service")
-                .clientSecret(passwordEncoder().encode(env.getProperty("STATISTICS_SERVICE_PASSWORD")))
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .scopes(scopes -> scopes.add("server"))
-                .tokenSettings(TokenSettings.builder()
-                        .accessTokenTimeToLive(Duration.ofMinutes(30))
-                        .refreshTokenTimeToLive(Duration.ofHours(1))
-                        .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED) // JWT 사용
-                        .build())
-                .build();
-
-        RegisteredClient notificationServiceClient = RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId("notification-service")
-                .clientSecret(passwordEncoder().encode(env.getProperty("NOTIFICATION_SERVICE_PASSWORD")))
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .scopes(scopes -> scopes.add("server"))
-                .tokenSettings(TokenSettings.builder()
-                        .accessTokenTimeToLive(Duration.ofMinutes(30))
-                        .refreshTokenTimeToLive(Duration.ofHours(1))
-                        .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED) // JWT 사용
-                        .build())
-                .build();
-
-        // TODO: JDBCRegisteredClientRepository 로 변경
-        return new InMemoryRegisteredClientRepository(browserClient, accountServiceClient, statisticsServiceClient, notificationServiceClient);
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    /**
-     * JWT의 서명을 위한 개인키와 공개키를 생성하고 JWKSet을 생성하여 반환
-     */
-
-    @Bean
-    public JWKSource<SecurityContext> jwkSource() {
-        KeyPair keyPair = generateRsaKey();
-        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
-        RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-        RSAKey rsaKey = new RSAKey.Builder(publicKey)
-                .privateKey(privateKey)
-                .keyID(UUID.randomUUID().toString())
-                .build();
-        JWKSet jwkSet = new JWKSet(rsaKey);
-        return new ImmutableJWKSet<>(jwkSet);
-    }
-
-    private static KeyPair generateRsaKey() {
-        KeyPair keyPair;
-        try {
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(2048);
-            keyPair = keyPairGenerator.generateKeyPair();
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-        return keyPair;
-    }
-
-    @Bean
-    public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
-        return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
-    }
 
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {

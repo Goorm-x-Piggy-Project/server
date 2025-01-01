@@ -99,7 +99,7 @@ services:
     build:
       context: ./registry
     container_name: registry
-#    healthcheck: # 아 이거 왜 안되지
+#    healthcheck:
 #      test: [ "CMD", "curl", "-f", "http://localhost:8761/actuator/health" ]
 #      interval: 10s
 #      timeout: 5s
@@ -146,7 +146,7 @@ services:
     container_name: auth-service
     ports:
       - 5000:5000
-#    healthcheck: # 왜 안되지
+#    healthcheck: # 왜 안될까..
 #      test: [ "CMD", "curl", "-f", "http://localhost:5000/.well-known/openid-configuration" ]
 #      interval: 10s
 #      timeout: 5s
