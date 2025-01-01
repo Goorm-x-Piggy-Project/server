@@ -1,11 +1,23 @@
+#security:
+#  oauth2:
+#    client:
+#      clientId: notification-service
+#      clientSecret: ${NOTIFICATION_SERVICE_PASSWORD}
+#      accessTokenUri: http://auth-service:5000/oauth2/token
+#      grant-type: client_credentials
+#      scope: server
 security:
   oauth2:
     client:
-      clientId: notification-service
-      clientSecret: ${NOTIFICATION_SERVICE_PASSWORD}
-      accessTokenUri: http://auth-service:5000/uaa/oauth/token
-      grant-type: client_credentials
-      scope: server
+      provider:
+        keycloak:
+          issuer-uri: http://localhost:9090/realms/piggymetrics
+      registration:
+        keycloak:
+          client-id: notification-service
+          client-secret: ${NOTIFICATION_SERVICE_PASSWORD}
+#          redirect-uri: http://localhost:****/login/oauth2/code/notification-service 이건 end user와 직접 통신하는 gateway에서만 필요
+
 
 server:
   servlet:

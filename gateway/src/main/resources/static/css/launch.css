@@ -215,6 +215,7 @@ only screen and (min-resolution: 144dpi) {
 	transition: all 400ms cubic-bezier(0.67, 0.07, 0.50, 0.88);
 }
 .flippedform{
+	height: 46px;
 	-webkit-transform-origin: 0 46px -46px;
 	-moz-transform-origin: 0 46px -46px;
 	-ms-transform-origin: 0 46px -46px;
@@ -257,6 +258,8 @@ only screen and (min-resolution: 144dpi) {
 }
 #side2 {
 	background-color: white;
+	width: 300px;
+	height: 46px;
 	-webkit-transform: translateZ(-23px) translateY(23px) rotateX(-90deg);
 	-moz-transform: translateZ(-23px) translateY(23px) rotateX(-90deg);
 	-ms-transform: translateZ(-23px) translateY(23px) rotateX(-90deg);
