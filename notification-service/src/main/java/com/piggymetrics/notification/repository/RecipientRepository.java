@@ -1,23 +1,25 @@
+// MongoDB 기반 Recipient 리포지토리
+
 package com.piggymetrics.notification.repository;
 
 import com.piggymetrics.notification.domain.Recipient;
-import org.springframework.data.mongodb.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import java.util.Optional;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
+/**
+ * RecipientRepository는 MongoDB recipients 컬렉션과 상호작용하는 리포지토리.
+ * - 계정 이름 검색
+ * - 알림 준비 상태의 수신자 검색
+ */
 @Repository
-public interface RecipientRepository extends CrudRepository<Recipient, String> {
+public interface RecipientRepository extends MongoRepository<Recipient, String>, RecipientRepositoryCustom {
 
-	Recipient findByAccountName(String name);
-
-	@Query("{ $and: [ {'scheduledNotifications.BACKUP.active': true }, { $where: 'this.scheduledNotifications.BACKUP.lastNotified < " +
-			"new Date(new Date().setDate(new Date().getDate() - this.scheduledNotifications.BACKUP.frequency ))' }] }")
-	List<Recipient> findReadyForBackup();
-
-	@Query("{ $and: [ {'scheduledNotifications.REMIND.active': true }, { $where: 'this.scheduledNotifications.REMIND.lastNotified < " +
-			"new Date(new Date().setDate(new Date().getDate() - this.scheduledNotifications.REMIND.frequency ))' }] }")
-	List<Recipient> findReadyForRemind();
-
+	/**
+	 * 계정 이름으로 수신자 정보를 검색합니다.
+	 *
+	 * @param name 계정 이름
+	 * @return Optional로 감싼 Recipient 객체
+	 */
+	Optional<Recipient> findByAccountName(String name);
 }
