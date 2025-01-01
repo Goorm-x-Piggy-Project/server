@@ -15,27 +15,30 @@ import java.util.List;
 @RequestMapping("/api/v1/statistics")
 public class StatisticsController {
 
-	@Autowired
-	private StatisticsService statisticsService;
+	private final StatisticsService statisticsService;
 
-	@GetMapping("/test")
+	public StatisticsController(StatisticsService statisticsService) {
+		this.statisticsService = statisticsService;
+	}
+
+	@GetMapping("/hello")
 	public String testStatisticsController() {
 		return "statistics-controller";
 	}
 
-	@RequestMapping(value = "/current", method = RequestMethod.GET)
+	@GetMapping("/current")
 	public List<DataPoint> getCurrentAccountStatistics(Principal principal) {
 		return statisticsService.findByAccountName(principal.getName());
 	}
 
 	@PreAuthorize("#oauth2.hasScope('server') or #accountName.equals('demo')")
-	@RequestMapping(value = "/{accountName}", method = RequestMethod.GET)
+	@GetMapping("/{accountName}")
 	public List<DataPoint> getStatisticsByAccountName(@PathVariable String accountName) {
 		return statisticsService.findByAccountName(accountName);
 	}
 
 	@PreAuthorize("#oauth2.hasScope('server')")
-	@RequestMapping(value = "/{accountName}", method = RequestMethod.PUT)
+	@PutMapping("/{accountName}")
 	public void saveAccountStatistics(@PathVariable String accountName, @Valid @RequestBody Account account) {
 		statisticsService.save(accountName, account);
 	}

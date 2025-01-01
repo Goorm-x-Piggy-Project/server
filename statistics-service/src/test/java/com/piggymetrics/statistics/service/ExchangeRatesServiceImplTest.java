@@ -20,6 +20,7 @@ import java.util.Map;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import static com.piggymetrics.statistics.exception.ErrorMessages.NULL_AMOUNT_ERROR;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -112,7 +113,7 @@ public class ExchangeRatesServiceImplTest {
 		// When & Then: null 값으로 호출 시 예외 발생을 검증
 		assertThatThrownBy(() -> ratesService.convert(fromCurrency, toCurrency, null))
 				.isInstanceOf(IllegalArgumentException.class)
-				.hasMessageContaining("The amount must not be null");
+				.hasMessageContaining(NULL_AMOUNT_ERROR);
 	}
 	private List<ExchangeRate> createRates() {
 		return List.of(

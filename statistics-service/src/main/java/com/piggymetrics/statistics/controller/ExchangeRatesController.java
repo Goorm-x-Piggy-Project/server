@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/rates")
+@RequestMapping("/api/v1/statistics/rates")
 public class ExchangeRatesController {
 
     private final ExchangeRatesService exchangeRatesService;
@@ -24,7 +24,7 @@ public class ExchangeRatesController {
         this.exchangeRatesService = exchangeRatesService;
     }
 
-    @GetMapping("/test")
+    @GetMapping("/hello")
     public String testStatistics() {
         return "exchangeRates-controller";
     }

@@ -61,10 +61,13 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'de.bwaldvogel:mongo-java-server:1.40.0'
     testImplementation 'com.jayway.jsonpath:json-path:2.2.0'
+
+    testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:4.18.1'
 }
 
 test {
     useJUnitPlatform()
+    systemProperty "de.flapdoodle.mongodb.embedded.version", "5.0.5"
 }
 
 //jacoco {

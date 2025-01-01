@@ -19,3 +19,7 @@ spring:
 rates:
   url: https://www.koreaexim.go.kr/site/program/financial/exchangeJSON
   authkey: nY5T9XKTkiWkFBxsbrm4ZzUQZzPv1R7Z
+
+eureka:
+  client:
+    enabled: false
