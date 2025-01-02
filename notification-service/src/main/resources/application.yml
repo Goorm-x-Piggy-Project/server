@@ -5,7 +5,7 @@
 #    import: optional:configserver:http://user:${CONFIG_SERVICE_PASSWORD}@config:8888
 spring:
   application:
-    name: notificaiton-service
+    name: notification-service
   cloud:
     config:
       uri: http://config:8888
@@ -32,8 +32,6 @@ spring:
         jwt:
           issuer-uri: http://auth-service:5000
           jwk-set-uri: http://auth-service:5000/oauth2/jwks
-
-
   mail:
     host: smtp.gmail.com
     port: 587
@@ -48,7 +46,7 @@ spring:
             enable: true
 
 email:
-  from: example@example.com
+  from: your-email@example.com
 
 backup:
   cron: "0 0 12 * * ?" # 매일 12시에 실행

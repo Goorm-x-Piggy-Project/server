@@ -34,3 +34,6 @@
   cloud:
     config:
       enabled: false
+
+email:
+  from: your-email@example.com
