@@ -8,7 +8,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.mongodb.core.ExecutableFindOperation;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -62,8 +64,11 @@ class RecipientRepositoryTest {
 		);
 
 		// Mock 동작 정의
-		when(mongoTemplate.query(Recipient.class).matching(query).all())
-				.thenReturn(List.of(recipient));
+		ExecutableFindOperation.ExecutableFind<Recipient> executableFind = Mockito.mock(ExecutableFindOperation.ExecutableFind.class);
+
+		when(mongoTemplate.query(Recipient.class)).thenReturn(executableFind);
+		when(executableFind.matching(query)).thenReturn(executableFind);
+		when(executableFind.all()).thenReturn(List.of(recipient));
 
 		// When: 메서드 호출
 		List<Recipient> recipients = recipientRepository.findReadyForBackup(currentDate);
@@ -99,8 +104,11 @@ class RecipientRepositoryTest {
 		);
 
 		// Mock 동작 정의
-		when(mongoTemplate.query(Recipient.class).matching(query).all())
-				.thenReturn(List.of(recipient));
+		ExecutableFindOperation.ExecutableFind<Recipient> executableFind = Mockito.mock(ExecutableFindOperation.ExecutableFind.class);
+
+		when(mongoTemplate.query(Recipient.class)).thenReturn(executableFind);
+		when(executableFind.matching(query)).thenReturn(executableFind);
+		when(executableFind.all()).thenReturn(List.of(recipient));
 
 		// When: 메서드 호출
 		List<Recipient> recipients = recipientRepository.findReadyForRemind(currentDate);
