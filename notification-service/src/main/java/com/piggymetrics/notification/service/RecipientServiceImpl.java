@@ -5,6 +5,7 @@ import com.piggymetrics.notification.domain.NotificationSettings;
 import com.piggymetrics.notification.domain.NotificationType;
 import com.piggymetrics.notification.domain.Recipient;
 import com.piggymetrics.notification.repository.RecipientRepository;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
@@ -112,15 +113,23 @@ public class RecipientServiceImpl implements RecipientService {
 		Assert.notNull(type, "알림 유형은 null일 수 없습니다.");
 		Assert.notNull(recipient, "Recipient 객체는 null일 수 없습니다.");
 
+		// 기존 설정을 업데이트한 새 NotificationSettings 객체 생성
 		NotificationSettings updatedSettings = recipient.getScheduledNotifications()
 				.get(type)
 				.updateLastNotified(new Date());
 
+		// 기존 Recipient 객체의 scheduledNotifications을 새로 업데이트된 설정으로 덮어씌움
+		Map<NotificationType, NotificationSettings> updatedNotifications = new HashMap<>(recipient.getScheduledNotifications());
+		updatedNotifications.put(type, updatedSettings);
+
+		// 변경된 값으로 새로운 Recipient 객체 생성
 		Recipient updatedRecipient = recipient.toBuilder()
-				.scheduledNotifications(Map.of(type, updatedSettings))
+				.scheduledNotifications(updatedNotifications)
 				.build();
 
+		// 변경된 값으로 repository에 저장
 		repository.save(updatedRecipient);
+
 		log.info("{} 알림의 발송 시간이 {}로 업데이트되었습니다.", type, recipient.getAccountName());
 	}
 }

@@ -2,6 +2,8 @@
 
 package com.piggymetrics.notification.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -51,5 +53,15 @@ public class NotificationSettings {
 	 */
 	public NotificationSettings updateLastNotified(Date date) {
 		return this.toBuilder().lastNotified(date).build();
+	}
+
+	@JsonCreator
+	public NotificationSettings(
+			@JsonProperty("active") Boolean active,
+			@JsonProperty("frequency") Frequency frequency,
+			@JsonProperty("lastNotified") Date lastNotified) {
+		this.active = active;
+		this.frequency = frequency;
+		this.lastNotified = lastNotified;
 	}
 }
