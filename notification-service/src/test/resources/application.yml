@@ -22,12 +22,15 @@
 #          smtp:
 #            auth: true
 #            starttls.enable: true
-    data:
-      mongodb:
-        host: localhost
-        port: 27017
-        authentication-database: piggymetrics
-        database: piggymetrics
-        username: user
-        password: password
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      authentication-database: admin
+      database: piggymetrics
+      username: user
+      password: ${MONGODB_PASSWORD}
 
+  cloud:
+    config:
+      enabled: false
