@@ -10,6 +10,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -34,6 +35,9 @@ class EmailServiceImplTest {
 	@Mock
 	private MimeMessage mimeMessage;
 
+	@Value("${email.from}")
+	private String from;
+
 	private ArgumentCaptor<MimeMessage> mimeMessageCaptor;
 
 	@BeforeEach
@@ -41,6 +45,7 @@ class EmailServiceImplTest {
 		MockitoAnnotations.openMocks(this);
 		mimeMessageCaptor = ArgumentCaptor.forClass(MimeMessage.class);
 		when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
+		assertNotNull(from, "From address must not be null");  // from이 null인지 확인
 	}
 
 	/**
@@ -96,7 +101,7 @@ class EmailServiceImplTest {
 		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
 
 		verify(mimeMessage).setContent(any(), eq("text/html"));
-		helper.setFrom(emailService.getFrom());
+		helper.setFrom(from);  // 주입된 'from' 값 사용
 		helper.setTo(recipient.getEmail());
 		helper.setSubject(type.getSubject());
 		helper.setText(type.getText(), true);

@@ -1,6 +1,7 @@
 package com.piggymetrics.notification.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.piggymetrics.notification.domain.Frequency;
 import com.piggymetrics.notification.domain.NotificationSettings;
 import com.piggymetrics.notification.domain.NotificationType;
@@ -16,6 +17,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.security.Principal;
 import java.util.Map;
 
 import static org.mockito.Mockito.when;
@@ -26,8 +28,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * RecipientController의 REST API 동작을 검증.
- * - 현재 사용자 알림 설정 조회
- * - 알림 설정 저장
  */
 class RecipientControllerTest {
 
@@ -42,7 +42,6 @@ class RecipientControllerTest {
 
     @BeforeEach
     void setup() {
-        // Mockito 초기화 및 MockMvc 설정
         MockitoAnnotations.openMocks(this);
         this.mockMvc = MockMvcBuilders.standaloneSetup(recipientController).build();
         this.objectMapper = new ObjectMapper();
@@ -54,14 +53,13 @@ class RecipientControllerTest {
     @Test
     @WithMockUser(username = "test-user")
     void shouldGetCurrentNotificationsSettings() throws Exception {
-        // Given: Mock Recipient 객체 생성
+        // Given
+        Principal principal = () -> "test-user";
         Recipient recipient = getMockRecipient();
-
-        // Mock 동작 정의
         when(recipientService.findByAccountName("test-user")).thenReturn(recipient);
 
-        // When: GET 요청 수행 및 Then: 응답 검증
-        mockMvc.perform(get("/recipients/current"))
+        // When & Then
+        mockMvc.perform(get("/recipients/current").principal(principal))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accountName").value("test-user"))
                 .andExpect(jsonPath("$.email").value("test@test.com"));
@@ -73,11 +71,12 @@ class RecipientControllerTest {
     @Test
     @WithMockUser(username = "test-user")
     void shouldReturnNotFoundWhenRecipientNotExists() throws Exception {
-        // Mock 동작 정의: 수신자가 존재하지 않음
+        // Given
+        Principal principal = () -> "test-user";
         when(recipientService.findByAccountName("test-user")).thenReturn(null);
 
-        // When: GET 요청 수행 및 Then: 응답 검증
-        mockMvc.perform(get("/recipients/current"))
+        // When & Then
+        mockMvc.perform(get("/recipients/current").principal(principal))
                 .andExpect(status().isNotFound());
     }
 
@@ -87,19 +86,20 @@ class RecipientControllerTest {
     @Test
     @WithMockUser(username = "test-user")
     void shouldSaveNotificationSettings() throws Exception {
-        // Given: Mock NotificationSettings 및 Recipient 객체 생성
+        // Given
         NotificationSettings settings = NotificationSettings.builder()
                 .active(true)
                 .frequency(Frequency.WEEKLY)
                 .build();
 
-        Recipient recipient = getMockRecipient();
+        // 필요 시 ObjectMapper 설정
+        objectMapper.registerModule(new JavaTimeModule());  // Date 타입 처리
 
-        // Mock 동작 정의
+        Recipient recipient = getMockRecipient();
         when(recipientService.updateNotificationSettings("test-user", NotificationType.REMIND, settings))
                 .thenReturn(recipient);
 
-        // When: PUT 요청 수행 및 Then: 응답 검증
+        // When & Then
         mockMvc.perform(put("/recipients/current/REMIND")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(settings)))
@@ -109,8 +109,58 @@ class RecipientControllerTest {
     }
 
     /**
-     * 테스트에서 사용할 Mock Recipient 객체 생성.
-     * @return Mock Recipient 객체
+     * 저장 시 잘못된 알림 유형이 전달되었을 때 400 응답을 반환하는지 확인.
+     */
+    @Test
+    @WithMockUser(username = "test-user")
+    void shouldReturnBadRequestForInvalidNotificationType() throws Exception {
+        // Given
+        NotificationSettings settings = NotificationSettings.builder()
+                .active(true)
+                .frequency(Frequency.WEEKLY)
+                .build();
+
+        // When & Then
+        mockMvc.perform(put("/recipients/current/INVALID")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(settings)))
+                .andExpect(status().isBadRequest());
+    }
+
+    /**
+     * Principal이 null일 때 400 응답을 반환하는지 확인.
+     */
+    @Test
+    void shouldReturnBadRequestWhenPrincipalIsNull() throws Exception {
+        mockMvc.perform(get("/recipients/current")
+                        .principal(() -> null))  // Principal을 null로 설정
+                .andExpect(status().isBadRequest());
+    }
+
+    /**
+     * 수신자가 없는 경우에도 저장 API가 404를 반환하는지 확인.
+     */
+    @Test
+    @WithMockUser(username = "test-user")
+    void shouldReturnNotFoundWhenSavingNotificationSettingsForNonExistingRecipient() throws Exception {
+        // Given
+        NotificationSettings settings = NotificationSettings.builder()
+                .active(true)
+                .frequency(Frequency.WEEKLY)
+                .build();
+
+        when(recipientService.updateNotificationSettings("test-user", NotificationType.REMIND, settings))
+                .thenReturn(null);
+
+        // When & Then
+        mockMvc.perform(put("/recipients/current/REMIND")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(settings)))
+                .andExpect(status().isNotFound());
+    }
+
+    /**
+     * Mock Recipient 객체 생성.
      */
     private Recipient getMockRecipient() {
         NotificationSettings remindSettings = NotificationSettings.builder()

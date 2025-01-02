@@ -65,9 +65,10 @@ class NotificationServiceImplTest {
 		Recipient recipient2 = getMockRecipient("user2");
 		List<Recipient> recipients = Arrays.asList(recipient1, recipient2);
 
+		// When: findReadyToNotify 메소드가 호출될 때, 수신자 목록 반환
 		when(recipientService.findReadyToNotify(NotificationType.REMIND)).thenReturn(recipients);
 
-		// When: 리마인드 알림 발송 메서드 호출
+		// 리마인드 알림 발송 메서드 호출
 		notificationService.sendRemindNotifications();
 
 		// Then: 각 수신자에 대해 이메일 발송 및 상태 업데이트 검증
