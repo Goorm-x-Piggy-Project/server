@@ -1,35 +1,27 @@
-#remind:
-#  cron: 0 0 0 * * *
+remind:
+  cron: "0 0 18 * * ?"
 #  email:
 #    text: "Hey, {0}! We''ve missed you here on PiggyMetrics. It''s time to check your budget statistics.\r\n\r\nCheers,\r\nPiggyMetrics team"
 #    subject: PiggyMetrics reminder
-#
-#backup:
-#  cron: 0 0 12 * * *
+
+backup:
+  cron: "0 0 12 * * ?"
 #  email:
 #    text: "Howdy, {0}. Your account backup is ready.\r\n\r\nCheers,\r\nPiggyMetrics team"
 #    subject: PiggyMetrics account backup
 #    attachment: backup.json
 
-  spring:
-#    mail:
-#      host: smtp.gmail.com
-#      port: 587
-#      username: test@example.com
-#      password: test-password
-#      properties:
-#        mail:
-#          smtp:
-#            auth: true
-#            starttls.enable: true
-  data:
-    mongodb:
-      host: localhost
-      port: 27017
-      authentication-database: admin
-      database: piggymetrics
-      username: user
-      password: ${MONGODB_PASSWORD}
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls.enable: true
 
   cloud:
     config:
