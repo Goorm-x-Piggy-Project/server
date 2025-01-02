@@ -12,11 +12,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 
-@Import(MongoServerConfig.class)
-@SpringBootTest(properties = {"spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration"})
-
+@SpringBootTest(properties = "de.flapdoodle.mongodb.embedded.version=5.0.5")
 public class ExchangeRatesClientTest {
 
 	@Autowired

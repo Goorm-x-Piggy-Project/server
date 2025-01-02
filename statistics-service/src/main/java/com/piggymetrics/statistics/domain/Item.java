@@ -1,10 +1,13 @@
 package com.piggymetrics.statistics.domain;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
 
+@Getter
 public class Item {
 
 	@NotNull
@@ -20,35 +23,12 @@ public class Item {
 	@NotNull
 	private TimePeriod period;
 
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
+	@Builder
+	public Item(String title, BigDecimal amount, Currency currency, TimePeriod period) {
 		this.title = title;
-	}
-
-	public BigDecimal getAmount() {
-		return amount;
-	}
-
-	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
-	}
-
-	public Currency getCurrency() {
-		return currency;
-	}
-
-	public void setCurrency(Currency currency) {
 		this.currency = currency;
-	}
-
-	public TimePeriod getPeriod() {
-		return period;
-	}
-
-	public void setPeriod(TimePeriod period) {
 		this.period = period;
 	}
+
 }

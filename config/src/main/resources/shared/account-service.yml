@@ -1,12 +1,3 @@
-#security:
-#  oauth2:
-#    client:
-#      clientId: account-service
-#      clientSecret: ${ACCOUNT_SERVICE_PASSWORD}
-#      accessTokenUri: http://auth-service:5000/uaa/oauth/token
-#      grant-type: client_credentials
-#      scope: server
-
 spring:
   datasource:
     initialize: false
@@ -14,12 +5,30 @@ spring:
     mongodb:
       uri: mongodb://mongo:27017/mongo
       auto-index-creation: true
+  security:
+    oauth2:
+      client:
+        registration:
+          account-service: # registrationId
+            provider: auth-service
+            client-id: account-service
+            client-secret: ${ACCOUNT_SERVICE_PASSWORD}
+            authorization-grant-type: client_credentials
+            scope: server
+            token-uri: http://auth-service:5000/oauth2/token
+        provider:
+          auth-service:
+            issuer-uri: http://auth-service:5000
+      resourceserver:
+        jwt:
+          issuer-uri: http://auth-service:5000
+          jwk-set-uri: http://auth-service:5000/oauth2/jwks
 
 eureka:
   client:
     register-with-eureka: true
     fetch-registry: true
-    serviceUrl:
+    service-url:
       defaultZone: http://registry:8761/eureka
 
 feign:
@@ -29,6 +38,8 @@ feign:
 logging:
   level:
     org.springframework.data.mongodb: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.cloud.openfeign: DEBUG
 
 management:
   endpoints:

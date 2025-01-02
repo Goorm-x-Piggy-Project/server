@@ -167,7 +167,7 @@ function greetingPageAgain() {
     });
     $("#righttitle, #lefttitle").empty();
     $("#righttitle").append('<span class="bluetext">last seen: </span>' + user.lastSeen);
-    $("#lefttitle").append(escape(user.login) + '<span class="bluetext"> metrics</span>');
+    $("#lefttitle").append(escape(uuserser.login) + '<span class="bluetext"> metrics</span>');
 }
 function showGreetingUnits() {
     $("#lefttitle").fadeIn(500);
@@ -866,7 +866,7 @@ function launchStatistic() {
 function jsonDataSave() {
     if (global.savePermit) {
         $.ajax({
-            url: 'accounts/current',
+            url: 'api/v1/account/current',
             datatype: 'json',
             type: "put",
             contentType: "application/json",

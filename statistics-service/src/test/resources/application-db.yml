@@ -19,7 +19,7 @@ spring:
     mongodb:
       host: localhost
       port: 27017
-      authentication-database: piggymetrics
+      authentication-database: admin
       database: piggymetrics
       username: user
       password: password
