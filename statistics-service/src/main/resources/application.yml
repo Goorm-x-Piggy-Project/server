@@ -15,10 +15,10 @@ spring:
     oauth2:
       client:
         registration:
-          notification-service: # registrationId
+          statistics-service: # registrationId
             provider: auth-service
-            client-id: notification-service
-            client-secret: ${NOTIFICATION_SERVICE_PASSWORD}
+            client-id: statistics-service
+            client-secret: ${STATISTICS_SERVICE_PASSWORD}
             authorization-grant-type: client_credentials
             scope: server
         provider:
@@ -36,3 +36,7 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://registry:8761/eureka/
+
+logging:
+  level:
+    feign: DEBUG

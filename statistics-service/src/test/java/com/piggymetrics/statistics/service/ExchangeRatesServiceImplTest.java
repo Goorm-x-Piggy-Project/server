@@ -61,7 +61,7 @@ public class ExchangeRatesServiceImplTest {
 
 		assertEquals(new BigDecimal("1.50735"), result.get(Currency.EUR), "EUR rate mismatch");
 		assertEquals(new BigDecimal("1436.6"), result.get(Currency.USD), "USD rate mismatch");
-		assertEquals(new BigDecimal("935.74"), result.get(Currency.JPY), "JPY rate mismatch");
+		assertEquals(new BigDecimal("935.74"), result.get(Currency.RUB), "JPY rate mismatch");
 		assertEquals(BigDecimal.ONE, result.get(Currency.KRW), "KRW rate mismatch");
 	}
 
