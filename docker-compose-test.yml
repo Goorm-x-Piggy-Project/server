@@ -184,3 +184,33 @@ services:
       - msa-network
 #volumes:
 #  auth-mongodb:
+
+  notification-service:
+    build:
+      context: ./notification-service
+    container_name: notification-service
+    ports:
+      - 9000:9000
+    environment:
+      CONFIG_SERVICE_PASSWORD: ${CONFIG_SERVICE_PASSWORD}
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD}
+      NOTIFICATION_SERVICE_PASSWORD: ${NOTIFICATION_SERVICE_PASSWORD}
+      EMAIL_USERNAME: your-email@gmail.com
+      EMAIL_PASSWORD: password
+      SPRING_APPLICATION_NAME: notification-service
+    depends_on:
+      - config
+      - notification-mongodb
+    networks:
+      - msa-network
+
+  notification-mongodb:
+    image: mongo:latest
+    container_name: notification-mongodb
+    environment:
+      MONGO_INITDB_DATABASE: notificationdb
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD}
+    ports:
+      - 27018:27017
+    networks:
+      - msa-network
