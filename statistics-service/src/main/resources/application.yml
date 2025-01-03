@@ -1,13 +1,35 @@
+#spring:
+
+#  security:
+#    oauth2:
+#      resourceserver:
+#        jwt:
+#          issuer-uri: https://your-auth-server.com #추후 인증 서버 uri 추가 필요
 spring:
   application:
     name: statistics-service
   config:
     import: optional:configserver:http://user:${CONFIG_SERVICE_PASSWORD}@config:8888
+
   security:
     oauth2:
+      client:
+        registration:
+          notification-service: # registrationId
+            provider: auth-service
+            client-id: notification-service
+            client-secret: ${NOTIFICATION_SERVICE_PASSWORD}
+            authorization-grant-type: client_credentials
+            scope: server
+        provider:
+          auth-service:
+            issuer-uri: http://auth-service:5000
+            token-uri: http://auth-service:5000/oauth2/token
       resourceserver:
         jwt:
-          issuer-uri: https://your-auth-server.com #추후 인증 서버 uri 추가 필요
+          issuer-uri: http://auth-service:5000
+          jwk-set-uri: http://auth-service:5000/oauth2/jwks
+
 eureka:
   client:
     register-with-eureka: true
