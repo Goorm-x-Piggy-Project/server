@@ -1,49 +1,65 @@
 package com.piggymetrics.statistics.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.piggymetrics.statistics.dto.AccountReqDto;
+import com.piggymetrics.statistics.dto.UserReqDto;
+import jakarta.validation.constraints.Size;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
+import org.springframework.format.annotation.DateTimeFormat;
 
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Document(collection = "accounts")
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Account {
 
-	@Valid
+	@Id
+	private ObjectId id;
+
 	@NotNull
+	@Size(min = 1, max = 50)
+	private String name;
+
+	@NotNull
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private LocalDate lastSeen;
+
+	@Valid
 	private List<Item> incomes;
 
 	@Valid
-	@NotNull
 	private List<Item> expenses;
 
-	@Valid
 	@NotNull
 	private Saving saving;
 
-	public List<Item> getIncomes() {
-		return incomes;
-	}
+	@Size(min = 0, max = 20_000)
+	private String note;
 
-	public void setIncomes(List<Item> incomes) {
-		this.incomes = incomes;
-	}
-
-	public List<Item> getExpenses() {
-		return expenses;
-	}
-
-	public void setExpenses(List<Item> expenses) {
-		this.expenses = expenses;
-	}
-
-	public Saving getSaving() {
-		return saving;
-	}
-
-	public void setSaving(Saving saving) {
+	@Builder
+	public Account(UserReqDto req, Saving saving) {
+		this.name = req.getUsername();
+		this.lastSeen = LocalDate.now();
+		this.incomes = new ArrayList<>();
+		this.expenses = new ArrayList<>();
 		this.saving = saving;
 	}
+
+	public void updateAccount(AccountReqDto dto) {
+		this.lastSeen = LocalDate.now();
+		this.incomes = dto.getIncomes();
+		this.expenses = dto.getExpenses();
+	}
 }
+
