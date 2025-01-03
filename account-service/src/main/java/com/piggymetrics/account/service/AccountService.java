@@ -53,11 +53,13 @@ public class AccountService {
 	@Transactional
 	public void saveChanges(String name, AccountReqDto update) {
 
+		log.info("username is {}", name);
 		Account account = checkIfAccountNotExists(name);
 
 		account.updateAccount(update);
 
-		log.debug("account {} changes has been saved", name);
+		log.info("account {} changes has been saved", name);
+		log.info("Received account: {}", account);
 
 		statisticsClient.updateStatistics(name, account);
 	}
