@@ -22,22 +22,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+@RequiredArgsConstructor
 @Service
 public class StatisticsService {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
-	@Autowired
-	private DataPointRepository repository;
-
-	@Autowired
-	private ExchangeRatesService ratesService;
+	private final DataPointRepository repository;
+	private final ExchangeRatesService ratesService;
 
 	/**
 	 * {@inheritDoc}
@@ -67,12 +66,13 @@ public class StatisticsService {
 
 		Map<StatisticMetric, BigDecimal> statistics = createStatisticMetrics(incomes, expenses, account.getSaving());
 
-		DataPoint dataPoint = new DataPoint();
-		dataPoint.setId(pointId);
-		dataPoint.setIncomes(incomes);
-		dataPoint.setExpenses(expenses);
-		dataPoint.setStatistics(statistics);
-		dataPoint.setRates(ratesService.getCurrentRates());
+		DataPoint dataPoint = DataPoint.builder()
+				.id(pointId)
+				.incomes(incomes)
+				.expenses(expenses)
+				.statistics(statistics)
+				.rates(ratesService.getCurrentRates())
+				.build();
 
 		log.debug("new datapoint has been created: {}", pointId);
 

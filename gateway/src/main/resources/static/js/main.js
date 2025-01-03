@@ -129,9 +129,7 @@ function initGreetingPage() {
 
 function initSettingsPage() {
     switch (user.checkedCurr) {
-        case "RUB": $("#rublesign").css({"background-position": "-150px 0"});
-            break;
-        case "EUR": $("#rublesign").css({"background-position": "-386px 0"});
+        case "KRW": $("#rublesign").css({"background-position": "-386px 0"});
             break;
         case "USD": $("#rublesign").css({"background-position": "-354px 0"});
             break;
@@ -169,7 +167,7 @@ function greetingPageAgain() {
     });
     $("#righttitle, #lefttitle").empty();
     $("#righttitle").append('<span class="bluetext">last seen: </span>' + user.lastSeen);
-    $("#lefttitle").append(escape(user.login) + '<span class="bluetext"> metrics</span>');
+    $("#lefttitle").append(escape(uuserser.login) + '<span class="bluetext"> metrics</span>');
 }
 function showGreetingUnits() {
     $("#lefttitle").fadeIn(500);
@@ -868,7 +866,7 @@ function launchStatistic() {
 function jsonDataSave() {
     if (global.savePermit) {
         $.ajax({
-            url: 'accounts/current',
+            url: 'api/v1/account/current',
             datatype: 'json',
             type: "put",
             contentType: "application/json",

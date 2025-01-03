@@ -11,16 +11,14 @@ import com.piggymetrics.statistics.domain.timeseries.DataPoint;
 import com.piggymetrics.statistics.domain.timeseries.DataPointId;
 import com.piggymetrics.statistics.service.StatisticsService;
 import com.sun.security.auth.UserPrincipal;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -35,88 +33,94 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ExtendWith(MockitoExtension.class)
 @SpringBootTest
 public class StatisticsControllerTest {
 
-	private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = new ObjectMapper();
 
-	@InjectMocks
-	private StatisticsController statisticsController;
+    @Mock
+    private StatisticsService statisticsService;
 
-	@Mock
-	private StatisticsService statisticsService;
+    private MockMvc mockMvc;
 
-	private MockMvc mockMvc;
+    @BeforeEach
+    public void setup() {
+        StatisticsController statisticsController = new StatisticsController(statisticsService);
+        this.mockMvc = MockMvcBuilders.standaloneSetup(statisticsController).build();
+    }
 
-	@BeforeEach
-	public void setup() {
-		initMocks(this);
-		this.mockMvc = MockMvcBuilders.standaloneSetup(statisticsController).build();
-	}
+    @Test
+    public void shouldGetStatisticsByAccountName() throws Exception {
 
-	@Test
-	public void shouldGetStatisticsByAccountName() throws Exception {
+        final DataPoint dataPoint = DataPoint.builder()
+                .id(new DataPointId("test", new Date()))
+                .build();
 
-		final DataPoint dataPoint = new DataPoint();
-		dataPoint.setId(new DataPointId("test", new Date()));
+        when(statisticsService.findByAccountName(dataPoint.getId().getAccount()))
+                .thenReturn(ImmutableList.of(dataPoint));
 
-		when(statisticsService.findByAccountName(dataPoint.getId().getAccount()))
-				.thenReturn(ImmutableList.of(dataPoint));
+        mockMvc.perform(get("/api/v1/statistics/test").principal(new UserPrincipal(dataPoint.getId().getAccount())))
+                .andDo(print())
+                .andExpect(jsonPath("$[0].id.account").value(dataPoint.getId().getAccount()))
+                .andExpect(status().isOk());
+    }
 
-		mockMvc.perform(get("/test").principal(new UserPrincipal(dataPoint.getId().getAccount())))
-				.andExpect(jsonPath("$[0].id.account").value(dataPoint.getId().getAccount()))
-				.andExpect(status().isOk());
-	}
+    @Test
+    public void shouldGetCurrentAccountStatistics() throws Exception {
 
-	@Test
-	public void shouldGetCurrentAccountStatistics() throws Exception {
+        final DataPoint dataPoint = DataPoint.builder()
+                .id(new DataPointId("test", new Date()))
+                .build();
 
-		final DataPoint dataPoint = new DataPoint();
-		dataPoint.setId(new DataPointId("test", new Date()));
+        when(statisticsService.findByAccountName(dataPoint.getId().getAccount()))
+                .thenReturn(ImmutableList.of(dataPoint));
 
-		when(statisticsService.findByAccountName(dataPoint.getId().getAccount()))
-				.thenReturn(ImmutableList.of(dataPoint));
+        mockMvc.perform(get("/api/v1/statistics/current").principal(new UserPrincipal(dataPoint.getId().getAccount())))
+                .andExpect(jsonPath("$[0].id.account").value(dataPoint.getId().getAccount()))
+                .andExpect(status().isOk());
+    }
 
-		mockMvc.perform(get("/current").principal(new UserPrincipal(dataPoint.getId().getAccount())))
-				.andExpect(jsonPath("$[0].id.account").value(dataPoint.getId().getAccount()))
-				.andExpect(status().isOk());
-	}
+    @Test
+    public void shouldSaveAccountStatistics() throws Exception {
 
-	@Test
-	public void shouldSaveAccountStatistics() throws Exception {
+        Saving saving = Saving.builder()
+                .amount(new BigDecimal(1500))
+                .currency(Currency.USD)
+                .interest(new BigDecimal("3.32"))
+                .deposit(true)
+                .capitalization(false)
+                .build();
 
-		Saving saving = new Saving();
-		saving.setAmount(new BigDecimal(1500));
-		saving.setCurrency(Currency.USD);
-		saving.setInterest(new BigDecimal("3.32"));
-		saving.setDeposit(true);
-		saving.setCapitalization(false);
+        Item grocery = Item.builder()
+                .title("Grocery")
+                .amount(new BigDecimal(10))
+                .currency(Currency.USD)
+                .period(TimePeriod.DAY)
+                .build();
 
-		Item grocery = new Item();
-		grocery.setTitle("Grocery");
-		grocery.setAmount(new BigDecimal(10));
-		grocery.setCurrency(Currency.USD);
-		grocery.setPeriod(TimePeriod.DAY);
+        Item salary = Item.builder()
+                .title("Salary")
+                .amount(new BigDecimal(9100))
+                .currency(Currency.USD)
+                .period(TimePeriod.MONTH)
+                .build();
 
-		Item salary = new Item();
-		salary.setTitle("Salary");
-		salary.setAmount(new BigDecimal(9100));
-		salary.setCurrency(Currency.USD);
-		salary.setPeriod(TimePeriod.MONTH);
 
-		final Account account = new Account();
-		account.setSaving(saving);
-		account.setExpenses(ImmutableList.of(grocery));
-		account.setIncomes(ImmutableList.of(salary));
+        final Account account = new Account();
+        account.setSaving(saving);
+        account.setExpenses(ImmutableList.of(grocery));
+        account.setIncomes(ImmutableList.of(salary));
 
-		String json = mapper.writeValueAsString(account);
+        String json = mapper.writeValueAsString(account);
 
-		mockMvc.perform(put("/test").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
+        mockMvc.perform(put("/api/v1/statistics/test").contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().isOk());
 
-		verify(statisticsService, times(1)).save(anyString(), any(Account.class));
-	}
+        verify(statisticsService, times(1)).save(anyString(), any(Account.class));
+    }
 }

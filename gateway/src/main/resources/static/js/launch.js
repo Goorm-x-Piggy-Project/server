@@ -2,7 +2,7 @@ var global = {
     mobileClient: false,
     savePermit: true,
     usd: 0,
-    eur: 0
+    krw: 0
 };
 
 /**
@@ -14,10 +14,10 @@ function requestOauthToken(username, password) {
 	var success = false;
 
 	$.ajax({
-		url: 'uaa/oauth/token',
+		url: 'oauth2/token',
 		datatype: 'json',
 		type: 'post',
-		headers: {'Authorization': 'Basic YnJvd3Nlcjo='},
+		headers: {'Authorization': 'Basic YnJvd3Nlcjpicm93c2VyLXBhc3N3b3Jk'},
 		async: false,
 		data: {
 			scope: 'ui',
@@ -56,7 +56,7 @@ function getCurrentAccount() {
 
 	if (token) {
 		$.ajax({
-			url: 'accounts/current',
+			url: 'api/v1/account/current',
 			datatype: 'json',
 			type: 'get',
 			headers: {'Authorization': 'Bearer ' + token},
@@ -80,9 +80,9 @@ $(window).load(function(){
         global.mobileClient = true;
 	}
 
-    $.getJSON("https://api.exchangeratesapi.io/latest?base=RUB&symbols=EUR,USD", function( data ) {
-        global.eur = 1 / data.rates.EUR;
-        global.usd = 1 / data.rates.USD;
+    $.getJSON("api/v1/statistics/rates/default", function( data ) {
+        global.krw = 1 / data.KRW;
+        global.usd = 1 / data.USD;
     });
 
 	var account = getCurrentAccount();

@@ -4,6 +4,7 @@ networks:
     driver: bridge
 
 services:
+
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -12,6 +13,7 @@ services:
       - "15672:15672" # 관리 콘솔 포트
     networks:
       - msa-network
+
   mongo:
     image: mongo:latest
     container_name: mongo
@@ -45,12 +47,51 @@ services:
       - 6000:6000
     environment:
       CONFIG_SERVICE_PASSWORD: ${CONFIG_SERVICE_PASSWORD}
+      ACCOUNT_SERVICE_PASSWORD: ${ACCOUNT_SERVICE_PASSWORD}
       SPRING_APPLICATION_NAME: account-service
       MONGODB_URI: ${MONGODB_URI}
     depends_on:
+      config:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+      registry:
+        condition: service_started
+      auth-service:
+        # oauth2 client 역할이므로 auth-service가 먼저 실행되어야 함(jwks uri를 가져와야 함), 그렇지 않으면 예외 발생하고 서버 실행 안됨
+        # service_healthy로 하고 싶은데 auth-service가 health check가 안되서 일단 service_started로 함
+        condition: service_started
+    networks:
+      - msa-network
+
+  statistics-service:
+    build:
+      context: ./statistics-service
+    container_name: statistics-service
+    ports:
+      - 7000:7000
+    environment:
+      CONFIG_SERVICE_PASSWORD: ${CONFIG_SERVICE_PASSWORD}
+      SPRING_APPLICATION_NAME: statistics-service
+      #MONGODB_URI: ${MONGODB_URI}
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD}
+      STATISTICS_SERVICE_PASSWORD: ${STATISTICS_SERVICE_PASSWORD}
+    depends_on:
       - config
-      - mongo
+      - statistics-mongodb
       - registry
+    networks:
+      - msa-network
+
+  statistics-mongodb:
+    environment:
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD}
+    image: sqshq/piggymetrics-mongodb
+    restart: always
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
     networks:
       - msa-network
 
@@ -58,6 +99,12 @@ services:
     build:
       context: ./registry
     container_name: registry
+#    healthcheck:
+#      test: [ "CMD", "curl", "-f", "http://localhost:8761/actuator/health" ]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 3
+#      start_period: 10s
     environment:
       CONFIG_SERVICE_PASSWORD: ${CONFIG_SERVICE_PASSWORD}
       SPRING_APPLICATION_NAME: registry
@@ -93,4 +140,47 @@ services:
     networks:
       - msa-network
 
+  auth-service:
+    build:
+      context: ./auth-service
+    container_name: auth-service
+    ports:
+      - 5000:5000
+#    healthcheck: # 왜 안될까..
+#      test: [ "CMD", "curl", "-f", "http://localhost:5000/.well-known/openid-configuration" ]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 3
+#      start_period: 30s  # 초기화 시간 10초 대기
+    environment:
+      CONFIG_SERVICE_PASSWORD: ${CONFIG_SERVICE_PASSWORD}
+      BROWSER_CLIENT_PASSWORD: ${BROWSER_CLIENT_PASSWORD}
+      NOTIFICATION_SERVICE_PASSWORD: ${NOTIFICATION_SERVICE_PASSWORD}
+      STATISTICS_SERVICE_PASSWORD: ${STATISTICS_SERVICE_PASSWORD}
+      ACCOUNT_SERVICE_PASSWORD: ${ACCOUNT_SERVICE_PASSWORD}
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD}
+      SPRING_APPLICATION_NAME: auth-service
+    depends_on:
+      config:
+        condition: service_healthy
+      auth-mongodb:
+        condition: service_started
+      registry:
+        condition: service_started
+    networks:
+      - msa-network
 
+  auth-mongodb:
+    image: mongo:latest
+    container_name: auth-mongodb
+    environment:
+      MONGO_INITDB_DATABASE: authdb
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD}
+#    volumes:
+#      - auth-mongodb:/data/db
+    ports:
+      - 25000:27017
+    networks:
+      - msa-network
+#volumes:
+#  auth-mongodb:

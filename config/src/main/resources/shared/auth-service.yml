@@ -1,13 +1,29 @@
 spring:
+  datasource:
+   initialize: false
   data:
-    mongodb:
-      host: auth-mongodb
-      username: user
-      password: ${MONGODB_PASSWORD}
-      database: piggymetrics
-      port: 27017
+   mongodb:
+     uri: mongodb://auth-mongodb:27017/authdb
+     auto-index-creation: true
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://registry:8761/eureka
 
 server:
-  servlet:
-    context-path: /uaa
   port: 5000
+
+logging:
+  level:
+    org.springframework.data.mongodb: DEBUG
+    org.springframework.security: TRACE
+    org.springframework.cloud.openfeign: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: mappings

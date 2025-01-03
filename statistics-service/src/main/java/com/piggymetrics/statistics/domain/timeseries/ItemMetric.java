@@ -4,28 +4,21 @@ import com.piggymetrics.statistics.domain.Currency;
 import com.piggymetrics.statistics.domain.TimePeriod;
 
 import java.math.BigDecimal;
+import lombok.Getter;
 
 /**
  * Represents normalized {@link com.piggymetrics.statistics.domain.Item} object
  * with {@link Currency#getBase()} currency and {@link TimePeriod#getBase()} time period
  */
+@Getter
 public class ItemMetric {
 
 	private String title;
-
 	private BigDecimal amount;
 
 	public ItemMetric(String title, BigDecimal amount) {
 		this.title = title;
 		this.amount = amount;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public BigDecimal getAmount() {
-		return amount;
 	}
 
 	@Override

@@ -1,10 +1,12 @@
 package com.piggymetrics.statistics.service;
 
+import static com.piggymetrics.statistics.exception.ErrorMessages.*;
+
 import com.piggymetrics.statistics.client.ExchangeRatesClient;
 import com.piggymetrics.statistics.domain.Currency;
 
-import com.piggymetrics.statistics.domain.ExchangeRatesContainer;
 import com.piggymetrics.statistics.domain.ExchangeRatesContainer.ExchangeRate;
+import com.piggymetrics.statistics.exception.CustomException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -33,43 +35,55 @@ public class ExchangeRatesService {
 		this.client = client;
 	}
 
+	public Map<String, BigDecimal> getFilteredRates(List<String> currencies) {
+		try {
+			Map<Currency, BigDecimal> allRates = getCurrentRates();
+
+			return allRates.entrySet().stream()
+					.filter(entry -> currencies.contains(entry.getKey().name()))
+					.collect(Collectors.toMap(
+							entry -> entry.getKey().name(),
+							Map.Entry::getValue
+					));
+		} catch (Exception e) {
+			log.error("Error while fetching filtered rates", e);
+			throw new CustomException(RATES_EXCHANGE_FAIL + e.getMessage());
+		}
+	}
+
 	public Map<Currency, BigDecimal> getCurrentRates() {
 
 		if (exchangeRates == null || exchangeRates.isEmpty()) {
-			String today = LocalDate.now().toString().replace("-", ""); // yyyyMMdd 형식
+			String today = LocalDate.now().toString().replace("-", "");
 			exchangeRates = client.getRates(authKey, today, "AP01");
 			log.info("Exchange rates updated: {}", exchangeRates);
 		}
 
+		// Currency enum의 모든 값을 가져옵니다.
 		return exchangeRates.stream()
+				.filter(rate -> Currency.isSupported(rate.getCurrencyUnit().replace("(100)", "")))
 				.collect(Collectors.toMap(
-						rate -> Currency.valueOf(rate.getCurrencyUnit().replace("(100)", "")), // 통화 단위 변환
+						rate -> Currency.valueOf(rate.getCurrencyUnit().replace("(100)", "")),
 						ExchangeRate::getDealBaseRate
 				));
 	}
 
 	public BigDecimal convert(Currency from, Currency to, BigDecimal amount) {
 
-		Assert.notNull(amount, "The amount must not be null");
+		Assert.notNull(amount, NULL_AMOUNT_ERROR);
 
 		Map<Currency, BigDecimal> rates = getCurrentRates();
-		BigDecimal ratio = rates.get(from).divide(rates.get(to), 4, RoundingMode.HALF_UP);
+
+		BigDecimal fromRate = rates.get(from);
+		BigDecimal toRate = rates.get(to);
+
+		if (fromRate == null || toRate == null) {
+			throw new CustomException(NULL_RATES_ERROR);
+		}
+
+		BigDecimal ratio = fromRate.divide(toRate, 4, RoundingMode.HALF_UP);
 
 		return amount.multiply(ratio);
-	}
-
-	/**
-	 * 특정 통화의 환율(deal_bas_r)을 반환.
-	 * @param rates 전체 환율 리스트
-	 * @param currency 통화 코드
-	 * @return 매매기준율 (deal_bas_r)
-	 */
-	private BigDecimal getRateForCurrency(List<ExchangeRatesContainer.ExchangeRate> rates, String currency) {
-		return rates.stream()
-				.filter(rate -> currency.equals(rate.getCurrencyUnit()))
-				.findFirst()
-				.map(ExchangeRatesContainer.ExchangeRate::getDealBaseRate)
-				.orElseThrow(() -> new RuntimeException("Rate not found for currency: " + currency));
 	}
 
 }

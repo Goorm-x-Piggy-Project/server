@@ -1,32 +1,37 @@
-package com.piggymetrics.account.service.security;
-
-//import org.apache.commons.logging.Log;
-//import org.apache.commons.logging.LogFactory;
+//package com.piggymetrics.account.service.security;
+//
+////import org.apache.commons.logging.Log;
+////import org.apache.commons.logging.LogFactory;
+////import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+////import org.springframework.security.core.AuthenticationException;
+////import org.springframework.security.core.GrantedAuthority;
+////import org.springframework.security.oauth2.client.OAuth2RestOperations;
+////import org.springframework.security.oauth2.client.OAuth2RestTemplate;
+////import org.springframework.security.oauth2.client.resource.BaseOAuth2ProtectedResourceDetails;
+////import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
+////import org.springframework.security.oauth2.common.OAuth2AccessToken;
+////import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
+////import org.springframework.security.oauth2.provider.OAuth2Authentication;
+////import org.springframework.security.oauth2.provider.OAuth2Request;
+////import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
+//
+//import lombok.extern.slf4j.Slf4j;
 //import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-//import org.springframework.security.core.AuthenticationException;
 //import org.springframework.security.core.GrantedAuthority;
-//import org.springframework.security.oauth2.client.OAuth2RestOperations;
-//import org.springframework.security.oauth2.client.OAuth2RestTemplate;
-//import org.springframework.security.oauth2.client.resource.BaseOAuth2ProtectedResourceDetails;
-//import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
-//import org.springframework.security.oauth2.common.OAuth2AccessToken;
-//import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
-//import org.springframework.security.oauth2.provider.OAuth2Authentication;
-//import org.springframework.security.oauth2.provider.OAuth2Request;
-//import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
-
-import java.util.*;
-
-/**
- * Extended implementation of {@link org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices}
- *
- * By default, it designed to return only user details. This class provides {@link #getRequest(Map)} method, which
- * returns clientId and scope of calling service. This information used in controller's security checks.
- */
-
+//import org.springframework.security.oauth2.core.OAuth2AccessToken;
+//
+//import java.util.*;
+//
+///**
+// * Extended implementation of {@link org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices}
+// *
+// * By default, it designed to return only user details. This class provides {@link #getRequest(Map)} method, which
+// * returns clientId and scope of calling service. This information used in controller's security checks.
+// */
+//
+//@Slf4j
 //public class CustomUserInfoTokenServices implements ResourceServerTokenServices {
-
-//	protected final Log logger = LogFactory.getLog(getClass());
+//
 //
 //	private static final String[] PRINCIPAL_KEYS = new String[] { "user", "username",
 //			"userid", "user_id", "login", "id", "name" };

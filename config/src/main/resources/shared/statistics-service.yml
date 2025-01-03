@@ -3,7 +3,7 @@ security:
     client:
       clientId: statistics-service
       clientSecret: ${STATISTICS_SERVICE_PASSWORD}
-      accessTokenUri: http://auth-service:5000/uaa/oauth/token
+      accessTokenUri: http://auth-service:5000/oauth2/token
       grant-type: client_credentials
       scope: server
 
@@ -17,8 +17,6 @@ spring:
       port: 27017
 
 server:
-  servlet:
-    context-path: /statistics
   port: 7000
 
 rates:
