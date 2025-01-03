@@ -22,7 +22,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class ResourceServerConfig {
-    private final String CLIENT_ID = "account-service";
+    private final String CLIENT_ID = "statistics-service";
 
     /**
      * SecurityFilterChain을 통해 리소스 서버 설정

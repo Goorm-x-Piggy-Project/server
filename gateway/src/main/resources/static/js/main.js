@@ -287,6 +287,8 @@ function checkCurrency(currency) {
             break;
         case "EUR": currencyText="&euro;";
             break;
+        case "KRW": currencyText="&won;";
+            break;
     }
     return currencyText
 }
@@ -724,6 +726,8 @@ $("#rublesign").on("click", function() {
             break;
         case "USD": user.checkedCurr = "RUB"; $("#rublesign").css({"background-position": "-150px 0"});
             break;
+        case "KRW": user.checkedCurr = "KRW"; $("#rublesign").css({"background-position": "-150px 0"});
+            break;
     }
     changeCurrency();
     $("#savingsvalue").autoNumeric('set', Math.round (savings.freeMoney) );
@@ -904,6 +908,8 @@ function fadeStatistic() {
         case "EUR": $("#rublesign").css({"background-position": "-386px 0"});
             break;
         case "USD": $("#rublesign").css({"background-position": "-354px 0"});
+            break;
+        case "KRW": $("#rublesign").css({"background-position": "-354px 0"});
             break;
     }
     $("#savingsvalue").autoNumeric('set', savings.freeMoney);
