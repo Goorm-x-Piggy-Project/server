@@ -50,7 +50,7 @@ public class StatisticsService {
 	 * {@inheritDoc}
 	 */
 	public DataPoint save(String accountName, Account account) {
-
+		log.info("statistics Saving data point: {}", accountName);
 		Instant instant = LocalDate.now().atStartOfDay()
 				.atZone(ZoneId.systemDefault()).toInstant();
 

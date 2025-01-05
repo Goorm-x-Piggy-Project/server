@@ -59,5 +59,7 @@ public class Account {
 		this.lastSeen = LocalDate.now();
 		this.incomes = dto.getIncomes();
 		this.expenses = dto.getExpenses();
+		this.saving = dto.getSaving();
+		this.note = dto.getNote();
 	}
 }
