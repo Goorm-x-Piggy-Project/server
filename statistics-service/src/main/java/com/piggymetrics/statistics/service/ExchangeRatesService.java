@@ -90,4 +90,19 @@ public class ExchangeRatesService {
 		return amount.multiply(ratio);
 	}
 
+	private LocalDate getClosestPastWeekday(LocalDate date) {
+		DayOfWeek dayOfWeek = date.getDayOfWeek();
+
+		switch (dayOfWeek) {
+			case MONDAY: // 월요일이면 금요일로 이동
+				return date.minusDays(3);
+			case SUNDAY: // 일요일이면 금요일로 이동
+				return date.minusDays(2);
+			case SATURDAY: // 토요일이면 금요일로 이동
+				return date.minusDays(1);
+			default: // 평일(화~금)은 하루 전으로 이동
+				return date.minusDays(1);
+		}
+	}
+
 }
