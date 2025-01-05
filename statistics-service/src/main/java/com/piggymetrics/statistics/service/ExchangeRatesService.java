@@ -9,6 +9,7 @@ import com.piggymetrics.statistics.domain.ExchangeRatesContainer.ExchangeRate;
 import com.piggymetrics.statistics.exception.CustomException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -54,8 +55,11 @@ public class ExchangeRatesService {
 	public Map<Currency, BigDecimal> getCurrentRates() {
 
 		if (exchangeRates == null || exchangeRates.isEmpty()) {
-			String today = LocalDate.now().toString().replace("-", "");
-			exchangeRates = client.getRates(authKey, today, "AP01");
+			LocalDate now = LocalDate.now();
+			LocalDate closestPastWeekday = getClosestPastWeekday(now);
+
+			String searchDate = closestPastWeekday.toString().replace("-", "");
+			exchangeRates = client.getRates(authKey, searchDate, "AP01");
 			log.info("Exchange rates updated: {}", exchangeRates);
 		}
 
@@ -84,6 +88,21 @@ public class ExchangeRatesService {
 		BigDecimal ratio = fromRate.divide(toRate, 4, RoundingMode.HALF_UP);
 
 		return amount.multiply(ratio);
+	}
+
+	private LocalDate getClosestPastWeekday(LocalDate date) {
+		DayOfWeek dayOfWeek = date.getDayOfWeek();
+
+		switch (dayOfWeek) {
+			case MONDAY: // 월요일이면 금요일로 이동
+				return date.minusDays(3);
+			case SUNDAY: // 일요일이면 금요일로 이동
+				return date.minusDays(2);
+			case SATURDAY: // 토요일이면 금요일로 이동
+				return date.minusDays(1);
+			default: // 평일(화~금)은 하루 전으로 이동
+				return date.minusDays(1);
+		}
 	}
 
 }

@@ -2,7 +2,7 @@ package com.piggymetrics.account.domain;
 
 public enum Currency {
 
-	USD, EUR, RUB, KRW;
+	USD, EUR, KRW, JPY;
 
 	public static Currency getDefault() {
 		return KRW;
