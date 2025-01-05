@@ -15,10 +15,10 @@ spring:
             client-secret: ${ACCOUNT_SERVICE_PASSWORD}
             authorization-grant-type: client_credentials
             scope: server
-            token-uri: http://auth-service:5000/oauth2/token
         provider:
           auth-service:
             issuer-uri: http://auth-service:5000
+            token-uri: http://auth-service:5000/oauth2/token
       resourceserver:
         jwt:
           issuer-uri: http://auth-service:5000

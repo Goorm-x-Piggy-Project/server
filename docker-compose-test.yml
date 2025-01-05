@@ -176,8 +176,8 @@ services:
     environment:
       MONGO_INITDB_DATABASE: authdb
       MONGODB_PASSWORD: ${MONGODB_PASSWORD}
-#    volumes:
-#      - auth-mongodb:/data/db
+#   volumes:
+#     - auth-mongodb:/data/db
     ports:
       - 25000:27017
     networks:

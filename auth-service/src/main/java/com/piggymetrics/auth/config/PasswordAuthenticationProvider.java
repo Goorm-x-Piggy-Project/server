@@ -133,6 +133,7 @@ public class PasswordAuthenticationProvider implements AuthenticationProvider {
             attrib.put("refresh_expires_in", duration.getSeconds());
         }
 
+        log.info("User {}에 대해 액세스 토큰 발급 완료: {}", clientPrincipal.getName(), accessToken.getTokenValue());
         return new OAuth2AccessTokenAuthenticationToken(
                 registeredClient,
                 clientPrincipal,
