@@ -100,7 +100,7 @@ input[type="text"], input[type="password"], textarea {
 }
 *:focus {outline:0px none transparent;}
 
-#bubble, #indicator, #save, #piggyicon, #rublesign, .arrowup, .arrowdown, .incomes-sprite-title, .close-sign, .modal-save-icon, #modaldeletecross, .initicons-arrow, .expenses-sprite-title, .savings-sprite-title, .triangle, .noUi-handle, .noUi-handle:after  {
+#bubble, #indicator, #save, #piggyicon, #krwsign, .arrowup, .arrowdown, .incomes-sprite-title, .close-sign, .modal-save-icon, #modaldeletecross, .initicons-arrow, .expenses-sprite-title, .savings-sprite-title, .triangle, .noUi-handle, .noUi-handle:after  {
 	background-size: 538px 84px;
 }
 #chooseicon, .itembackground, .iconbox, .itemlinebackground, #circle-select-1-back, #circle-select-2-back, #circle-select-3-back {
@@ -627,7 +627,7 @@ input {
 	font-size: 38px;
 	padding: 0;
 }
-#rublesign {
+#krwsign {
 	cursor: pointer;
 	background-size: 538px 84px;
 	display: inline-block;
@@ -636,7 +636,7 @@ input {
 	position: relative;
 	z-index: 1000;
 }
-#rublebox {
+#krwbox {
 	top: 135px;
 	width: 30%;
 	height: 40px;
@@ -1556,7 +1556,7 @@ input#deposit:checked + label.button:after, input#capitalization:checked + label
 .wallet {background-position: 0 0;}
 .case {background-position: -860px 0;}
 
-.rub {background-position: -215px 0;}
+.krw {background-position: -215px 0;}
 .euro {background-position: -645px 0;}
 .doll {background-position: -774px 0;}
 .gbp {background-position: -559px 0;}
@@ -2517,7 +2517,7 @@ input#deposit:checked + label.button:after, input#capitalization:checked + label
 	width: 170px;
 	height: 42px;
 }
-#rubcurr, #eurcurr, #usdcurr {
+#krwcurr, #eurcurr, #usdcurr {
 	vertical-align: top;
 	text-align: center;
 	position: relative;
@@ -2531,7 +2531,7 @@ input#deposit:checked + label.button:after, input#capitalization:checked + label
 	margin-right: 7px;
 	line-height: 43px;
 }
-#rubcurr:hover, #eurcurr:hover, #usdcurr:hover {
+#krwcurr:hover, #eurcurr:hover, #usdcurr:hover {
 	border: 2px solid #f6f6f6;
 }
 .currunchecked {
