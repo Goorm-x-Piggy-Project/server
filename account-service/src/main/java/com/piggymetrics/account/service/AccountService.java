@@ -50,13 +50,14 @@ public class AccountService {
 		log.info("new account has been created: " + account.getName());
 	}
 
-	@Transactional
+//	@Transactional
 	public void saveChanges(String name, AccountReqDto update) {
 
 		log.info("username is {}", name);
 		Account account = checkIfAccountNotExists(name);
 
 		account.updateAccount(update);
+		repository.save(account);
 
 		log.info("account {} changes has been saved", name);
 		log.info("Received account: {}", account);

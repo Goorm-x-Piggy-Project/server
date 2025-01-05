@@ -10,7 +10,6 @@ import org.bson.types.ObjectId;
 @Getter
 public class ItemResDto {
 
-    private ObjectId id;
     private String title;
     private Long amount;
     private Currency currency;
@@ -18,8 +17,7 @@ public class ItemResDto {
     private String icon;
 
     @Builder
-    private ItemResDto(ObjectId id, String title, Long amount, Currency currency, TimePeriod period, String icon) {
-        this.id = id;
+    private ItemResDto(String title, Long amount, Currency currency, TimePeriod period, String icon) {
         this.title = title;
         this.amount = amount;
         this.currency = currency;
@@ -29,7 +27,6 @@ public class ItemResDto {
 
     public static ItemResDto fromEntity(Item item) {
         return ItemResDto.builder()
-            .id(item.getId())
             .title(item.getTitle())
             .amount(item.getAmount())
             .currency(item.getCurrency())

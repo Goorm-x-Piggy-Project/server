@@ -9,7 +9,7 @@ import org.bson.types.ObjectId;
 @Getter
 public class SavingResDto {
 
-    private ObjectId id;
+//    private ObjectId id; 이거 그냥 값 타입이어서 id 필요 없을 듯
 
     private Long amount;
 
@@ -22,8 +22,7 @@ public class SavingResDto {
     private Boolean capitalization;
 
     @Builder
-    private SavingResDto(ObjectId id, Long amount, Currency currency, Long interest, Boolean deposit, Boolean capitalization) {
-        this.id = id;
+    private SavingResDto(Long amount, Currency currency, Long interest, Boolean deposit, Boolean capitalization) {
         this.amount = amount;
         this.currency = currency;
         this.interest = interest;
@@ -33,7 +32,6 @@ public class SavingResDto {
 
     public static SavingResDto fromEntity(Saving saving) {
         return SavingResDto.builder()
-            .id(saving.getId())
             .amount(saving.getAmount())
             .currency(saving.getCurrency())
             .interest(saving.getInterest())

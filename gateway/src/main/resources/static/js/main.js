@@ -18,6 +18,10 @@ function initAccount(account) {
             AddExpense(j + 1, account.expenses[j].title, account.expenses[j].icon, account.expenses[j].currency, account.expenses[j].period, account.expenses[j].amount);
         }
     }
+
+    // 디버깅 용도(추후 제거)
+    console.log("User 정보 생성: ", JSON.stringify(user));
+    console.log("Savings 정보 생성: ", JSON.stringify(savings));
 }
 
 function User(username, lastSeen, currency, note) {
@@ -167,7 +171,7 @@ function greetingPageAgain() {
     });
     $("#righttitle, #lefttitle").empty();
     $("#righttitle").append('<span class="bluetext">last seen: </span>' + user.lastSeen);
-    $("#lefttitle").append(escape(uuserser.login) + '<span class="bluetext"> metrics</span>');
+    $("#lefttitle").append(escape(user.login) + '<span class="bluetext"> metrics</span>');
 }
 function showGreetingUnits() {
     $("#lefttitle").fadeIn(500);
