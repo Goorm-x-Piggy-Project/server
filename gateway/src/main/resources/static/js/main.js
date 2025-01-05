@@ -283,7 +283,7 @@ function checkPeriod(period) {
 function checkCurrency(currency) {
     var currencyText;
     switch (currency) {
-        case "KRW": currencyText="rub.";
+        case "KRW": currencyText="krw.";
             break;
         case "USD": currencyText="$";
             break;
