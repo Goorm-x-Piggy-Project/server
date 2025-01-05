@@ -5,7 +5,6 @@ package com.piggymetrics.notification.config;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 import feign.RequestInterceptor;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -31,7 +30,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class ResourceServerConfig {
-    private final String CLIENT_ID = "account-service";
+    private final String CLIENT_ID = "notification-service";
 
     /**
      * SecurityFilterChain을 통해 리소스 서버 설정
