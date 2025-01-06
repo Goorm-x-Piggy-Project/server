@@ -1,10 +1,10 @@
-package com.piggymetrics.account.dto;
+package com.piggymetrics.statistics.dto;
 
-import com.piggymetrics.account.domain.Item;
-import com.piggymetrics.account.domain.Saving;
-import lombok.Getter;
-
+import com.piggymetrics.statistics.domain.Item;
 import java.util.List;
+
+import com.piggymetrics.statistics.domain.Saving;
+import lombok.Getter;
 
 @Getter
 public class AccountReqDto {
