@@ -43,6 +43,13 @@ spring:
           filters:
             - StripPrefix=2
 
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/recipients/**
+          filters:
+            - StripPrefix=0
+
 eureka:
   instance:
     prefer-ip-address: true
