@@ -44,15 +44,41 @@ spring:
           auth: true
           starttls:
             enable: true
+#  data:
+#    mongodb:
+#      host: notification-mongodb
+#      port: 27017
+#      database: notificationdb
+##      username: user
+##      password: ${MONGODB_PASSWORD}
+#      socket-timeout: 300000 # 타임아웃 설정 (밀리초)
+#      connect-timeout: 30000
+#  data:
+#    mongodb:
+#      host: localhost
+#      port: 27017
+#      authentication-database: admin
+#      database: piggymetrics
+#      username: user
+#      password: password
+#      socket-timeout: 30000 # 밀리초 (30초)
+#      connect-timeout: 10000 # 밀리초 (10초)
+
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest
+    connection-timeout: 10000
 
 email:
   from: your-email@example.com
 
-backup:
-  cron: "0 0 12 * * ?" # 매일 12시에 실행
-
-remind:
-  cron: "0 0 18 * * ?" # 매일 18시에 실행
+#backup:
+#  cron: "0 0 12 * * ?" # 매일 12시에 실행
+#
+#remind:
+#  cron: "0 0 18 * * ?" # 매일 18시에 실행
 
 eureka:
   client:
@@ -65,3 +91,4 @@ logging:
   level:
     root: INFO
     com.example: DEBUG
+    org.springframework.cloud.gateway: DEBUG

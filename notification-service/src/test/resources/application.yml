@@ -23,9 +23,14 @@ spring:
           auth: true
           starttls.enable: true
 
-  cloud:
-    config:
-      enabled: false
+  data:
+    mongodb:
+      database: piggymetrics
+      port: 0
+
+#  cloud:
+#    config:
+#      enabled: false
 
 email:
   from: your-email@example.com
