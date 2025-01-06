@@ -11,7 +11,7 @@ server:
   port: 9000
 
 remind:
-  cron: 0 0 0 * * *
+  cron: 0 0 18 * * *
   email:
     text: "Hey, {0}! We''ve missed you here on PiggyMetrics. It''s time to check your budget statistics.\r\n\r\nCheers,\r\nPiggyMetrics team"
     subject: PiggyMetrics reminder

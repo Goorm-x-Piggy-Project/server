@@ -201,6 +201,8 @@ services:
     depends_on:
       - config
       - notification-mongodb
+      - auth-service
+      - registry
     networks:
       - msa-network
 
