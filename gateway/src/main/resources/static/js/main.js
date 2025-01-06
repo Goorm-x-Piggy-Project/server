@@ -868,7 +868,7 @@ function launchStatistic() {
 function jsonDataSave() {
     if (global.savePermit) {
         $.ajax({
-            url: 'accounts/current',
+            url: 'api/v1/account/current',
             datatype: 'json',
             type: "put",
             contentType: "application/json",
@@ -909,7 +909,7 @@ function fadeStatistic() {
             break;
     }
     $("#savingsvalue").autoNumeric('set', savings.freeMoney);
-    movekrw();
+    moveKrw();
 
     $(".toppage, .bottompage").removeClass("sectionDown");
     setTimeout(function() { $("#lastlogoflipper").removeClass("flippedcard"); }, 220);
