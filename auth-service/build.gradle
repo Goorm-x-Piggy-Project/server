@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '3.3.6'
     id 'io.spring.dependency-management' version '1.1.3'
     id 'java'
+    id 'jacoco'
 }
 
 configurations {
@@ -45,8 +46,18 @@ dependencies {
     testImplementation 'com.jayway.jsonpath:json-path'
 }
 
+// 테스트 수행 시 JaCoCo 리포트 생성
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
 }
 
 tasks.register("prepareKotlinBuildScriptModel"){}

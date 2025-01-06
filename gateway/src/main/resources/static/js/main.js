@@ -878,7 +878,7 @@ function jsonDataSave() {
             datatype: 'json',
             type: "put",
             contentType: "application/json",
-            headers: {'Authorization': 'Bearer ' + getOauthTokenFromStorage()},
+            headers: {'Authorization': 'Bearer ' + getAccessTokenFromStorage()},
             data: JSON.stringify({
                 note: user.notes,
                 incomes: $.map(incomes, function(value) {return [value]}),

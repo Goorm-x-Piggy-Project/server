@@ -47,7 +47,6 @@ public class RegisteredClientRepositoryConfig {
                 .scopes(scopes -> scopes.add("server"))
                 .tokenSettings(TokenSettings.builder()
                         .accessTokenTimeToLive(Duration.ofMinutes(30))
-                        .refreshTokenTimeToLive(Duration.ofHours(1))
                         .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED) // JWT 사용
                         .build())
                 .build();
@@ -60,7 +59,6 @@ public class RegisteredClientRepositoryConfig {
                 .scopes(scopes -> scopes.add("server"))
                 .tokenSettings(TokenSettings.builder()
                         .accessTokenTimeToLive(Duration.ofMinutes(30))
-                        .refreshTokenTimeToLive(Duration.ofHours(1))
                         .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED) // JWT 사용
                         .build())
                 .build();
@@ -73,7 +71,6 @@ public class RegisteredClientRepositoryConfig {
                 .scopes(scopes -> scopes.add("server"))
                 .tokenSettings(TokenSettings.builder()
                         .accessTokenTimeToLive(Duration.ofMinutes(30))
-                        .refreshTokenTimeToLive(Duration.ofHours(1))
                         .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED) // JWT 사용
                         .build())
                 .build();

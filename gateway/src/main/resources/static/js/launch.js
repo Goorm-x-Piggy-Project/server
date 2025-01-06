@@ -26,7 +26,11 @@ function requestOauthToken(username, password) {
 			grant_type: 'password'
 		},
 		success: function (data) {
-			localStorage.setItem('token', data.access_token);
+			localStorage.setItem('access_token', data.access_token);
+			if (data.refresh_token) {
+				localStorage.setItem('refresh_token', data.refresh_token);
+				console.log("리프레시 토큰 저장");
+			}
 			success = true;
 		},
 		error: function () {
@@ -37,12 +41,71 @@ function requestOauthToken(username, password) {
 	return success;
 }
 
-function getOauthTokenFromStorage() {
-	return localStorage.getItem('token');
+function isTokenExpired(token) {
+	var payload = JSON.parse(atob(token.split('.')[1])); // JWT payload 디코딩
+	var currentTime = Math.floor(Date.now() / 1000);
+	console.log("액세스 토큰 만료 체크: 만료 시간: " + payload.exp + ", 현재 시간: " + currentTime);
+	return payload.exp < currentTime;
+}
+
+function refreshAccessToken() {
+	var success = false;
+	var refreshToken = localStorage.getItem('refresh_token');
+
+	if (!refreshToken) {
+		console.error('리프레시 토큰이 없습니다.');
+		return success;
+	}
+
+	$.ajax({
+		url: 'oauth2/token',
+		datatype: 'json',
+		type: 'post',
+		headers: {'Authorization': 'Basic YnJvd3Nlcjpicm93c2VyLXBhc3N3b3Jk'}, // clientId:clientSecret
+		async: false,
+		data: {
+			grant_type: 'refresh_token',
+			username: username,
+			password: password,
+			refresh_token: refreshToken,
+			scope: 'ui'
+		},
+		success: function (data) {
+			// 새 액세스 토큰 및 리프레시 토큰 저장
+			localStorage.setItem('access_token', data.access_token);
+			if (data.refresh_token) {
+				localStorage.setItem('refresh_token', data.refresh_token);
+				console.log("저장된 refresh token: " + data.refresh_token); // 추후 제거
+			}
+			success = true;
+		},
+		error: function () {
+			console.error('리프레시 토큰으로 새 액세스 토큰을 갱신하지 못했습니다.');
+			removeOauthTokenFromStorage();
+		}
+	});
+
+	return success;
+}
+
+function getAccessTokenFromStorage() {
+	var accessToken = localStorage.getItem('access_token');
+
+	if (!accessToken || isTokenExpired(accessToken)) {
+		console.log('액세스 토큰이 만료되었습니다. 리프레시 토큰을 사용해 갱신합니다.');
+		if (!refreshAccessToken()) {
+			console.error('액세스 토큰 갱신 실패');
+			return null;
+		}
+		accessToken = localStorage.getItem('access_token');
+	}
+
+	return accessToken;
 }
 
 function removeOauthTokenFromStorage() {
-    return localStorage.removeItem('token');
+	localStorage.removeItem('refresh_token');
+    return localStorage.removeItem('access_token');
 }
 
 /**
@@ -51,7 +114,7 @@ function removeOauthTokenFromStorage() {
 
 function getCurrentAccount() {
 
-	var token = getOauthTokenFromStorage();
+	var token = getAccessTokenFromStorage();
 	var account = null;
 
 	if (token) {
