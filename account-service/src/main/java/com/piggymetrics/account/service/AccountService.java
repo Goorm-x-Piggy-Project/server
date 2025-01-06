@@ -32,8 +32,7 @@ public class AccountService {
 	@Transactional(readOnly = true)
 	public AccountResDto findByName(String accountName) {
 		Account account =  checkIfAccountNotExists(accountName);
-		AccountResDto accountResDto = AccountResDto.fromEntity(account);
-		return accountResDto;
+		return AccountResDto.fromEntity(account);
 	}
 
 	public void create(UserReqDto userReqDto) {
@@ -50,7 +49,7 @@ public class AccountService {
 		log.info("new account has been created: " + account.getName());
 	}
 
-	@Transactional
+	//@Transactional
 	public void saveChanges(String name, AccountReqDto update) {
 
 		log.info("username is {}", name);
@@ -60,6 +59,7 @@ public class AccountService {
 
 		log.info("account {} changes has been saved", name);
 		log.info("Received account: {}", account);
+		repository.save(account);
 
 		statisticsClient.updateStatistics(name, account);
 	}
