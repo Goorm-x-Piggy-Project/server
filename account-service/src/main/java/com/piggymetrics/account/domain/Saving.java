@@ -12,9 +12,6 @@ import org.springframework.data.annotation.Id;
 @Getter
 public class Saving {
 
-//	@Id
-//	private ObjectId id;
-
 	@NotNull
 	private Long amount;
 

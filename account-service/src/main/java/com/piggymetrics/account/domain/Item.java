@@ -12,9 +12,6 @@ import org.springframework.data.annotation.Id;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Item {
 
-//	@Id
-//	private ObjectId id; // Item이 컬렉션이 아니라 그냥 값인거 같음
-
 	@NotNull
 	@Size(min = 1, max = 20)
 	private String title;
