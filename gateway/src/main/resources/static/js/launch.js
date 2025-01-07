@@ -53,7 +53,7 @@ function refreshAccessToken() {
 	var refreshToken = localStorage.getItem('refresh_token');
 
 	if (!refreshToken) {
-		console.error('리프레시 토큰이 없습니다.');
+		// console.error('리프레시 토큰이 없습니다.');
 		return success;
 	}
 
@@ -75,7 +75,7 @@ function refreshAccessToken() {
 			localStorage.setItem('access_token', data.access_token);
 			if (data.refresh_token) {
 				localStorage.setItem('refresh_token', data.refresh_token);
-				console.log("저장된 refresh token: " + data.refresh_token); // 추후 제거
+				// console.log("저장된 refresh token: " + data.refresh_token); // 추후 제거
 			}
 			success = true;
 		},
@@ -92,9 +92,7 @@ function getAccessTokenFromStorage() {
 	var accessToken = localStorage.getItem('access_token');
 
 	if (!accessToken || isTokenExpired(accessToken)) {
-		console.log('액세스 토큰이 만료되었습니다. 리프레시 토큰을 사용해 갱신합니다.');
 		if (!refreshAccessToken()) {
-			console.error('액세스 토큰 갱신 실패');
 			return null;
 		}
 		accessToken = localStorage.getItem('access_token');
