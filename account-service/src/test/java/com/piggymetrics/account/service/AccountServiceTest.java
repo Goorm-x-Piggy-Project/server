@@ -1,80 +1,68 @@
-//package com.piggymetrics.account.service;
-//
-//import com.piggymetrics.account.client.AuthServiceClient;
-//import com.piggymetrics.account.client.StatisticsServiceClient;
-//import com.piggymetrics.account.domain.*;
-//import com.piggymetrics.account.repository.AccountRepository;
-//import org.junit.Before;
-//import org.junit.Test;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//
-//import java.math.BigDecimal;
-//import java.util.Arrays;
-//
-//import static org.junit.Assert.assertEquals;
-//import static org.junit.Assert.assertNotNull;
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.junit.jupiter.api.Assertions.assertNotNull;
-//import static org.mockito.Mockito.*;
-//import static org.mockito.MockitoAnnotations.initMocks;
-//
-//public class AccountServiceTest {
-//
-//	@InjectMocks
-//	private AccountServiceImpl accountService;
-//
-//	@Mock
-//	private StatisticsServiceClient statisticsClient;
-//
-//	@Mock
-//	private AuthServiceClient authClient;
-//
-//	@Mock
-//	private AccountRepository repository;
-//
-//	@Before
-//	public void setup() {
-//		initMocks(this);
-//	}
-//
-//	@Test
-//	public void shouldFindByName() {
-//
-//		final Account account = new Account();
-//		account.setName("test");
-//
-//		when(accountService.findByName(account.getName())).thenReturn(account);
-//		Account found = accountService.findByName(account.getName());
-//
-//		assertEquals(account, found);
-//	}
-//
-//	@Test(expected = IllegalArgumentException.class)
-//	public void shouldFailWhenNameIsEmpty() {
-//		accountService.findByName("");
-//	}
-//
-//	@Test
-//	public void shouldCreateAccountWithGivenUser() {
-//
-//		User user = new User();
-//		user.setUsername("test");
-//
-//		Account account = accountService.create(user);
-//
-//		assertEquals(user.getUsername(), account.getName());
-//		assertEquals(0, account.getSaving().getAmount().intValue());
-//		assertEquals(Currency.getDefault(), account.getSaving().getCurrency());
-//		assertEquals(0, account.getSaving().getInterest().intValue());
-//		assertEquals(false, account.getSaving().getDeposit());
-//		assertEquals(false, account.getSaving().getCapitalization());
-//		assertNotNull(account.getLastSeen());
-//
-//		verify(authClient, times(1)).createUser(user);
-//		verify(repository, times(1)).save(account);
-//	}
-//
+package com.piggymetrics.account.service;
+
+import com.piggymetrics.account.client.AuthServiceClient;
+import com.piggymetrics.account.client.StatisticsServiceClient;
+import com.piggymetrics.account.domain.*;
+import com.piggymetrics.account.dto.AccountResDto;
+import com.piggymetrics.account.dto.UserReqDto;
+import com.piggymetrics.account.repository.AccountRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
+
+public class AccountServiceTest {
+
+	@InjectMocks
+	private AccountService accountService;
+
+	@Mock
+	private StatisticsServiceClient statisticsClient;
+
+	@Mock
+	private AuthServiceClient authClient;
+
+	@Mock
+	private AccountRepository repository;
+
+    private List<Item> incomes = new ArrayList<>();
+    private List<Item> expenses = new ArrayList<>();
+
+	@BeforeEach
+	public void setup() {
+		initMocks(this);
+	}
+
+	@Test
+	public void shouldFindByName() {
+
+        Saving saving = new Saving(0L, Currency.getDefault(), 0L, false,false);
+        Account account = new Account("name", incomes, expenses, saving);
+
+		when(accountService.findByName(account.getName())).thenReturn(AccountResDto.fromEntity(account));
+        AccountResDto dto = accountService.findByName(account.getName());
+
+        assertEquals(account, dto);
+	}
+
+	@Test
+	public void shouldCreateAccountWithGivenUser() {
+
+		UserReqDto user = new UserReqDto();
+
+		accountService.create(user);
+
+		verify(authClient, times(1)).createUser(user);
+	}
+
 //	@Test
 //	public void shouldSaveChangesWhenUpdatedAccountGiven() {
 //
@@ -148,4 +136,4 @@
 //		when(accountService.findByName("test")).thenReturn(null);
 //		accountService.saveChanges("test", update);
 //	}
-//}
+}
