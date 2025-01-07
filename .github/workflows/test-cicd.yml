@@ -1,0 +1,74 @@
+name: Deploy to EC2 with Docker Compose
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      CONFIG_SERVICE_PASSWORD: ${{ env.CONFIG_SERVICE_PASSWORD }}
+      BROWSER_CLIENT_PASSWORD: ${{ env.BROWSER_CLIENT_PASSWORD }}
+      NOTIFICATION_SERVICE_PASSWORD: ${{ env.NOTIFICATION_SERVICE_PASSWORD }}
+      STATISTICS_SERVICE_PASSWORD: ${{ env.STATISTICS_SERVICE_PASSWORD }}
+      ACCOUNT_SERVICE_PASSWORD: ${{ env.ACCOUNT_SERVICE_PASSWORD }}
+      MONGODB_PASSWORD: ${{ env.MONGODB_PASSWORD }}
+
+    steps:
+    # 1. 소스 코드를 체크아웃
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 2. JDK 설치
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'coretto'
+
+    - name: Grant Execute Permission For Gradlew
+      run: chmod +x gradlew
+
+    # 3. Gradle 빌드
+    - name: Build with Gradle
+      run: ./gradlew build
+
+    # 4. Docker 로그인 (Docker Hub 사용)
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    # 5. 이미지 푸시를 위해 깃으로부터 tag, label 추출
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@v5.6.1
+      with:
+        images: ${{ secrets.DOCKERHUB_USERNAME }}/goormmetrics-img
+            
+    # 6. Docker Compose로 이미지 빌드 및 푸시
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+
+    # 7. SSH로 EC2 연결 및 배포
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v1.2.0
+      with:
+        key: ${{secrets.EC2_KEY}}
+        host: ${{secrets.EC2_HOST}}
+        username: ubuntu
+        script: |
+          whoami
+          sudo docker login -u ${{secrets.DOCKERHUB_USERNAME}} -p ${{secrets.DOCKERHUB_TOKEN}}
+          sudo docker pull ${{secrets.DOCKERHUB_USERNAME}}/goormmetrics
+          sudo docker-compose -f ./docker-compose-test.yml build
+          sudo docker-compose -f ./docker-compose-test.yml up -d
