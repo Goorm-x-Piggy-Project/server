@@ -39,7 +39,12 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
-    implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
+
+    // Resilience4j (Hystrix 대체)
+    implementation 'io.github.resilience4j:resilience4j-spring-boot3:2.0.2'
+
+    // Metrics 정보 공개 및 수집
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 
     // 테스트 의존성
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
