@@ -90,8 +90,9 @@ function refreshAccessToken() {
 
 function getAccessTokenFromStorage() {
 	var accessToken = localStorage.getItem('access_token');
-
-	if (!accessToken || isTokenExpired(accessToken)) {
+	if(!accessToken) {
+		return null;
+	} else if (isTokenExpired(accessToken)) {
 		if (!refreshAccessToken()) {
 			return null;
 		}

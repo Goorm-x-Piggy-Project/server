@@ -4,6 +4,8 @@ import com.piggymetrics.statistics.domain.Currency;
 import com.piggymetrics.statistics.domain.ExchangeRatesContainer;
 import com.piggymetrics.statistics.domain.ExchangeRatesContainer.ExchangeRate;
 import java.util.List;
+
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Primary;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface ExchangeRatesClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/")
+    @CircuitBreaker(name = "default")
     List<ExchangeRate> getRates(
             @RequestParam("authkey") String authKey,
             @RequestParam("searchdate") String searchDate,
