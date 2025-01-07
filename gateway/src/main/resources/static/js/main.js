@@ -205,7 +205,7 @@ function addSavings() {
     $("#percentvalue").val(savings.percent);
     $("#savingsvalue").autoNumeric("init");
     $("#percentvalue").autoNumeric("init");
-    moveRuble();
+    moveKrw();
 }
 
 // Filling Incomes and Expenses columns
@@ -287,13 +287,11 @@ function checkPeriod(period) {
 function checkCurrency(currency) {
     var currencyText;
     switch (currency) {
-        case "RUB": currencyText="rub.";
+        case "KRW": currencyText="krw.";
             break;
         case "USD": currencyText="$";
             break;
         case "EUR": currencyText="&euro;";
-            break;
-        case "KRW": currencyText="&won;";
             break;
     }
     return currencyText
@@ -703,41 +701,39 @@ $("#deposit").click(function() {
         $("#percentvalue").prop('disabled', false);
     }
 });
-// SAVINGS: Moving ruble sign according to input value length
-$("#savingsvalue").bind("keyup keydown keypress select click", function() {savings.freeMoney = $("#savingsvalue").autoNumeric("get"); moveRuble();}).keyup(function(e) { if (e.which == 13) {	this.blur() } });
-function moveRuble() {
+// SAVINGS: Moving krw sign according to input value length
+$("#savingsvalue").bind("keyup keydown keypress select click", function() {savings.freeMoney = $("#savingsvalue").autoNumeric("get"); moveKrw();}).keyup(function(e) { if (e.which == 13) {	this.blur() } });
+function moveKrw() {
     var length=$("#savingsvalue").val().length;
     length = (length<2)? 1: length;
     $("#savingsvalue").attr('size', length);
     if (length > 9) {
         $("#savingsvalue").css({"font-size": "31px"});
-        $("#rublesign").css({"left": (length*15 + 17) + "px", "top": "115px"});
+        $("#krwsign").css({"left": (length*15 + 17) + "px", "top": "115px"});
     }
     else if (length > 7 ) {
         $("#savingsvalue").css({"font-size": "38px"});
-        $("#rublesign").css({"left": (length*18 + 18) + "px", "top": "120px"});
+        $("#krwsign").css({"left": (length*18 + 18) + "px", "top": "120px"});
     }
     else {
         $("#savingsvalue").css({"font-size": "44px"});
-        $("#rublesign").css({"left": (length*22 + 20) + "px", "top": "125px"});
+        $("#krwsign").css({"left": (length*22 + 20) + "px", "top": "125px"});
     }
 }
 
 //SAVINGS: change currency on sign click
-$("#rublesign").on("click", function() {
+$("#krwsign").on("click", function() {
     switch (user.checkedCurr) {
-        case "RUB": user.checkedCurr = "EUR"; $("#rublesign").css({"background-position": "-386px 0"});
+        case "KRW": user.checkedCurr = "EUR"; $("#krwsign").css({"background-position": "-386px 0"});
             break;
-        case "EUR": user.checkedCurr = "USD"; $("#rublesign").css({"background-position": "-354px 0"});
+        case "EUR": user.checkedCurr = "USD"; $("#krwsign").css({"background-position": "-354px 0"});
             break;
-        case "USD": user.checkedCurr = "RUB"; $("#rublesign").css({"background-position": "-150px 0"});
-            break;
-        case "KRW": user.checkedCurr = "KRW"; $("#rublesign").css({"background-position": "-150px 0"});
+        case "USD": user.checkedCurr = "KRW"; $("#krwsign").css({"background-position": "-150px 0"});
             break;
     }
     changeCurrency();
     $("#savingsvalue").autoNumeric('set', Math.round (savings.freeMoney) );
-    moveRuble();
+    moveKrw();
     // Update savings slider
     $('#savings-slider').noUiSlider({
         start: (incomesSumMonth-expensesSumMonth) * $("#savings-slider").data("checkedPercent"),
@@ -909,17 +905,15 @@ function jsonDataSave() {
 function fadeStatistic() {
 
     switch (user.checkedCurr) {
-        case "RUB": $("#rublesign").css({"background-position": "-150px 0"});
+        case "KRW": $("#krwsign").css({"background-position": "-150px 0"});
             break;
-        case "EUR": $("#rublesign").css({"background-position": "-386px 0"});
+        case "EUR": $("#krwsign").css({"background-position": "-386px 0"});
             break;
-        case "USD": $("#rublesign").css({"background-position": "-354px 0"});
-            break;
-        case "KRW": $("#rublesign").css({"background-position": "-354px 0"});
+        case "USD": $("#krwsign").css({"background-position": "-354px 0"});
             break;
     }
     $("#savingsvalue").autoNumeric('set', savings.freeMoney);
-    moveRuble();
+    moveKrw();
 
     $(".toppage, .bottompage").removeClass("sectionDown");
     setTimeout(function() { $("#lastlogoflipper").removeClass("flippedcard"); }, 220);
