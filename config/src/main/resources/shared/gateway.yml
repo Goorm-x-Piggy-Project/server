@@ -22,10 +22,11 @@ spring:
             - Path=/api/v1/account/**
           filters:
             - StripPrefix=0
+
         - id: auth-service
           uri: lb://auth-service
           predicates:
-            - Path=/oauth2/**,/api/v1/users/**,'.well-known/**'
+            - Path=/oauth2/**,/api/v1/users/**,'/.well-known/**'
           filters:
             - StripPrefix=0
 

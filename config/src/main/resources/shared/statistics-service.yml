@@ -33,3 +33,13 @@ server:
 rates:
   url: https://www.koreaexim.go.kr/site/program/financial/exchangeJSON
   authkey: nY5T9XKTkiWkFBxsbrm4ZzUQZzPv1R7Z
+
+resilience4j: # 테스트 필요
+  circuitbreaker:
+    instances:
+      default:
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 10 # 10번째 호출부터 실패율 계산 시작(default: 100)
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 5 # half open 상태에서 5번 호출이 성공하면 circuit closed 상태로 전환
