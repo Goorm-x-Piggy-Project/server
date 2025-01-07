@@ -133,9 +133,11 @@ function initGreetingPage() {
 
 function initSettingsPage() {
     switch (user.checkedCurr) {
-        case "KRW": $("#rublesign").css({"background-position": "-386px 0"});
+        case "KRW": $("#krwsign").css({"background-position": "-150px 0"});
             break;
-        case "USD": $("#rublesign").css({"background-position": "-354px 0"});
+        case "EUR": $("#krwsign").css({"background-position": "-386px 0"});
+            break;
+        case "USD": $("#krwsign").css({"background-position": "-354px 0"});
             break;
     }
 

@@ -100,7 +100,7 @@ input[type="text"], input[type="password"], textarea {
 }
 *:focus {outline:0px none transparent;}
 
-#bubble, #indicator, #save, #piggyicon, #rublesign, .arrowup, .arrowdown, .incomes-sprite-title, .close-sign, .modal-save-icon, #modaldeletecross, .initicons-arrow, .expenses-sprite-title, .savings-sprite-title, .triangle, .noUi-handle, .noUi-handle:after  {
+#bubble, #indicator, #save, #piggyicon, #krwsign, .arrowup, .arrowdown, .incomes-sprite-title, .close-sign, .modal-save-icon, #modaldeletecross, .initicons-arrow, .expenses-sprite-title, .savings-sprite-title, .triangle, .noUi-handle, .noUi-handle:after  {
 	background-size: 538px 84px;
 }
 #chooseicon, .itembackground, .iconbox, .itemlinebackground, #circle-select-1-back, #circle-select-2-back, #circle-select-3-back {

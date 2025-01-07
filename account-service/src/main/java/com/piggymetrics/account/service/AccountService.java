@@ -32,8 +32,7 @@ public class AccountService {
 	@Transactional(readOnly = true)
 	public AccountResDto findByName(String accountName) {
 		Account account =  checkIfAccountNotExists(accountName);
-		AccountResDto accountResDto = AccountResDto.fromEntity(account);
-		return accountResDto;
+		return AccountResDto.fromEntity(account);
 	}
 
 	public void create(UserReqDto userReqDto) {

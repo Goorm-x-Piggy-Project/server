@@ -30,7 +30,7 @@ public class ResourceServerConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/v1/statistics/rates/**").permitAll()
+                .requestMatchers("/api/v1/statistics/rates/**").permitAll() // 회원가입은 허용
                 .requestMatchers("/", "/demo").permitAll() // "/" 및 "/demo" 경로는 인증 불필요
                 .anyRequest().authenticated()             // 나머지는 인증 필요
         );
