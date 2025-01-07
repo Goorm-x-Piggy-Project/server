@@ -3,7 +3,8 @@ spring:
     initialize: false
   data:
     mongodb:
-      uri: mongodb://mongo:27017/mongo
+      uri: mongodb://account-mongodb:27017/account-mongodb?replicaSet=rs0
+      database: account-mongodb
       auto-index-creation: true
   security:
     oauth2:

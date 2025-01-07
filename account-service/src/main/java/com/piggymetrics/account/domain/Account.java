@@ -55,6 +55,14 @@ public class Account {
 		this.saving = saving;
 	}
 
+	public Account(String name, List<Item> incomes, List<Item> expenses, Saving saving) {
+		this.name = name;
+		this.lastSeen = LocalDate.now();
+		this.incomes = incomes;
+		this.expenses = expenses;
+		this.saving = saving;
+	}
+
 	public void updateAccount(AccountReqDto dto) {
 		this.lastSeen = LocalDate.now();
 		this.incomes = dto.getIncomes();
