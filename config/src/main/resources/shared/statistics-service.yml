@@ -16,6 +16,28 @@ spring:
       database: piggymetrics
       port: 27017
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, circuitbreakers, prometheus
+    security:
+      enabled: false
+    endpoint:
+      health:
+        show-details: always
+      metrics:
+        export:
+          prometheus:
+            enabled: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      default:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
 server:
   port: 7000
 
