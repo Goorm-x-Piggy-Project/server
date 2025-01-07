@@ -22,6 +22,7 @@ spring:
             - Path=/api/v1/account/**
           filters:
             - StripPrefix=0
+
         - id: auth-service
           uri: lb://auth-service
           predicates:
@@ -36,10 +37,17 @@ spring:
           filters:
             - StripPrefix=0
 
-        - id: actuator-endpoints
+        - id: account-actuator-endpoints
           uri: lb://account-service
           predicates:
             - Path=/services/account/actuator/**
+          filters:
+            - StripPrefix=2
+
+        - id: statistics-actuator-endpoints
+          uri: lb://statistics-service
+          predicates:
+            - Path=/services/statistics/actuator/**
           filters:
             - StripPrefix=2
 
@@ -49,6 +57,13 @@ spring:
             - Path=/notifications/recipients/**
           filters:
             - StripPrefix=1
+
+        - id: notification-actuator-endpoints
+          uri: lb://notification-service
+          predicates:
+            - Path=/services/notification/actuator/**
+          filters:
+            - StripPrefix=2
 
 eureka:
   instance:
