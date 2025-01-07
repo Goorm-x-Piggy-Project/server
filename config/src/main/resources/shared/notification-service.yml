@@ -6,26 +6,12 @@
 #      accessTokenUri: http://auth-service:5000/oauth2/token
 #      grant-type: client_credentials
 #      scope: server
-security:
-  oauth2:
-    client:
-      provider:
-        keycloak:
-          issuer-uri: http://localhost:9090/realms/piggymetrics
-      registration:
-        keycloak:
-          client-id: notification-service
-          client-secret: ${NOTIFICATION_SERVICE_PASSWORD}
-#          redirect-uri: http://localhost:****/login/oauth2/code/notification-service 이건 end user와 직접 통신하는 gateway에서만 필요
-
 
 server:
-  servlet:
-    context-path: /notifications
-  port: 8000
+  port: 9000
 
 remind:
-  cron: 0 0 0 * * *
+  cron: 0 0 18 * * *
   email:
     text: "Hey, {0}! We''ve missed you here on PiggyMetrics. It''s time to check your budget statistics.\r\n\r\nCheers,\r\nPiggyMetrics team"
     subject: PiggyMetrics reminder

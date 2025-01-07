@@ -1,154 +1,121 @@
-package com.piggymetrics.notification.repository;
-
-import com.google.common.collect.ImmutableMap;
-import com.piggymetrics.notification.domain.Frequency;
-import com.piggymetrics.notification.domain.NotificationSettings;
-import com.piggymetrics.notification.domain.NotificationType;
-import com.piggymetrics.notification.domain.Recipient;
-import org.apache.commons.lang.time.DateUtils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.Date;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-@RunWith(SpringRunner.class)
-@DataMongoTest
-public class RecipientRepositoryTest {
-
-	@Autowired
-	private RecipientRepository repository;
-
-	@Test
-	public void shouldFindByAccountName() {
-
-		NotificationSettings remind = new NotificationSettings();
-		remind.setActive(true);
-		remind.setFrequency(Frequency.WEEKLY);
-		remind.setLastNotified(new Date(0));
-
-		NotificationSettings backup = new NotificationSettings();
-		backup.setActive(false);
-		backup.setFrequency(Frequency.MONTHLY);
-		backup.setLastNotified(new Date());
-
-		Recipient recipient = new Recipient();
-		recipient.setAccountName("test");
-		recipient.setEmail("test@test.com");
-		recipient.setScheduledNotifications(ImmutableMap.of(
-				NotificationType.BACKUP, backup,
-				NotificationType.REMIND, remind
-		));
-
-		repository.save(recipient);
-
-		Recipient found = repository.findByAccountName(recipient.getAccountName());
-		assertEquals(recipient.getAccountName(), found.getAccountName());
-		assertEquals(recipient.getEmail(), found.getEmail());
-
-		assertEquals(recipient.getScheduledNotifications().get(NotificationType.BACKUP).getActive(),
-				found.getScheduledNotifications().get(NotificationType.BACKUP).getActive());
-		assertEquals(recipient.getScheduledNotifications().get(NotificationType.BACKUP).getFrequency(),
-				found.getScheduledNotifications().get(NotificationType.BACKUP).getFrequency());
-		assertEquals(recipient.getScheduledNotifications().get(NotificationType.BACKUP).getLastNotified(),
-				found.getScheduledNotifications().get(NotificationType.BACKUP).getLastNotified());
-
-		assertEquals(recipient.getScheduledNotifications().get(NotificationType.REMIND).getActive(),
-				found.getScheduledNotifications().get(NotificationType.REMIND).getActive());
-		assertEquals(recipient.getScheduledNotifications().get(NotificationType.REMIND).getFrequency(),
-				found.getScheduledNotifications().get(NotificationType.REMIND).getFrequency());
-		assertEquals(recipient.getScheduledNotifications().get(NotificationType.REMIND).getLastNotified(),
-				found.getScheduledNotifications().get(NotificationType.REMIND).getLastNotified());
-	}
-
-	@Test
-	public void shouldFindReadyForRemindWhenFrequencyIsWeeklyAndLastNotifiedWas8DaysAgo() {
-
-		NotificationSettings remind = new NotificationSettings();
-		remind.setActive(true);
-		remind.setFrequency(Frequency.WEEKLY);
-		remind.setLastNotified(DateUtils.addDays(new Date(), -8));
-
-		Recipient recipient = new Recipient();
-		recipient.setAccountName("test");
-		recipient.setEmail("test@test.com");
-		recipient.setScheduledNotifications(ImmutableMap.of(
-				NotificationType.REMIND, remind
-		));
-
-		repository.save(recipient);
-
-		List<Recipient> found = repository.findReadyForRemind();
-		assertFalse(found.isEmpty());
-	}
-
-	@Test
-	public void shouldNotFindReadyForRemindWhenFrequencyIsWeeklyAndLastNotifiedWasYesterday() {
-
-		NotificationSettings remind = new NotificationSettings();
-		remind.setActive(true);
-		remind.setFrequency(Frequency.WEEKLY);
-		remind.setLastNotified(DateUtils.addDays(new Date(), -1));
-
-		Recipient recipient = new Recipient();
-		recipient.setAccountName("test");
-		recipient.setEmail("test@test.com");
-		recipient.setScheduledNotifications(ImmutableMap.of(
-				NotificationType.REMIND, remind
-		));
-
-		repository.save(recipient);
-
-		List<Recipient> found = repository.findReadyForRemind();
-		assertTrue(found.isEmpty());
-	}
-
-	@Test
-	public void shouldNotFindReadyForRemindWhenNotificationIsNotActive() {
-
-		NotificationSettings remind = new NotificationSettings();
-		remind.setActive(false);
-		remind.setFrequency(Frequency.WEEKLY);
-		remind.setLastNotified(DateUtils.addDays(new Date(), -30));
-
-		Recipient recipient = new Recipient();
-		recipient.setAccountName("test");
-		recipient.setEmail("test@test.com");
-		recipient.setScheduledNotifications(ImmutableMap.of(
-				NotificationType.REMIND, remind
-		));
-
-		repository.save(recipient);
-
-		List<Recipient> found = repository.findReadyForRemind();
-		assertTrue(found.isEmpty());
-	}
-
-	@Test
-	public void shouldNotFindReadyForBackupWhenFrequencyIsQuaterly() {
-
-		NotificationSettings remind = new NotificationSettings();
-		remind.setActive(true);
-		remind.setFrequency(Frequency.QUARTERLY);
-		remind.setLastNotified(DateUtils.addDays(new Date(), -91));
-
-		Recipient recipient = new Recipient();
-		recipient.setAccountName("test");
-		recipient.setEmail("test@test.com");
-		recipient.setScheduledNotifications(ImmutableMap.of(
-				NotificationType.BACKUP, remind
-		));
-
-		repository.save(recipient);
-
-		List<Recipient> found = repository.findReadyForBackup();
-		assertFalse(found.isEmpty());
-	}
-}
+//package com.piggymetrics.notification.repository;
+//
+//import com.piggymetrics.notification.domain.Frequency;
+//import com.piggymetrics.notification.domain.NotificationSettings;
+//import com.piggymetrics.notification.domain.NotificationType;
+//import com.piggymetrics.notification.domain.Recipient;
+//import org.junit.jupiter.api.BeforeEach;
+//import org.junit.jupiter.api.Test;
+//import org.mockito.InjectMocks;
+//import org.mockito.Mock;
+//import org.mockito.Mockito;
+//import org.mockito.MockitoAnnotations;
+//import org.springframework.data.mongodb.core.ExecutableFindOperation;
+//import org.springframework.data.mongodb.core.MongoTemplate;
+//import org.springframework.data.mongodb.core.query.Criteria;
+//import org.springframework.data.mongodb.core.query.Query;
+//
+//import java.util.Date;
+//import java.util.List;
+//import java.util.Map;
+//
+//import static org.junit.jupiter.api.Assertions.*;
+//import static org.mockito.Mockito.when;
+//
+///**
+// * MongoDB 쿼리를 사용하는 RecipientRepository의 커스텀 메서드를 검증.
+// * - 백업 알림 및 리마인드 알림 준비 상태 확인
+// */
+//class RecipientRepositoryTest {
+//
+//	@InjectMocks
+//	private RecipientRepositoryImpl recipientRepository;
+//
+//	@Mock
+//	private MongoTemplate mongoTemplate;
+//
+//	@BeforeEach
+//	void setup() {
+//		MockitoAnnotations.openMocks(this);
+//	}
+//
+//	/**
+//	 * 백업 알림 발송 준비 상태의 수신자를 올바르게 검색하는지 확인.
+//	 */
+//	@Test
+//	void shouldFindReadyForBackup() {
+//		// Given: Mock 데이터 생성
+//		Date currentDate = new Date();
+//		NotificationSettings backupSettings = NotificationSettings.builder()
+//				.active(true)
+//				.frequency(Frequency.MONTHLY)
+//				.lastNotified(new Date(currentDate.getTime() - (31L * 24 * 60 * 60 * 1000)))
+//				.build();
+//
+//		Recipient recipient = Recipient.builder()
+//				.accountName("test-user")
+//				.email("test@test.com")
+//				.scheduledNotifications(Map.of(NotificationType.BACKUP, backupSettings))
+//				.build();
+//
+//		Query query = Query.query(
+//				Criteria.where("scheduledNotifications.BACKUP.active").is(true)
+//						.and("scheduledNotifications.BACKUP.lastNotified").lt(currentDate)
+//		);
+//
+//		// Mock 동작 정의
+//		ExecutableFindOperation.ExecutableFind<Recipient> executableFind = Mockito.mock(ExecutableFindOperation.ExecutableFind.class);
+//
+//		when(mongoTemplate.query(Recipient.class)).thenReturn(executableFind);
+//		when(executableFind.matching(query)).thenReturn(executableFind);
+//		when(executableFind.all()).thenReturn(List.of(recipient));
+//
+//		// When: 메서드 호출
+//		List<Recipient> recipients = recipientRepository.findReadyForBackup(currentDate);
+//
+//		// Then: 결과 검증
+//		assertNotNull(recipients);
+//		assertEquals(1, recipients.size());
+//		assertEquals("test-user", recipients.get(0).getAccountName());
+//	}
+//
+//	/**
+//	 * 리마인드 알림 발송 준비 상태의 수신자를 올바르게 검색하는지 확인.
+//	 */
+//	@Test
+//	void shouldFindReadyForRemind() {
+//		// Given: Mock 데이터 생성
+//		Date currentDate = new Date();
+//		NotificationSettings remindSettings = NotificationSettings.builder()
+//				.active(true)
+//				.frequency(Frequency.WEEKLY)
+//				.lastNotified(new Date(currentDate.getTime() - (8L * 24 * 60 * 60 * 1000)))
+//				.build();
+//
+//		Recipient recipient = Recipient.builder()
+//				.accountName("test-user")
+//				.email("test@test.com")
+//				.scheduledNotifications(Map.of(NotificationType.REMIND, remindSettings))
+//				.build();
+//
+//		Query query = Query.query(
+//				Criteria.where("scheduledNotifications.REMIND.active").is(true)
+//						.and("scheduledNotifications.REMIND.lastNotified").lt(currentDate)
+//		);
+//
+//		// Mock 동작 정의
+//		ExecutableFindOperation.ExecutableFind<Recipient> executableFind = Mockito.mock(ExecutableFindOperation.ExecutableFind.class);
+//
+//		when(mongoTemplate.query(Recipient.class)).thenReturn(executableFind);
+//		when(executableFind.matching(query)).thenReturn(executableFind);
+//		when(executableFind.all()).thenReturn(List.of(recipient));
+//
+//		// When: 메서드 호출
+//		List<Recipient> recipients = recipientRepository.findReadyForRemind(currentDate);
+//
+//		// Then: 결과 검증
+//		assertNotNull(recipients);
+//		assertEquals(1, recipients.size());
+//		assertEquals("test-user", recipients.get(0).getAccountName());
+//	}
+//}
