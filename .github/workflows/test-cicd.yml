@@ -61,8 +61,8 @@ jobs:
 
     - name: Build and Push Docker Image
       run: |
-        docker-compose -f docker-compose-test.yml build
-        docker-compose -f docker-compose-test.yml push
+        docker compose -f docker-compose-test.yml build
+        docker compose -f docker-compose-test.yml push
 
     # 7. SSH로 EC2 연결 및 배포
     - name: Deploy to EC2
