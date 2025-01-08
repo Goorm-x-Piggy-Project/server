@@ -80,6 +80,5 @@ jobs:
         script: |
           whoami
           sudo docker login -u ${{secrets.DOCKERHUB_USERNAME}} -p ${{secrets.DOCKERHUB_TOKEN}}
-          sudo docker pull ${{secrets.DOCKERHUB_USERNAME}}/goormmetrics
-          # sudo docker-compose -f ./docker-compose-test.yml build
-          sudo docker-compose -f ./docker-compose-test.yml up -d
+          sudo docker compose pull
+          sudo docker compose -f ./docker-compose-test.yml up -d
