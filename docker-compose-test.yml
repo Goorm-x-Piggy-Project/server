@@ -37,6 +37,8 @@ services:
   config:
     build:
       context: ./config
+    image:
+      ksah3756/goormmetrics-config:latest
     container_name: config-service
     ports:
       - "8888:8888"
@@ -48,6 +50,8 @@ services:
   account-service:
     build:
       context: ./account-service
+    image:
+      ksah3756/goormmetrics-account-service:latest
     container_name: account-service
     ports:
       - 6000:6000
@@ -73,6 +77,8 @@ services:
   statistics-service:
     build:
       context: ./statistics-service
+    image:
+      ksah3756/goormmetrics-statistics-service:latest
     container_name: statistics-service
     ports:
       - 7000:7000
@@ -104,6 +110,8 @@ services:
   registry:
     build:
       context: ./registry
+    image:
+      ksah3756/goormmetrics-registry:latest
     container_name: registry
 #    healthcheck:
 #      test: [ "CMD", "curl", "-f", "http://localhost:8761/actuator/health" ]
@@ -130,6 +138,8 @@ services:
   gateway:
     build:
       context: ./gateway
+    image:
+      ksah3756/goormmetrics-gateway:latest
     container_name: gateway
     environment:
       CONFIG_SERVICE_PASSWORD: ${CONFIG_SERVICE_PASSWORD}
@@ -149,6 +159,8 @@ services:
   auth-service:
     build:
       context: ./auth-service
+    image:
+      ksah3756/goormmetrics-auth-service:latest
     container_name: auth-service
     ports:
       - 5000:5000
@@ -194,6 +206,8 @@ services:
   notification-service:
     build:
       context: ./notification-service
+    image:
+      ksah3756/goormmetrics-notification-service:latest
     container_name: notification-service
     ports:
       - 9000:9000
