@@ -35,6 +35,7 @@ public class AccountService {
 		return AccountResDto.fromEntity(account);
 	}
 
+	@Transactional
 	public void create(UserReqDto userReqDto) {
 
 		checkIfAccountExists(userReqDto.getUsername());
@@ -49,7 +50,7 @@ public class AccountService {
 		log.info("new account has been created: " + account.getName());
 	}
 
-	//@Transactional
+	@Transactional
 	public void saveChanges(String name, AccountReqDto update) {
 
 		log.info("username is {}", name);

@@ -46,7 +46,7 @@ dependencies {
 
     // Metrics 정보 공개 및 수집
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'io.micrometer:micrometer-tracing'
+    //implementation 'io.micrometer:micrometer-tracing'
     implementation 'io.micrometer:micrometer-registry-prometheus'
 
     // junit

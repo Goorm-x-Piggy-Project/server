@@ -46,3 +46,18 @@ spring:
             fallback: false
           ssl:
             enable: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, circuitbreakers, prometheus
+    security:
+      enabled: false
+    endpoint:
+      health:
+        show-details: always
+      metrics:
+        export:
+          prometheus:
+            enabled: true

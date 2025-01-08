@@ -14,17 +14,19 @@ services:
     networks:
       - msa-network
 
-  mongo:
-    image: mongo:latest
-    container_name: mongo
+  account-mongodb:
+    image: mongo:6.0
+    container_name: account-mongodb
     ports:
       - "27017:27017"
+    command: ["--replSet", "rs0"]
     volumes:
       - ./mongodb/:/docker-entrypoint-initdb.d/
     environment:
       MONGODB_PASSWORD: ${MONGODB_PASSWORD}
     networks:
       - msa-network
+
   prometheus:
     image: prom/prometheus:latest
     ports:
@@ -57,7 +59,7 @@ services:
     depends_on:
       config:
         condition: service_healthy
-      mongo:
+      account-mongodb:
         condition: service_started
       registry:
         condition: service_started
