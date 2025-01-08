@@ -13,11 +13,11 @@
 - 모니터링 도구를 이용하여 시스템의 흐름과 에러를 식별합니다.
 
 ## ✨ 멤버 구성
-| ![박정곤](https://github.com/user-attachments/assets/74b1e113-fbae-4fa5-a5c4-e33b67523153) | ![image](https://github.com/user-attachments/assets/fc76c1ad-6922-4bba-8c78-87e8e19da61a) | ![김상호](https://github.com/user-attachments/assets/421ac141-e472-4e7a-8283-3bfdd2f440e3)|   |  ![image](https://github.com/user-attachments/assets/de4153be-e89e-4de2-9b84-90e5a412a2fe)  | ![image](https://github.com/user-attachments/assets/75ecc75d-31b9-404d-9267-88720af05531) |
+| ![박정곤](https://github.com/user-attachments/assets/74b1e113-fbae-4fa5-a5c4-e33b67523153) | ![image](https://github.com/user-attachments/assets/fc76c1ad-6922-4bba-8c78-87e8e19da61a) | ![김상호](https://github.com/user-attachments/assets/421ac141-e472-4e7a-8283-3bfdd2f440e3)| ![이유영](https://github.com/user-attachments/assets/054cc92f-08ad-44a8-936f-df3662d5d2f8)  | ![image](https://github.com/user-attachments/assets/de4153be-e89e-4de2-9b84-90e5a412a2fe)  | ![image](https://github.com/user-attachments/assets/75ecc75d-31b9-404d-9267-88720af05531) |
 |:---:|:---:|:---:|:---:|:---:|:---:|
 | 박정곤  |  서동준  | 김상호   | 이유영  | 박진홍 | 이지은 |
 | PM, Backend |  Backend  |  Backend | Backend  | Backend  | Backend  |
-| https://github.com/wjd4204 | https://github.com/SD-gif | https://github.com/ksah3756 |   | https://github.com/JiinHong  | https://github.com/leeje0506 | 
+| https://github.com/wjd4204 | https://github.com/SD-gif | https://github.com/ksah3756 | https://github.com/YuyoungRhee | https://github.com/JiinHong  | https://github.com/leeje0506 | 
 
 
 ## 📃 API 명세서
