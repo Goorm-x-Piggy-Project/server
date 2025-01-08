@@ -14,7 +14,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ErrorResponse> handleExchangeRateException(CustomException e) {
-        log.error("ExchangeRateException occurred: {}", e.getMessage());
+        log.error("ExchangeRateException 발생: {}", e.getMessage());
         ErrorResponse errorResponse = new ErrorResponse("EXCHANGE_RATE_ERROR", e.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }

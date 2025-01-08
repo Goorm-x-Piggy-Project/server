@@ -1,8 +1,10 @@
 package com.piggymetrics.statistics.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import static com.piggymetrics.statistics.exception.ErrorMessages.ACCOUNT_NAME_BLANK;
+
 import com.piggymetrics.statistics.dto.AccountReqDto;
 import com.piggymetrics.statistics.dto.UserReqDto;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ public class Account {
 	@Id
 	private ObjectId id;
 
-	@NotNull
+	@NotBlank(message = ACCOUNT_NAME_BLANK)
 	@Size(min = 1, max = 50)
 	private String name;
 
