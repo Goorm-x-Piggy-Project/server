@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface ExchangeRatesClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/")
-    @CircuitBreaker(name = "default")
     List<ExchangeRate> getRates(
             @RequestParam("authkey") String authKey,
             @RequestParam("searchdate") String searchDate,
