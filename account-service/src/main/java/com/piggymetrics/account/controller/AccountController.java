@@ -22,11 +22,6 @@ public class AccountController {
 
 	private final AccountService accountService;
 
-	@GetMapping
-	public String hello() {
-		return "hello";
-	}
-
 	@PreAuthorize("hasAuthority('SCOPE_server') or #name.equals('demo')")
 	@GetMapping("/{name}")
 	public ResponseEntity<AccountResDto> getAccountByName(@PathVariable @Size(min = 3, max = 10) String name) {
