@@ -55,9 +55,9 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         context: .
+        file: ./docker-compose-test.yml
         push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
+        tags: goormmetrics-img:latest
 
     # 7. SSH로 EC2 연결 및 배포
     - name: Deploy to EC2
