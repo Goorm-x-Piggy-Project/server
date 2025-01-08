@@ -60,7 +60,6 @@ public class ExchangeRatesService {
 
 			String searchDate = closestPastWeekday.toString().replace("-", "");
 			exchangeRates = client.getRates(authKey, searchDate, "AP01");
-			log.info("Exchange rates updated: {}", exchangeRates);
 		}
 
 		// Currency enum의 모든 값을 가져옵니다.
