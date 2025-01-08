@@ -35,10 +35,8 @@ jobs:
     # .env 파일 생성
     - name: Create dotenv file
       run: |
-          pwd
-          touch ./.env
-          echo ${{ secrets.ENV_SECRETS }} >> ./.env 
-          cat ./.env
+          touch .env
+          echo "${{ secrets.ENV_SECRETS }}" >> .env 
 
     # 3. Gradle 빌드
     - name: Build with Gradle
@@ -69,7 +67,6 @@ jobs:
 
     - name: Build and Push Docker Image
       run: |
-        pwd
         docker compose -f docker-compose-test.yml build
         docker compose -f docker-compose-test.yml push
 
