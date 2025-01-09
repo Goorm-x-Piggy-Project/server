@@ -17,7 +17,7 @@ public class ResourceServerConfig {
     @Order(2)
     public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-            .cors(AbstractHttpConfigurer::disable)
+            .cors(AbstractHttpConfigurer::disable) // 이렇게 해도 된 이유가 컨트롤러에서 정의한 엔드포인트가 전부 브라우저에서 요청하는게 아니라 서버에서 요청하는거였군..
             .authorizeHttpRequests(authorize -> authorize
                     .anyRequest().permitAll() // 사실 이거 상관없을듯..?
             );

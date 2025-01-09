@@ -21,8 +21,7 @@ public class UserService {
 
 	public UserCreateResDto create(UserCreateReqDto requestDto) {
 		log.debug("auth-service create 메소드 진입(서비스 계층)");
-		Optional<User> existing = userRepository.findById(requestDto.getUsername());
-		existing.ifPresent(it-> {throw new UserAlreadyExistsException(it.getUsername());});
+		checkIfUserExists(requestDto.getUsername());
 
 		String hash = passwordEncoder.encode(requestDto.getPassword());
 		User user = User.of(requestDto.getUsername(), hash);
@@ -31,5 +30,10 @@ public class UserService {
 		log.info("new user has been created: {}", user.getUsername());
 
 		return UserCreateResDto.from(user);
+	}
+
+	private void checkIfUserExists(String username) {
+		Optional<User> existing = userRepository.findById(username);
+		existing.ifPresent(it-> {throw new UserAlreadyExistsException(it.getUsername());});
 	}
 }

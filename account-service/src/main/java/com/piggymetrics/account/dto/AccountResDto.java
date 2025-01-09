@@ -1,6 +1,8 @@
 package com.piggymetrics.account.dto;
 
 import com.piggymetrics.account.domain.Account;
+import com.piggymetrics.account.domain.Item;
+import com.piggymetrics.account.domain.Saving;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,13 +14,13 @@ public class AccountResDto {
 
     private String name;
     private LocalDate lastSeen;
-    private List<ItemResDto> incomes;
-    private List<ItemResDto> expenses;
-    private SavingResDto saving;
+    private List<Item> incomes;
+    private List<Item> expenses;
+    private Saving saving;
     private String note;
 
     @Builder
-    private AccountResDto(String name, LocalDate lastSeen, List<ItemResDto> incomes, List<ItemResDto> expenses, SavingResDto saving, String note) {
+    private AccountResDto(String name, LocalDate lastSeen, List<Item> incomes, List<Item> expenses, Saving saving, String note) {
         this.name = name;
         this.lastSeen = lastSeen;
         this.incomes = incomes;
@@ -28,14 +30,12 @@ public class AccountResDto {
     }
 
     public static AccountResDto fromEntity(Account account) {
-        List<ItemResDto> incomes = account.getIncomes().stream().map(ItemResDto::fromEntity).toList();
-        List<ItemResDto> expenses = account.getExpenses().stream().map(ItemResDto::fromEntity).toList();
         return AccountResDto.builder()
                 .name(account.getName())
                 .lastSeen(account.getLastSeen())
-                .incomes(incomes)
-                .expenses(expenses)
-                .saving(SavingResDto.fromEntity(account.getSaving()))
+                .incomes(account.getIncomes())
+                .expenses(account.getExpenses())
+                .saving(account.getSaving())
                 .note(account.getNote())
                 .build();
     }

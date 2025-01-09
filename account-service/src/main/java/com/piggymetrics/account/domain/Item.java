@@ -12,9 +12,6 @@ import org.springframework.data.annotation.Id;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Item {
 
-	@Id
-	private ObjectId id;
-
 	@NotNull
 	@Size(min = 1, max = 20)
 	private String title;

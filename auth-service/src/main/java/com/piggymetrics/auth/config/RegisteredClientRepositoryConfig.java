@@ -33,8 +33,8 @@ public class RegisteredClientRepositoryConfig {
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .scopes(scopes -> scopes.add("ui")) // 클라이언트가 요청할 수 있는 권한의 범위
                 .tokenSettings(TokenSettings.builder()
-                        .accessTokenTimeToLive(Duration.ofMinutes(30))
-                        .refreshTokenTimeToLive(Duration.ofHours(1))
+                        .accessTokenTimeToLive(Duration.ofHours(1))
+                        .refreshTokenTimeToLive(Duration.ofHours(3))
                         .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED) // JWT 사용
                         .build())
                 .build();
@@ -47,7 +47,6 @@ public class RegisteredClientRepositoryConfig {
                 .scopes(scopes -> scopes.add("server"))
                 .tokenSettings(TokenSettings.builder()
                         .accessTokenTimeToLive(Duration.ofMinutes(30))
-                        .refreshTokenTimeToLive(Duration.ofHours(1))
                         .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED) // JWT 사용
                         .build())
                 .build();
@@ -60,7 +59,6 @@ public class RegisteredClientRepositoryConfig {
                 .scopes(scopes -> scopes.add("server"))
                 .tokenSettings(TokenSettings.builder()
                         .accessTokenTimeToLive(Duration.ofMinutes(30))
-                        .refreshTokenTimeToLive(Duration.ofHours(1))
                         .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED) // JWT 사용
                         .build())
                 .build();
@@ -73,7 +71,6 @@ public class RegisteredClientRepositoryConfig {
                 .scopes(scopes -> scopes.add("server"))
                 .tokenSettings(TokenSettings.builder()
                         .accessTokenTimeToLive(Duration.ofMinutes(30))
-                        .refreshTokenTimeToLive(Duration.ofHours(1))
                         .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED) // JWT 사용
                         .build())
                 .build();
