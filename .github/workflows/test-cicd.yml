@@ -46,9 +46,9 @@ jobs:
         username: ubuntu
         key: ${{ secrets.EC2_KEY }}
         source: |
-          ./docker-compose-test.yml
-          ./prometheus.yml
-        target: /home/ubuntu/
+          docker-compose-test.yml
+          prometheus.yml
+        target: /home/ubuntu
 
     # 5. Gradle 빌드
     - name: Build with Gradle
