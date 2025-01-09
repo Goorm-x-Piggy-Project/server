@@ -6,16 +6,16 @@ scrape_configs:
     metrics_path: '/services/account/actuator/prometheus' # account-service의 Prometheus 메트릭 엔드포인트
     static_configs:
       - targets:
-          - 'docker.for.mac.localhost:8000' # account-service가 실행 중인 주소와 포트
+          - ['gateway:8080'] # account-service가 실행 중인 주소와 포트
 
   - job_name: 'statistics-service' # 수집 대상을 구분하는 잡 이름
     metrics_path: '/services/statistics/actuator/prometheus' # statistics-service의 Prometheus 메트릭 엔드포인트
     static_configs:
       - targets:
-          - 'docker.for.mac.localhost:8000' # statistics-service가 실행 중인 주소와 포트
+          - ['gateway:8080'] # statistics-service가 실행 중인 주소와 포트
 
   - job_name: 'notification-service' # 수집 대상을 구분하는 잡 이름
-    metrics_path: '/services/notification/actuator/prometheus' # statistics-service의 Prometheus 메트릭 엔드포인트
+    metrics_path: '/services/notification/actuator/prometheus' # notification-service의 Prometheus 메트릭 엔드포인트
     static_configs:
       - targets:
-          - 'docker.for.mac.localhost:8000' # statistics-service가 실행 중인 주소와 포트
+          - ['gateway:8080'] # notification-service가 실행 중인 주소와 포트
