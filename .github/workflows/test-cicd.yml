@@ -39,16 +39,16 @@ jobs:
           echo "${{ secrets.ENV_SECRETS }}" >> .env 
 
     # 4. yaml 파일을 EC2로 전송
-    - name: Transfer yaml files to EC2
-      uses: appleboy/scp-action@v0.1.7
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ubuntu
-        key: ${{ secrets.EC2_KEY }}
-        source: |
-          docker-compose-test.yml
-          prometheus.yml
-        target: /home/ubuntu
+    # - name: Transfer yaml files to EC2
+    #   uses: appleboy/scp-action@v0.1.7
+    #   with:
+    #     host: ${{ secrets.EC2_HOST }}
+    #     username: ubuntu
+    #     key: ${{ secrets.EC2_KEY }}
+    #     source: |
+    #       docker-compose-test.yml
+    #       prometheus.yml
+    #     target: /home/ubuntu
 
     # 5. Gradle 빌드
     - name: Build with Gradle
