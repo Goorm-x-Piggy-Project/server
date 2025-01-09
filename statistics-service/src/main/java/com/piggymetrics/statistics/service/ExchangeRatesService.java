@@ -47,7 +47,7 @@ public class ExchangeRatesService {
 							Map.Entry::getValue
 					));
 		} catch (Exception e) {
-			log.error("Error while fetching filtered rates", e);
+			log.error("환율 데이터 필터링 과정 중 에러 발생", e);
 			throw new CustomException(RATES_EXCHANGE_FAIL + e.getMessage());
 		}
 	}
@@ -60,7 +60,6 @@ public class ExchangeRatesService {
 
 			String searchDate = closestPastWeekday.toString().replace("-", "");
 			exchangeRates = client.getRates(authKey, searchDate, "AP01");
-			log.info("Exchange rates updated: {}", exchangeRates);
 		}
 
 		// Currency enum의 모든 값을 가져옵니다.
@@ -83,6 +82,9 @@ public class ExchangeRatesService {
 
 		if (fromRate == null || toRate == null) {
 			throw new CustomException(NULL_RATES_ERROR);
+		}
+		if (fromRate.compareTo(BigDecimal.ZERO) <= 0 || toRate.compareTo(BigDecimal.ZERO) <= 0) {
+			throw new CustomException("환율은 0보다 작을 수 없습니다. fromRate: " + fromRate + ", toRate: " + toRate);
 		}
 
 		BigDecimal ratio = fromRate.divide(toRate, 4, RoundingMode.HALF_UP);

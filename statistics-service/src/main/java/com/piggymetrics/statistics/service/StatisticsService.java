@@ -1,5 +1,7 @@
 package com.piggymetrics.statistics.service;
 
+import static com.piggymetrics.statistics.exception.ErrorMessages.ACCOUNT_NAME_BLANK;
+
 import com.google.common.collect.ImmutableMap;
 import com.piggymetrics.statistics.domain.Account;
 import com.piggymetrics.statistics.domain.Currency;
@@ -42,7 +44,7 @@ public class StatisticsService {
 	 * {@inheritDoc}
 	 */
 	public List<DataPoint> findByAccountName(String accountName) {
-		Assert.hasLength(accountName, "Account name must not be empty or null");
+		Assert.hasLength(accountName, ACCOUNT_NAME_BLANK);
 		return repository.findByIdAccount(accountName);
 	}
 
@@ -74,7 +76,7 @@ public class StatisticsService {
 				.rates(ratesService.getCurrentRates())
 				.build();
 
-		log.debug("new datapoint has been created: {}", pointId);
+		log.debug("new datapoint가 생성됐습니다.: {}", pointId);
 
 		return repository.save(dataPoint);
 	}

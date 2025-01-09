@@ -5,6 +5,7 @@ import com.piggymetrics.account.dto.AccountResDto;
 import com.piggymetrics.account.dto.UserReqDto;
 import com.piggymetrics.account.service.AccountService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,14 +22,9 @@ public class AccountController {
 
 	private final AccountService accountService;
 
-	@GetMapping
-	public String hello() {
-		return "hello";
-	}
-
 	@PreAuthorize("hasAuthority('SCOPE_server') or #name.equals('demo')")
 	@GetMapping("/{name}")
-	public ResponseEntity<AccountResDto> getAccountByName(@PathVariable String name) {
+	public ResponseEntity<AccountResDto> getAccountByName(@PathVariable @Size(min = 3, max = 10) String name) {
 
 		return ResponseEntity.ok(accountService.findByName(name));
 	}

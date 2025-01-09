@@ -35,15 +35,4 @@ public class ExchangeRatesController {
         return exchangeRatesService.getFilteredRates(List.of("USD", "KRW"));
     }
 
-    // 특정 환율 요청
-    @GetMapping("/filtered")
-    public Map<String, BigDecimal> getFilteredRates(@RequestParam List<String> currencies) {
-        return exchangeRatesService.getFilteredRates(currencies);
-    }
-
-    // 전체 환율 반환
-    @GetMapping("/all")
-    public Map<Currency, BigDecimal> getAllRates() {
-        return exchangeRatesService.getCurrentRates();
-    }
 }
