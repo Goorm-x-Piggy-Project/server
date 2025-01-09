@@ -3,6 +3,9 @@ networks:
   msa-network:
     driver: bridge
 
+volumes:
+  grafana-data:
+
 services:
 
   rabbitmq:
