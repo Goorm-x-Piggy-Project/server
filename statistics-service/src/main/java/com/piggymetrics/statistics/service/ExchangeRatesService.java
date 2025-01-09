@@ -5,69 +5,50 @@ import static com.piggymetrics.statistics.exception.ErrorMessages.*;
 import com.piggymetrics.statistics.client.ExchangeRatesClient;
 import com.piggymetrics.statistics.domain.Currency;
 
-import com.piggymetrics.statistics.domain.ExchangeRatesContainer.ExchangeRate;
+import com.piggymetrics.statistics.domain.ExchangeRate;
 import com.piggymetrics.statistics.exception.CustomException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 @Service
+@RequiredArgsConstructor
 public class ExchangeRatesService {
 
 	private static final Logger log = LoggerFactory.getLogger(ExchangeRatesService.class);
 
-	private List<ExchangeRate> exchangeRates; // 최신 환율 리스트 저장
+	private final ExchangeRatesClient exchangeRatesClient;
 
-	private final ExchangeRatesClient client;
+	public Map<String, BigDecimal> getExchangeRates() {
+		List<ExchangeRate> rates = exchangeRatesClient.getRates();
 
-	@Value("${rates.authkey}")
-	private String authKey; // Config Server에서 가져오는 인증키
-
-	public ExchangeRatesService(ExchangeRatesClient client) {
-		this.client = client;
-	}
-
-	public Map<String, BigDecimal> getFilteredRates(List<String> currencies) {
-		try {
-			Map<Currency, BigDecimal> allRates = getCurrentRates();
-
-			return allRates.entrySet().stream()
-					.filter(entry -> currencies.contains(entry.getKey().name()))
-					.collect(Collectors.toMap(
-							entry -> entry.getKey().name(),
-							Map.Entry::getValue
-					));
-		} catch (Exception e) {
-			log.error("환율 데이터 필터링 과정 중 에러 발생", e);
-			throw new CustomException(RATES_EXCHANGE_FAIL + e.getMessage());
-		}
-	}
-
-	public Map<Currency, BigDecimal> getCurrentRates() {
-
-		if (exchangeRates == null || exchangeRates.isEmpty()) {
-			LocalDate now = LocalDate.now();
-			LocalDate closestPastWeekday = getClosestPastWeekday(now);
-
-			String searchDate = closestPastWeekday.toString().replace("-", "");
-			exchangeRates = client.getRates(authKey, searchDate, "AP01");
-		}
-
-		// Currency enum의 모든 값을 가져옵니다.
-		return exchangeRates.stream()
-				.filter(rate -> Currency.isSupported(rate.getCurrencyUnit().replace("(100)", "")))
+		// "USDKRW=X" -> "USD", "KRW=X" -> "KRW"로 변환 및 매핑
+		return rates.stream()
 				.collect(Collectors.toMap(
-						rate -> Currency.valueOf(rate.getCurrencyUnit().replace("(100)", "")),
-						ExchangeRate::getDealBaseRate
+						rate -> parseCurrencyName(rate.getName()), // 키: "USD", "KRW" 등
+						ExchangeRate::getRate // 값: 환율 값
+				));
+	}
+
+	public Map<Currency, BigDecimal> getRates() {
+		List<ExchangeRate> rates = exchangeRatesClient.getRates();
+
+		// EnumMap을 사용하여 Currency를 키로 매핑
+		return rates.stream()
+				.filter(rate -> isValidCurrency(rate.getName())) // 유효한 Currency만 필터링
+				.collect(Collectors.toMap(
+						rate -> Currency.valueOf(parseCurrencyName(rate.getName())),
+						ExchangeRate::getRate,
+						(oldValue, newValue) -> newValue, // 중복 키 처리
+						() -> new EnumMap<>(Currency.class) // EnumMap 사용
 				));
 	}
 
@@ -75,7 +56,7 @@ public class ExchangeRatesService {
 
 		Assert.notNull(amount, NULL_AMOUNT_ERROR);
 
-		Map<Currency, BigDecimal> rates = getCurrentRates();
+		Map<Currency, BigDecimal> rates = getRates();
 
 		BigDecimal fromRate = rates.get(from);
 		BigDecimal toRate = rates.get(to);
@@ -92,19 +73,24 @@ public class ExchangeRatesService {
 		return amount.multiply(ratio);
 	}
 
-	private LocalDate getClosestPastWeekday(LocalDate date) {
-		DayOfWeek dayOfWeek = date.getDayOfWeek();
+	private String parseCurrencyName(String name) {
+		name = name.replace("=X", "");
 
-		switch (dayOfWeek) {
-			case MONDAY: // 월요일이면 금요일로 이동
-				return date.minusDays(3);
-			case SUNDAY: // 일요일이면 금요일로 이동
-				return date.minusDays(2);
-			case SATURDAY: // 토요일이면 금요일로 이동
-				return date.minusDays(1);
-			default: // 평일(화~금)은 하루 전으로 이동
-				return date.minusDays(1);
+		if (name.equals("KRW")) {
+			return name;
 		}
+		if (name.contains("KRW")) {
+			return name.replace("KRW", "").trim();
+		}
+		return name.trim();
 	}
 
+	private boolean isValidCurrency(String name) {
+		try {
+			String parsedName = parseCurrencyName(name);
+			return Currency.isSupported(parsedName);
+		} catch (IllegalArgumentException e) {
+			return false;
+		}
+	}
 }

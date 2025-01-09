@@ -73,7 +73,7 @@ public class StatisticsService {
 				.incomes(incomes)
 				.expenses(expenses)
 				.statistics(statistics)
-				.rates(ratesService.getCurrentRates())
+				.rates(ratesService.getRates())
 				.build();
 
 		log.debug("new datapoint가 생성됐습니다.: {}", pointId);
