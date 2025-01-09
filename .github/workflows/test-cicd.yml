@@ -32,45 +32,42 @@ jobs:
     - name: Grant Execute Permission For Gradlew
       run: chmod +x gradlew
 
-    # .env 파일 생성
+    # 3. .env 파일 생성
     - name: Create dotenv file
       run: |
           touch .env
           echo "${{ secrets.ENV_SECRETS }}" >> .env 
 
-    # 3. Gradle 빌드
+    # 4. yaml 파일을 EC2로 전송
+    - name: Transfer yaml files to EC2
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.EC2_KEY }}
+        source: |
+          ./docker-compose-test.yml
+          ./prometheus.yml
+        target: /home/ubuntu/
+
+    # 5. Gradle 빌드
     - name: Build with Gradle
       run: ./gradlew build -x test
 
-    # 4. Docker 로그인 (Docker Hub 사용)
+    # 6. Docker 로그인 (Docker Hub 사용)
     - name: Log in to Docker Hub
       uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-    # 5. 이미지 푸시를 위해 깃으로부터 tag, label 추출
-    - name: Extract metadata (tags, labels) for Docker
-      id: meta
-      uses: docker/metadata-action@v5.6.1
-      with:
-        images: ${{ secrets.DOCKERHUB_USERNAME }}/goormmetrics-img
             
-    # 6. Docker Compose로 이미지 빌드 및 푸시
-    # - name: Build and push Docker image
-    #   uses: docker/build-push-action@v6
-    #   with:
-    #     context: .
-    #     file: ./docker-compose-test.yml
-    #     push: true
-    #     tags: goormmetrics-img:latest
-
+    # 7. Docker Compose로 이미지 빌드 및 푸시
     - name: Build and Push Docker Image
       run: |
         docker compose -f docker-compose-test.yml build
         docker compose -f docker-compose-test.yml push
 
-    # 7. SSH로 EC2 연결 및 배포
+    # 8. SSH로 EC2 연결 및 배포
     - name: Deploy to EC2
       uses: appleboy/ssh-action@v1.2.0
       with:
