@@ -8,15 +8,6 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
-    # env:
-    #   CONFIG_SERVICE_PASSWORD: ${{ env.CONFIG_SERVICE_PASSWORD }}
-    #   BROWSER_CLIENT_PASSWORD: ${{ env.BROWSER_CLIENT_PASSWORD }}
-    #   NOTIFICATION_SERVICE_PASSWORD: ${{ env.NOTIFICATION_SERVICE_PASSWORD }}
-    #   STATISTICS_SERVICE_PASSWORD: ${{ env.STATISTICS_SERVICE_PASSWORD }}
-    #   ACCOUNT_SERVICE_PASSWORD: ${{ env.ACCOUNT_SERVICE_PASSWORD }}
-    #   MONGODB_PASSWORD: ${{ env.MONGODB_PASSWORD }}
-
     steps:
     # 1. 소스 코드를 체크아웃
     - name: Checkout code
@@ -39,16 +30,16 @@ jobs:
           echo "${{ secrets.ENV_SECRETS }}" >> .env 
 
     # 4. yaml 파일을 EC2로 전송
-    # - name: Transfer yaml files to EC2
-    #   uses: appleboy/scp-action@v0.1.7
-    #   with:
-    #     host: ${{ secrets.EC2_HOST }}
-    #     username: ubuntu
-    #     key: ${{ secrets.EC2_KEY }}
-    #     source: |
-    #       docker-compose-test.yml
-    #       prometheus.yml
-    #     target: /home/ubuntu
+    - name: Transfer yaml files to EC2
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.EC2_KEY }}
+        source: |
+          "docker-compose-test.yml"
+          "prometheus.yml"
+        target: "/home/ubuntu"
 
     # 5. Gradle 빌드
     - name: Build with Gradle
