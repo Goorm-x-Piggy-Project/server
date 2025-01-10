@@ -1,6 +1,5 @@
 package com.piggymetrics.statistics;
 
-import com.piggymetrics.statistics.config.DisableSSL;
 import com.piggymetrics.statistics.repository.converter.DataPointIdReaderConverter;
 import com.piggymetrics.statistics.repository.converter.DataPointIdWriterConverter;
 import feign.Client;
