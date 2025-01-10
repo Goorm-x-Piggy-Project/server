@@ -32,7 +32,7 @@ public class ExchangeRatesController {
     // 주요 환율 반환 (기본)
     @GetMapping("/default")
     public Map<String, BigDecimal> getDefaultRates() {
-        return exchangeRatesService.getFilteredRates(List.of("USD", "KRW"));
+        return exchangeRatesService.getExchangeRates();
     }
 
 }
