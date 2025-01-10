@@ -145,7 +145,7 @@ $(window).load(function(){
     $.getJSON("api/v1/statistics/rates/default", function( data ) {
         global.krw = data.KRW;
         global.usd = data.USD;
-    });율
+    });
 
 	var account = getCurrentAccount();
 
